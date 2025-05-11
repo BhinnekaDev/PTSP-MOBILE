@@ -2,7 +2,7 @@ import { TouchableOpacity, Text, View } from "react-native";
 import { ButtonCustomProps } from "@/interfaces/buttonCustomProps";
 
 const ButtonCustom = ({
-  children, //
+  text, //
   classNameContainer = "",
   textClassName = "",
   onPress,
@@ -14,20 +14,24 @@ const ButtonCustom = ({
   return (
     <TouchableOpacity
       activeOpacity={0.7} //
-      className={`flex-row items-center justify-center ${classNameContainer}`}
       onPress={onPress}
+      className={`px-4 py-3 rounded-lg ${classNameContainer}`}
       style={styleButton}
     >
-      {/* Icon kiri (jika ada) */}
-      {iconLeft && <View className="mr-2">{iconLeft}</View>}
+      <View className="flex-row items-center justify-between w-full">
+        {/* Icon kiri */}
+        {iconLeft && <View>{iconLeft}</View>}
 
-      {/* Teks */}
-      <Text className={`text-center ${textClassName}`} style={textStyle}>
-        {children}
-      </Text>
+        {/* Teks - agar tetap di tengah walau ada icon kanan */}
+        <View className="flex-1">
+          <Text className={`${textClassName}`} style={textStyle}>
+            {text}
+          </Text>
+        </View>
 
-      {/* Icon kanan (jika ada) */}
-      {iconRight && <View className="ml-2">{iconRight}</View>}
+        {/* Icon kanan */}
+        {iconRight && <View className="ml-2">{iconRight}</View>}
+      </View>
     </TouchableOpacity>
   );
 };

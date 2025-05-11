@@ -2,7 +2,6 @@ import { ReactNode } from "react";
 import { ViewStyle, TextStyle } from "react-native";
 
 export interface ButtonCustomProps {
-  children: ReactNode;
   classNameContainer?: string;
   textClassName?: string;
   onPress?: () => void;
@@ -10,4 +9,5 @@ export interface ButtonCustomProps {
   iconRight?: ReactNode;
   styleButton?: ViewStyle;
   textStyle?: TextStyle;
+  text: string;
 }

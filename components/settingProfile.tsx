@@ -1,11 +1,15 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 
+// OUR ICON
+import Octicons from "@expo/vector-icons/Octicons";
+
 // OUR COMPONENTS
 import ButtonProfile from "@/components/buttonCustom";
 
 // OUR PROPS
 import { SettingProfileProps } from "@/interfaces/settingProfileProps";
+import ButtonCustom from "@/components/buttonCustom";
 
 const SettingProfile = ({
   label,
@@ -23,6 +27,15 @@ const SettingProfile = ({
       onPress={isWrapperButton ? onPress : undefined} //
       className="flex-row items-center justify-between py-2"
     >
+      <ButtonCustom
+        text="Simpan"
+        iconLeft={<Octicons name="checklist" size={24} color="black" />} //
+        classNameContainer="px-4 py-2 rounded-lg"
+        textClassName="text-white text-base"
+        onPress={() => console.log("simpan")}
+        textStyle={{ fontFamily: "LexBold" }}
+      />
+
       {/* LABEL */}
       <Text className="text-black text-lg">{label}</Text>
       <View className="flex-row items-center space-x-2">
