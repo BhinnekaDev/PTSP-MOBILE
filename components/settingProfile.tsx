@@ -1,21 +1,20 @@
 import React from "react";
-import { View, Text, TouchableOpacity, useColorScheme } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 
 // OUR COMPONENTS
 import ButtonProfile from "@/components/buttonCustom";
 
 // OUR PROPS
-import { EditProfileProps } from "@/interfaces/editProfileProps";
+import { SettingProfileProps } from "@/interfaces/settingProfileProps";
 
-const EditProfile = ({
+const SettingProfile = ({
   label,
   text,
   onPress,
   iconComponent,
   isWrapperButton = false,
   labelClassName, //
-}: EditProfileProps) => {
-  const isDarkMode = useColorScheme() === "dark";
+}: SettingProfileProps) => {
   const WrapperButton = isWrapperButton ? TouchableOpacity : View;
 
   return (
@@ -25,19 +24,15 @@ const EditProfile = ({
       className="flex-row items-center justify-between py-2"
     >
       {/* LABEL */}
-      <Text className={`${labelClassName || (isDarkMode ? "text-white" : "text-black")}  text-lg`} style={{ fontFamily: "LexSemiBold" }}>
-        {label}
-      </Text>
+      <Text className="text-black text-lg">{label}</Text>
       <View className="flex-row items-center space-x-2">
         {/* TEXT */}
-        <Text className={`${isDarkMode ? "text-white" : "text-black"} opacity-50  text-lg pr-4`} style={{ fontFamily: "LexSemiBold" }}>
-          {text}
-        </Text>
+        <Text className="text-black opacity-50 text-lg pr-4">{text}</Text>
 
         {/* BUTTON SUNTING PROFILE*/}
         <ButtonProfile
           classNameContainer="px-2 py-2 rounded-lg" //
-          textClassName="text-white font-semibold"
+          textClassName="text-black font-semibold"
           onPress={onPress}
         >
           {iconComponent}
@@ -47,4 +42,4 @@ const EditProfile = ({
   );
 };
 
-export default EditProfile;
+export default SettingProfile;

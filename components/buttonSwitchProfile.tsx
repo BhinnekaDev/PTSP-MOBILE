@@ -1,54 +1,50 @@
 import React from "react";
-import { View, Text, Switch, useColorScheme } from "react-native";
+import { View, Text, TouchableOpacity, useColorScheme } from "react-native";
 
-// OUR INTERFACES
-import { ButtonSwitchProfileProps } from "@/interfaces/buttonSwitchProfileProps";
+// OUR COMPONENTS
+import ButtonProfile from "@/components/buttonCustom";
 
-const ButtonSwitchProfile = ({
-  iconComponent,
+// OUR PROPS
+import { EditProfileProps } from "@/interfaces/settingProfileProps";
+
+const EditProfile = ({
   label,
-  value,
-  onToggle,
-  containerClassName = "",
-  labelClassName = "",
-  dividerClassName = "",
-  backgroundCircleButtonOn = "",
-  backgroundButtonOn = "",
-  backgroundCircleButtonOff = "",
-  backgroundButtonOff = "",
-  textStyle,
-}: ButtonSwitchProfileProps) => {
+  text,
+  onPress,
+  iconComponent,
+  isWrapperButton = false,
+  labelClassName, //
+}: EditProfileProps) => {
   const isDarkMode = useColorScheme() === "dark";
+  const WrapperButton = isWrapperButton ? TouchableOpacity : View;
 
   return (
-    <View className={containerClassName}>
-      <View className="flex-row justify-between items-center">
-        {/* ICON & LABEL */}
-        <View className="flex-row items-center">
+    // Edit Profile Component
+    <WrapperButton
+      onPress={isWrapperButton ? onPress : undefined} //
+      className="flex-row items-center justify-between py-2"
+    >
+      {/* LABEL */}
+      <Text className={`${labelClassName || (isDarkMode ? "text-white" : "text-black")}  text-lg`} style={{ fontFamily: "LexSemiBold" }}>
+        {label}
+      </Text>
+      <View className="flex-row items-center space-x-2">
+        {/* TEXT */}
+        <Text className={`${isDarkMode ? "text-white" : "text-black"} opacity-50  text-lg pr-4`} style={{ fontFamily: "LexSemiBold" }}>
+          {text}
+        </Text>
+
+        {/* BUTTON SUNTING PROFILE*/}
+        <ButtonProfile
+          classNameContainer="px-2 py-2 rounded-lg" //
+          textClassName="text-white font-semibold"
+          onPress={onPress}
+        >
           {iconComponent}
-          <Text style={{ fontFamily: "LexBold" }} className={`${labelClassName || (isDarkMode ? "text-white" : "text-black")}  text-lg ml-4`}>
-            {label}
-          </Text>
-        </View>
-
-        {/* BUTTON SWITCH */}
-        <Switch
-          trackColor={{
-            false: isDarkMode ? "#000" : "#fff",
-            true: backgroundButtonOn || "#00822F",
-          }}
-          thumbColor={value ? backgroundCircleButtonOn || "#FFFFFF" : backgroundCircleButtonOff || "#f4f3f4"}
-          ios_backgroundColor={backgroundButtonOff || isDarkMode ? "#000000" : "white"}
-          style={[{ transform: [{ scaleX: 1 }, { scaleY: 1 }] }]}
-          value={value}
-          onValueChange={onToggle}
-        />
+        </ButtonProfile>
       </View>
-
-      {/* BORDER BOTTOM */}
-      <View className={dividerClassName} />
-    </View>
+    </WrapperButton>
   );
 };
 
-export default ButtonSwitchProfile;
+export default EditProfile;

@@ -6,7 +6,8 @@ export interface ButtonCustomProps {
   classNameContainer?: string;
   textClassName?: string;
   onPress?: () => void;
-  icon?: ReactNode;
+  iconLeft?: ReactNode;
+  iconRight?: ReactNode;
   styleButton?: ViewStyle;
   textStyle?: TextStyle;
 }

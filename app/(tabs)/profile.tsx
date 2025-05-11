@@ -1,28 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import { Text, View } from "react-native";
-import { useRouter } from "expo-router";
 
 // OUR ICONS
 import { MaterialIcons } from "@expo/vector-icons";
+// import { IconName } from "react-icons/lia";
 
 // OUR COMPONENTS
-import ButtonProfile from "@/components/buttonCustom";
-import ButtonSwitchProfile from "@/components/buttonSwitchProfile";
+import SettingProfiles from "@/components/settingProfile";
+import ButtonCustom from "@/components/buttonCustom";
 import UserProfile from "@/components/userProfile";
 
 // LINEAR GRADIENT
 import { LinearGradient } from "expo-linear-gradient";
 
 export default function ProfileTabs() {
-  const router = useRouter();
-
-  const [isNotificationEnabled, setNotificationEnabled] = useState(false);
-  const [isBiometricEnabled, setBiometricEnabled] = useState(false);
-
-  const handleEditProfile = () => {
-    router.push("/screens/editProfile");
-  };
-
   return (
     <LinearGradient
       colors={["#1475BA", "#399385", "#6BBC3F"]} //
@@ -38,53 +29,28 @@ export default function ProfileTabs() {
       />
 
       {/* EDIT PROFILE BUTTON */}
-      <ButtonProfile classNameContainer="bg-[#159778] mt-8 px-6 py-2 rounded-lg" textClassName="text-white text-xl" onPress={handleEditProfile} textStyle={{ fontFamily: "LexBold" }}>
-        Sunting Profile
-      </ButtonProfile>
+      <ButtonCustom
+        iconLeft={<MaterialIcons name="save" size={20} color="white" />} //
+        classNameContainer="px-4 py-2 rounded-lg"
+        textClassName="text-white text-base"
+        onPress={() => console.log("simpan")}
+        textStyle={{ fontFamily: "LexBold" }}
+      >
+        Pesanan Saya
+      </ButtonCustom>
 
       {/* SETTINGS OPTIONS */}
       <View className="w-full px-6 mt-16">
-        <Text className="text-white text-xl mb-2" style={{ fontFamily: "LexXBold" }}>
-          Pilihan Pengaturan
-        </Text>
-        <View className="bg-[#093731] px-4 pb-4 rounded-lg">
+        <Text className="text-black text-xl mb-2">Pilihan Pengaturan</Text>
+        <View className="bg-white px-4 pb-4 rounded-lg">
           {/* NOTIFICATION OPTION */}
-          <ButtonSwitchProfile
-            containerClassName="py-4"
-            iconComponent={<MaterialIcons name="notifications" size={28} color="white" className="bg-black p-1 rounded-lg" />}
-            label="Notifikasi"
-            value={isNotificationEnabled}
-            onToggle={setNotificationEnabled}
-            labelClassName="text-white"
-            textStyle={{ fontFamily: "LexXBold" }}
-            dividerClassName="border-b border-white pb-3"
-            backgroundButtonOn="#00822F"
-            backgroundCircleButtonOff="#000000"
+          <SettingProfiles
+            label="Notifikasi" //
+            text="Pengaturan Notifikasi"
+            isWrapperButton={true}
+            iconComponent={<MaterialIcons name="keyboard-arrow-right" size={24} />}
           />
 
-          {/* BIOMETRIC OPTION */}
-          <ButtonSwitchProfile
-            containerClassName="py-4"
-            iconComponent={<MaterialIcons name="fingerprint" size={28} color="white" className="bg-black p-1 rounded-lg" />}
-            label="Sidik Jari Biometri"
-            value={isBiometricEnabled}
-            onToggle={setBiometricEnabled}
-            labelClassName="text-white"
-            textStyle={{ fontFamily: "LexXBold" }}
-            dividerClassName="border-b border-white pb-3"
-            backgroundButtonOn="#00822F"
-            backgroundCircleButtonOff="#000000"
-          />
-
-          {/* LOGOUT OPTION */}
-          <ButtonProfile classNameContainer="flex-row justify-between items-center py-2" onPress={() => router.push("/(tabs)/profile")}>
-            <View className="flex-row items-center">
-              <MaterialIcons name="logout" size={28} color="white" className="bg-black p-1 rounded-lg" />
-              <Text className="text-white text-lg ml-4" style={{ fontFamily: "LexXBold" }}>
-                Keluar
-              </Text>
-            </View>
-          </ButtonProfile>
           <View className="border-b border-white" />
         </View>
       </View>
