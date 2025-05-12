@@ -2,6 +2,7 @@ import { TouchableOpacity, Text, View } from "react-native";
 import { ButtonCustomProps } from "@/interfaces/buttonCustomProps";
 
 const ButtonCustom = ({
+  FontLexBold = { fontFamily: "LexBold" },
   text, //
   classNameContainer = "",
   textClassName = "",
@@ -24,7 +25,10 @@ const ButtonCustom = ({
 
         {/* Teks - agar tetap di tengah walau ada icon kanan */}
         <View className="flex-1">
-          <Text className={`${textClassName}`} style={textStyle}>
+          <Text
+            className={`${textClassName}`}
+            style={[FontLexBold, textStyle]} // Gunakan variabel defaultFont di sini
+          >
             {text}
           </Text>
         </View>

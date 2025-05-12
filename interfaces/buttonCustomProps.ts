@@ -9,5 +9,6 @@ export interface ButtonCustomProps {
   iconRight?: ReactNode;
   styleButton?: ViewStyle;
   textStyle?: TextStyle;
-  text: string;
+  text?: string;
+  FontLexBold?: object;
 }
