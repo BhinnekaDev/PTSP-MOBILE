@@ -1,27 +1,50 @@
 import React from "react";
-import { Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  ImageSourcePropType,
+} from "react-native";
 import { ButtonProps } from "../interfaces/buttonProps";
 
-const Button: React.FC<ButtonProps> = ({
+interface ExtendedButtonProps extends ButtonProps {
+  image?: ImageSourcePropType;
+  imagePosition?: "left" | "right";
+}
+
+const Button: React.FC<ExtendedButtonProps> = ({
   children,
   onPress,
-  isLoading = false,
-  disabled = false,
-  style,
+  style = "",
+  icon,
+  iconPosition = "left",
+  image,
+  imagePosition = "left",
+  textStyle,
+  activeOpacity,
+  disabled,
 }) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      activeOpacity={0.7}
-      disabled={isLoading || disabled}
-      className={`rounded-md items-center justify-center + ${style}`}
+      disabled={disabled}
+      activeOpacity={activeOpacity}
+      className={`rounded-md items-center justify-center flex-row gap-2 ${style}`}
     >
-      {isLoading ? (
-        <ActivityIndicator color="#fff" />
-      ) : (
-        <Text style={{ color: "#fff", fontWeight: "600", fontSize: 16 }}>
-          {children}
-        </Text>
+      {icon && iconPosition === "left" && <View>{icon}</View>}
+      {image && imagePosition === "left" && (
+        <Image source={image} style={{ width: 20, height: 20 }} />
+      )}
+      <Text
+        className={textStyle}
+        style={{ color: "#fff", fontWeight: "600", fontSize: 16 }}
+      >
+        {children}
+      </Text>
+      {icon && iconPosition === "right" && <View>{icon}</View>}
+      {image && imagePosition === "right" && (
+        <Image source={image} style={{ width: 20, height: 20 }} />
       )}
     </TouchableOpacity>
   );

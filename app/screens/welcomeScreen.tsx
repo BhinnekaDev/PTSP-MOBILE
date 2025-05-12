@@ -1,9 +1,9 @@
 import { Image, Animated, View, Easing, Text } from "react-native";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import Button from "@/components/button";
 
-export default function Index() {
+export default function WelcomeScreen({ onFinish }: { onFinish: () => void }) {
   const translateY = useRef(new Animated.Value(0)).current;
   const fadeGradient = useRef(new Animated.Value(0)).current;
   const fadeBg = useRef(new Animated.Value(1)).current;
@@ -47,9 +47,34 @@ export default function Index() {
     });
   }, []);
 
+  const handleStart = () => {
+    Animated.parallel([
+      Animated.timing(translateY, {
+        toValue: -500,
+        duration: 600,
+        easing: Easing.in(Easing.exp),
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeText, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideButtonY, {
+        toValue: 300,
+        duration: 600,
+        easing: Easing.in(Easing.exp),
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setTimeout(() => {
+        onFinish();
+      }, 1000);
+    });
+  };
+
   return (
     <View className="flex-1 items-center justify-center overflow-hidden">
-      {/* Gradient Background Layer */}
       <Animated.View
         style={{ opacity: fadeGradient }}
         className="absolute inset-0"
@@ -64,14 +89,10 @@ export default function Index() {
           />
         </View>
       </Animated.View>
-
-      {/* Solid Color Background - fade out */}
       <Animated.View
         style={{ opacity: fadeBg }}
         className="absolute inset-0 bg-[#1475BA]"
       />
-
-      {/* Animated Logo */}
       <Animated.View
         className="flex-row items-center justify-center pl-1 gap-3"
         style={{ transform: [{ translateY }] }}
@@ -85,10 +106,7 @@ export default function Index() {
           className="w-72 h-20"
         />
       </Animated.View>
-
-      {/* Animated Text & Button */}
       <View className="justify-center items-center absolute bottom-64">
-        {/* Fade in Text */}
         <Animated.View style={{ opacity: fadeText }}>
           <Text className="text-4xl font-bold text-white">
             Halo, Selamat Datang!
@@ -99,14 +117,14 @@ export default function Index() {
             Ayo mulai sekarang!
           </Text>
         </Animated.View>
-
-        {/* Slide In Button */}
         <Animated.View
           style={{
             transform: [{ translateY: slideButtonY }],
           }}
         >
-          <Button style="bg-[#73BF40] px-20 py-3 mt-9">Mulai</Button>
+          <Button style="bg-[#73BF40] px-20 py-3 mt-9" onPress={handleStart}>
+            Mulai
+          </Button>
         </Animated.View>
       </View>
     </View>
