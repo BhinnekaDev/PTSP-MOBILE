@@ -11,4 +11,5 @@ export interface ButtonCustomProps {
   textStyle?: TextStyle;
   text?: string;
   FontLexBold?: object;
+  onLayout?: (event: any) => void;
 }

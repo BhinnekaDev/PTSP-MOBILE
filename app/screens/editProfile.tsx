@@ -1,34 +1,95 @@
-import React from "react";
-import { View } from "react-native";
+import React, { useState } from "react";
+import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
+import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 
-// OUR ICON
-import Ionicons from "@expo/vector-icons/Ionicons";
 // OUR COMPONENTS
+import BackButton from "@/components/headerBackButton";
 import ButtonCustom from "@/components/buttonCustom";
+import GenderDropdown from "@/components/jenisKelamin";
+import InputField from "@/components/formInput";
 
-export default function EditProfile() {
+export default function EditProfile({ onClose }: { onClose: () => void }) {
+  const router = useRouter();
+  const [noIdentitas, setNoIdentitas] = useState("1234567890111213");
+  const [namaLengkap, setNamaLengkap] = useState("");
+  const [jenisKelamin, setJenisKelamin] = useState("");
+  const [pekerjaan, setPekerjaan] = useState("");
+  const [pendidikan, setPendidikan] = useState("");
+
   return (
-    <LinearGradient
-      colors={["#1475BA", "#399385", "#6BBC3F"]} //
-      start={[0, 0]}
-      end={[1, 1]}
-      locations={[0.04, 0.45, 1]}
-      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"} //
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={1}
     >
-      <View className="w-full px-12">
-        <View className="bg-white px-4 py-6 rounded-lg">
-          <View className="items-center">
-            <ButtonCustom
-              classNameContainer="flex-row  items-center justify-center w-full py-3 bg-red-500 rounded-lg"
-              iconLeft={<Ionicons name="arrow-back-circle" size={24} color="black" />}
-              text="Pesanan Saya"
-              textClassName="text-white text-lg text-center"
-              onPress={() => alert("Pesanan Saya")}
-            />
-          </View>
+      <View className="flex-1 w-full  justify-center items-center ">
+        <View className="bg-white  rounded-lg w-full">
+          <BackButton
+            title="Sunting Profil" //
+            buttonClassName="mr-12"
+            textClassName="text-[23px]"
+            onPress={onClose}
+          />
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }} //
+            keyboardShouldPersistTaps="handled"
+          >
+            {/* Form Fields */}
+            <View className="mt-4 space-y-4">
+              {/* INPUT NO IDENTITAS */}
+              <InputField
+                label="No Identitas" //
+                value={noIdentitas}
+                onChangeText={setNoIdentitas}
+                keyboardType="numeric"
+              />
+
+              {/* INPUT NAMA LENGKAP */}
+              <InputField
+                label="Nama Lengkap" //
+                value={namaLengkap}
+                onChangeText={setNamaLengkap}
+                placeholder="Nama lengkap"
+              />
+
+              {/* DROPDOWN JENIS KELAMIN */}
+              <GenderDropdown
+                selected={jenisKelamin} //
+                onSelect={setJenisKelamin}
+              />
+
+              {/* INPUT PEKERJAAN */}
+              <InputField
+                label="Pekerjaan" //
+                value={pekerjaan}
+                onChangeText={setPekerjaan}
+                placeholder="Pekerjaan"
+              />
+
+              {/* INPUT PENDIDIKAN TERAKHIR */}
+              <InputField
+                label="Pendidikan Terakhir" //
+                value={pendidikan}
+                onChangeText={setPendidikan}
+                placeholder="Pendidikan Terakhir"
+              />
+            </View>
+
+            {/* BUTTON KELUAR */}
+            <View className="w-[85%] mt-10 self-center">
+              <ButtonCustom
+                classNameContainer="bg-[#73BF40] py-[6px] px-10 rounded-lg"
+                text="Simpan Data"
+                textClassName="text-[20px] text-center text-white"
+                onPress={() => {
+                  console.log({ noIdentitas, namaLengkap, jenisKelamin, pekerjaan, pendidikan });
+                }}
+              />
+            </View>
+          </ScrollView>
         </View>
       </View>
-    </LinearGradient>
+    </KeyboardAvoidingView>
   );
 }

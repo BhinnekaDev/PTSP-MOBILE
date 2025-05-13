@@ -11,6 +11,7 @@ const ButtonCustom = ({
   iconRight,
   styleButton,
   textStyle,
+  onLayout,
 }: ButtonCustomProps) => {
   return (
     <TouchableOpacity
@@ -18,6 +19,7 @@ const ButtonCustom = ({
       onPress={onPress}
       className={`px-4 py-3 rounded-lg ${classNameContainer}`}
       style={styleButton}
+      onLayout={onLayout}
     >
       <View className="flex-row items-center justify-between w-full">
         {/* Icon kiri */}
