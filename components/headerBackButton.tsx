@@ -24,7 +24,7 @@ export default function HeaderBackButton({
   const handlePress = onPress ?? (() => router.back());
 
   return (
-    <View className="flex-row items-center justify-start py-2 px-4">
+    <View className="flex-row items-center justify-start py-2 px-4 ">
       {/* HEADER BUTTON KEMBALI - ICON LEFT */}
       <TouchableOpacity
         onPress={handlePress} //

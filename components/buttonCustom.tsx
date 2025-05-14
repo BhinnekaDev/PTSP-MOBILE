@@ -22,20 +22,17 @@ const ButtonCustom = ({
       onLayout={onLayout}
     >
       <View className="flex-row items-center justify-between w-full">
-        {/* Icon kiri */}
+        {/* ICON KIRI */}
         {iconLeft && <View>{iconLeft}</View>}
 
-        {/* Teks - agar tetap di tengah walau ada icon kanan */}
+        {/* Teks TENGAH*/}
         <View className="flex-1">
-          <Text
-            className={`${textClassName}`}
-            style={[FontLexBold, textStyle]} // Gunakan variabel defaultFont di sini
-          >
+          <Text className={`${textClassName}`} style={[FontLexBold, textStyle]}>
             {text}
           </Text>
         </View>
 
-        {/* Icon kanan */}
+        {/* ICON KANAN */}
         {iconRight && <View className="ml-2">{iconRight}</View>}
       </View>
     </TouchableOpacity>
