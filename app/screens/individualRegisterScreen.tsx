@@ -38,13 +38,16 @@ export default function IndividualRegisterScreen() {
         />
       </View>
 
-      <View className="justify-center items-center mb-12">
-        <Text className="text-4xl font-bold text-white text-center">
+      <View className="justify-center items-center mb-10">
+        <Text
+          className="text-3xl text-white text-center"
+          style={{ fontFamily: "LexBold" }}
+        >
           Daftar Perorangan
         </Text>
       </View>
 
-      <View className="relative items-center bg-white rounded-lg p-6">
+      <View className="relative items-center bg-white rounded-lg px-6 py-8">
         <TouchableOpacity
           onPress={() => {
             if (step === 1) {
@@ -53,31 +56,49 @@ export default function IndividualRegisterScreen() {
               setStep(step - 1);
             }
           }}
-          className="absolute left-6 top-4"
+          className="absolute left-6 top-8"
         >
           <Ionicons name="arrow-back-circle" size={32} color="black" />
         </TouchableOpacity>
-        <Text className="text-3xl font-bold text-center mb-4">Data Diri</Text>
+        <Text
+          className="text-3xl text-center mb-4"
+          style={{ fontFamily: "LexBold" }}
+        >
+          Data Diri
+        </Text>
         {step === 1 && (
-          <View className="gap-6">
+          <View className="gap-6 mt-3">
             <View className="gap-1">
-              <Text className="text-lg font-bold ml-1">No Identitas</Text>
+              <Text className="text-md ml-1" style={{ fontFamily: "LexBold" }}>
+                No Identitas
+              </Text>
               <TextInput
                 keyboardType="phone-pad"
-                className="border border-[#6BBC3F] rounded-xl w-80"
+                className="border border-[#6BBC3F] rounded-xl w-80 p-2"
+                style={{ fontFamily: "LexRegular" }}
               />
             </View>
             <View className="gap-1">
-              <Text className="text-lg font-bold ml-1">Nama Lengkap</Text>
-              <TextInput className="border border-[#6BBC3F] rounded-xl w-80" />
+              <Text className="text-md ml-1" style={{ fontFamily: "LexBold" }}>
+                Nama Lengkap
+              </Text>
+              <TextInput
+                className="border border-[#6BBC3F] rounded-xl w-80 p-2"
+                style={{ fontFamily: "LexRegular" }}
+              />
             </View>
             <View className="gap-1 w-80 relative">
-              <Text className="text-lg font-bold ml-1">Jenis Kelamin</Text>
+              <Text className="text-md ml-1" style={{ fontFamily: "LexBold" }}>
+                Jenis Kelamin
+              </Text>
               <TouchableOpacity
                 onPress={() => setIsDropdownOpen((prev) => !prev)}
                 className="border border-[#6BBC3F] rounded-xl px-4 py-3 bg-white flex-row justify-between items-center"
               >
-                <Text className="text-[#6BBC3F]">
+                <Text
+                  className="text-[#6BBC3F]"
+                  style={{ fontFamily: "LexRegular" }}
+                >
                   {selectedGender || "Pilih jenis kelamin"}
                 </Text>
                 {isDropdownOpen ? (
@@ -95,7 +116,12 @@ export default function IndividualRegisterScreen() {
                       onPress={() => handleSelect(item)}
                       className="px-4 py-3"
                     >
-                      <Text>{item}</Text>
+                      <Text
+                        style={{ fontFamily: "LexRegular" }}
+                        className="text-[#6BBC3F]"
+                      >
+                        {item}
+                      </Text>
                     </Pressable>
                   ))}
                 </View>
@@ -105,22 +131,33 @@ export default function IndividualRegisterScreen() {
         )}
 
         {step === 2 && (
-          <View className="gap-6 pb-2">
+          <View className="gap-6 pb-2 mt-2">
             <View className="gap-1">
-              <Text className="text-lg font-bold ml-1">Pekerjaan</Text>
-              <TextInput className="border border-[#6BBC3F] rounded-xl w-80" />
+              <Text className="text-md ml-1" style={{ fontFamily: "LexBold" }}>
+                Pekerjaan
+              </Text>
+              <TextInput
+                className="border border-[#6BBC3F] rounded-xl w-80 p-2"
+                style={{ fontFamily: "LexRegular" }}
+              />
             </View>
             <View className="gap-1">
-              <Text className="text-lg font-bold ml-1">
+              <Text className="text-md ml-1" style={{ fontFamily: "LexBold" }}>
                 Pendidikan Terakhir
               </Text>
-              <TextInput className="border border-[#6BBC3F] rounded-xl w-80" />
+              <TextInput
+                className="border border-[#6BBC3F] rounded-xl w-80 p-2"
+                style={{ fontFamily: "LexRegular" }}
+              />
             </View>
             <View className="gap-1">
-              <Text className="text-lg font-bold ml-1">No HP / No Telp</Text>
+              <Text className="text-md ml-1" style={{ fontFamily: "LexBold" }}>
+                No HP / No Telp
+              </Text>
               <TextInput
                 keyboardType="phone-pad"
-                className="border border-[#6BBC3F] rounded-xl w-80"
+                className="border border-[#6BBC3F] rounded-xl w-80 p-2"
+                style={{ fontFamily: "LexRegular" }}
               />
             </View>
 
@@ -132,26 +169,35 @@ export default function IndividualRegisterScreen() {
               <View className="w-5 h-5 mr-2 border border-gray-400 rounded items-center justify-center mt-1">
                 {isChecked && <Entypo name="check" size={14} color="black" />}
               </View>
-              <Text className="flex-1 text-sm">
+              <Text
+                className="flex-1 text-sm"
+                style={{ fontFamily: "LexRegular" }}
+              >
                 Dengan ini saya menyetujui semua syarat dan ketentuan sebagai
                 pengguna Aplikasi PTSP BMKG.
               </Text>
             </TouchableOpacity>
 
             <View>
-              <Text className="text-md font-bold">
+              <Text className="text-sm" style={{ fontFamily: "LexBold" }}>
                 Ketentuan Pengguna Perorangan:
               </Text>
               <View className="flex-row items-start gap-2 mt-2">
                 <Text className="text-lg">•</Text>
-                <Text className="text-sm flex-1">
+                <Text
+                  className="text-xs flex-1"
+                  style={{ fontFamily: "LexRegular" }}
+                >
                   Pengguna yang terdaftar pada Web PTSP BMKG tunduk pada aturan
                   yang berlaku.
                 </Text>
               </View>
               <View className="flex-row items-start gap-2 mt-1">
                 <Text className="text-lg">•</Text>
-                <Text className="text-sm flex-1">
+                <Text
+                  className="text-xs flex-1"
+                  style={{ fontFamily: "LexRegular" }}
+                >
                   Tidak menyalahgunakan akun terdaftar kepada pihak yang tidak
                   berkepentingan dan memanfaatkannya untuk melakukan tindakan
                   kriminal.

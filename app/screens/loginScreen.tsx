@@ -57,12 +57,18 @@ export default function LoginScreen() {
         />
       </Animated.View>
 
-      <View className="justify-center items-center">
+      <View className="justify-center items-center mt-7">
         <Animated.View style={{ transform: [{ translateX: textTranslateX }] }}>
-          <Text className="text-3xl font-bold text-white text-center">
+          <Text
+            className="text-2xl text-white text-center"
+            style={{ fontFamily: "LexBold" }}
+          >
             PTSP Mobile {"\n"} hadir untuk kemudahan Anda!
           </Text>
-          <Text className="text-md text-white text-center py-6">
+          <Text
+            className="text-sm text-white text-center py-6"
+            style={{ fontFamily: "LexRegular" }}
+          >
             Akses layanan informasi cuaca, gempa, dan tsunami {"\n"} langsung
             dari genggaman Anda. Praktis, cepat, dan {"\n"} terpercaya!
           </Text>

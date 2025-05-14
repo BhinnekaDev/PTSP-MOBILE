@@ -38,7 +38,7 @@ const Button: React.FC<ExtendedButtonProps> = ({
       )}
       <Text
         className={textStyle}
-        style={{ color: "#fff", fontWeight: "600", fontSize: 16 }}
+        style={{ color: "#fff", fontFamily: "LexBold", fontSize: 16 }}
       >
         {children}
       </Text>

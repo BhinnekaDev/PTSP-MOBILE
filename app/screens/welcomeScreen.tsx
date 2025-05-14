@@ -108,10 +108,16 @@ export default function WelcomeScreen({ onFinish }: { onFinish: () => void }) {
       </Animated.View>
       <View className="justify-center items-center absolute bottom-64">
         <Animated.View style={{ opacity: fadeText }}>
-          <Text className="text-4xl font-bold text-white">
+          <Text
+            className="text-3xl text-white text-center"
+            style={{ fontFamily: "LexBold" }}
+          >
             Halo, Selamat Datang!
           </Text>
-          <Text className="text-xl text-white text-center py-12">
+          <Text
+            className="text-lg text-white text-center py-12"
+            style={{ fontFamily: "LexRegular" }}
+          >
             Kami hadir dengan tampilan baru dan {"\n"} pengalaman yang lebih
             baik. {"\n"}
             Ayo mulai sekarang!
