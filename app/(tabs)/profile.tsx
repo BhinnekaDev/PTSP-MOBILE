@@ -70,7 +70,10 @@ export default function ProfileTabs() {
   });
 
   return (
-    <LinearGradient colors={["#1475BA", "#399385", "#6BBC3F"]} style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <LinearGradient
+      colors={["#1475BA", "#399385", "#6BBC3F"]} //
+      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+    >
       {!activePopup && (
         <Animated.View style={{ opacity: fadeAnim, width: "100%", alignItems: "center" }}>
           <Text className="text-white text-2xl mb-10" style={{ fontFamily: "LexBold" }}>
@@ -127,7 +130,12 @@ export default function ProfileTabs() {
           </View>
 
           <View className="w-[65%] mt-10">
-            <ButtonCustom classNameContainer="bg-[#73BF40] py-[6px] rounded-lg" text="Keluar" textClassName="text-[20px] text-center text-white" onPress={() => alert("Keluar")} />
+            <ButtonCustom
+              classNameContainer="bg-[#73BF40] py-[6px] rounded-lg" //
+              text="Keluar"
+              textClassName="text-[20px] text-center text-white"
+              onPress={() => alert("Keluar")}
+            />
           </View>
         </Animated.View>
       )}
@@ -140,7 +148,6 @@ export default function ProfileTabs() {
             width: animatedWidth,
             height: "80%",
             borderRadius: 20,
-            paddingVertical: 30,
             transform: [{ scaleY: animatedScaleY }],
             overflow: "hidden",
           }}

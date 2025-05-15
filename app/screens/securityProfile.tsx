@@ -5,10 +5,12 @@ import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import BackButton from "@/components/headerBackButton";
 import ButtonCustom from "@/components/buttonCustom";
 import InputField from "@/components/formInput";
+import AccountCloseAlert from "@/components/accountCloseAlert";
 
 export default function SecurityProfile({ onClose }: { onClose: () => void }) {
   const [telepon, setTelepon] = useState("");
   const [email, setEmail] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <View className="flex-1 justify-center items-center bg-transparent">
@@ -20,13 +22,13 @@ export default function SecurityProfile({ onClose }: { onClose: () => void }) {
         <View className="flex-1 bg-white p-6 rounded-[20px] w-full">
           {/* HEADER */}
           <BackButton
-            title="Notifikasi" //
+            title="Keamanan" //
             buttonClassName="mr-auto"
             textClassName="text-[23px] mr-auto"
             onPress={onClose}
           />
 
-          {/* FORM SCROLLABLE */}
+          {/* SCROLL */}
           <ScrollView
             style={{ flex: 1, marginTop: 16 }} //
             contentContainerStyle={{ paddingBottom: 20 }}
@@ -53,17 +55,25 @@ export default function SecurityProfile({ onClose }: { onClose: () => void }) {
               />
               <View className="w-[95%] py-4 self-center">
                 <ButtonCustom
-                  classNameContainer="bg-[ py-[6px] px-10 rounded-lg" //
+                  classNameContainer=" w-32 py-[6px] px-10 rounded-lg" //
                   text="Tutup Akun"
                   textClassName="text-[13px] text-left text-[#DC0202]"
-                  onPress={() => alert("Tutup akun")}
+                  onPress={() => setModalVisible(true)}
                 />
               </View>
             </View>
           </ScrollView>
-
+          {/* MODAL TUTUP AKUN */}
+          <AccountCloseAlert
+            visible={modalVisible}
+            onClose={() => setModalVisible(false)}
+            onConfirm={() => {
+              console.log("Akun Ditutup");
+              setModalVisible(false);
+            }}
+          />
           {/* BUTTON SIMPAN */}
-          <View className=" w-[80%] py-4 self-center">
+          <View className=" w-[80%]  py-4 self-center">
             <ButtonCustom
               classNameContainer="bg-[#73BF40] py-[6px] px-10 rounded-lg"
               text="Simpan Data"

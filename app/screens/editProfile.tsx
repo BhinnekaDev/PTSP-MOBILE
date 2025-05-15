@@ -21,7 +21,7 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
         style={{ flex: 1, width: "100%" }}
         keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 20}
       >
-        <View className="flex-1 bg-red-500 p-6  rounded-[20px] w-full ">
+        <View className="flex-1 bg-white p-6  rounded-[20px] w-full ">
           <BackButton
             title="Sunting Profil" //
             buttonClassName="mr-12"
@@ -66,7 +66,7 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
           </ScrollView>
 
           {/* BUTTON DI BAWAH DAN TIDAK TERHALANGI KEYBOARD */}
-          <View className="absolute bottom-0 w-[80%] pb-6 self-center ">
+          <View className=" w-[80%] self-center ">
             <ButtonCustom
               classNameContainer="bg-[#73BF40] py-[6px] px-10 rounded-lg"
               text="Simpan Data"
