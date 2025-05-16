@@ -8,7 +8,7 @@ import Octicons from "@expo/vector-icons/Octicons";
 import Feather from "@expo/vector-icons/Feather";
 
 // OUR HOOKS
-import { useProfilePopup } from "@/hooks/Frontend/profile/usePopupAnimation";
+import { useProfilePopup } from "@/hooks/Frontend/profileScreen/usePopupAnimation";
 
 // OUR COMPONENTS
 import ButtonCustom from "@/components/buttonCustom";
