@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, Animated, Easing } from "react-native";
+import React from "react";
+import { View, Text, Animated } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { useNavigation } from "@react-navigation/native";
 
 // OUR ICONS
 import { MaterialIcons } from "@expo/vector-icons";
 import Octicons from "@expo/vector-icons/Octicons";
 import Feather from "@expo/vector-icons/Feather";
+
+// OUR HOOKS
+import { useProfilePopup } from "@/hooks/Frontend/profile/usePopupAnimation";
 
 // OUR COMPONENTS
 import ButtonCustom from "@/components/buttonCustom";
@@ -16,58 +18,14 @@ import NotificationProfile from "@/app/screens/notificationProfile";
 import SecurityProfile from "@/app/screens/securityProfile";
 
 export default function ProfileTabs() {
-  const [activePopup, setActivePopup] = useState<"editProfile" | "notificationProfile" | "securityProfile" | null>(null);
-  const [animProgress] = useState(new Animated.Value(0));
-  const [fadeAnim] = useState(new Animated.Value(1));
-  const navigation = useNavigation();
-
-  useEffect(() => {
-    navigation.getParent()?.setOptions({
-      tabBarStyle: { display: activePopup ? "none" : "flex" },
-    });
-  }, [activePopup]);
-
-  const handleShowPopup = (type: "editProfile" | "notificationProfile" | "securityProfile") => {
-    Animated.timing(fadeAnim, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start(() => {
-      setActivePopup(type);
-      Animated.timing(animProgress, {
-        toValue: 1,
-        duration: 500,
-        easing: Easing.out(Easing.ease),
-        useNativeDriver: false,
-      }).start();
-    });
-  };
-
-  const handleClosePopup = () => {
-    Animated.timing(animProgress, {
-      toValue: 0,
-      duration: 500,
-      easing: Easing.in(Easing.ease),
-      useNativeDriver: false,
-    }).start(() => {
-      setActivePopup(null);
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    });
-  };
-
-  const animatedWidth = animProgress.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["80%", "90%"],
-  });
-
-  const animatedScaleY = animProgress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 1],
-  });
+  const {
+    activePopup, //
+    animatedWidth,
+    animatedScaleY,
+    fadeAnim,
+    handleShowPopup,
+    handleClosePopup,
+  } = useProfilePopup();
 
   return (
     <LinearGradient

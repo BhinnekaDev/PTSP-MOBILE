@@ -37,7 +37,7 @@ const AccountCloseAlert = ({ visible, onClose, onConfirm }: AccountCloseAlertPro
           <Text className="text-white text-lg uppercase mb-10" style={{ fontFamily: "LexXBold" }}>
             Yakin ingin Menutup Akun Anda?
           </Text>
-          <Image source={require("@/assets/images/iconTutupAkun.png")} className="w-50 h-50" />
+          <Image source={require("@/assets/images/profile/iconTutupAkun.png")} className="w-50 h-50" />
         </View>
 
         {/* PESAN DAN TOMBOL */}
