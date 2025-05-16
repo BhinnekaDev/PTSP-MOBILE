@@ -37,7 +37,7 @@ export default function ProfileTabs() {
           <Text className="text-white text-2xl mb-10" style={{ fontFamily: "LexBold" }}>
             Pengaturan Profil
           </Text>
-
+          {/* USER PROFILE */}
           <UserProfile
             containerImageClassName="w-44 h-44 rounded-full border-4 border-[#6BBC3F]"
             imageClassName="w-full h-full object-cover rounded-full"
@@ -46,6 +46,7 @@ export default function ProfileTabs() {
           />
 
           <View className="items-center">
+            {/* TOMBOL PESANAN SAYA */}
             <ButtonCustom
               classNameContainer="px-4 py-8 rounded-lg flex-row items-center justify-center w-48"
               text="Pesanan Saya"
@@ -57,6 +58,7 @@ export default function ProfileTabs() {
 
           <View className="w-full px-12 mt-0">
             <View className="bg-white px-4 py-6 rounded-lg">
+              {/* TOMBOL SUNTING PROFIL */}
               <ButtonCustom
                 classNameContainer="px-4 py-2 rounded-lg"
                 textClassName="text-black text-lg pl-4"
@@ -66,6 +68,7 @@ export default function ProfileTabs() {
                 onPress={() => handleShowPopup("editProfile")}
                 textStyle={{ fontFamily: "LexRegular" }}
               />
+              {/* TOMBOL NOTIFIKASI */}
               <ButtonCustom
                 classNameContainer="px-4 py-2 rounded-lg"
                 textClassName="text-black text-lg pl-4"
@@ -75,6 +78,7 @@ export default function ProfileTabs() {
                 onPress={() => handleShowPopup("notificationProfile")}
                 textStyle={{ fontFamily: "LexRegular" }}
               />
+              {/* TOMBOL KEAMANAN */}
               <ButtonCustom
                 classNameContainer="px-4 py-2 rounded-lg"
                 textClassName="text-black text-lg pl-4"
@@ -88,6 +92,7 @@ export default function ProfileTabs() {
           </View>
 
           <View className="w-[65%] mt-10">
+            {/* TOMBOL KELUAR */}
             <ButtonCustom
               classNameContainer="bg-[#73BF40] py-[6px] rounded-lg" //
               text="Keluar"
