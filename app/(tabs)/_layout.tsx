@@ -1,34 +1,57 @@
 import React, { useState } from "react";
 import { Tabs } from "expo-router";
 
-// OUR ICON
+// OUR ICONS
 import Ionicons from "@expo/vector-icons/Ionicons";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AntDesign from "@expo/vector-icons/AntDesign";
+
 export default function TabNavigator() {
   const [jumlahNotifikasiPesanan] = useState(3);
   const [jumlahFavoritBaru] = useState(2);
 
-  const tabConfig: Record<string, { name: keyof typeof Ionicons.glyphMap | keyof typeof FontAwesome5.glyphMap | keyof typeof AntDesign.glyphMap; label: string }> = {
+  const tabConfig: Record<
+    string,
+    {
+      iconActive:
+        | keyof typeof Ionicons.glyphMap
+        | keyof typeof FontAwesome.glyphMap;
+      iconInactive:
+        | keyof typeof Ionicons.glyphMap
+        | keyof typeof FontAwesome.glyphMap;
+      label: string;
+      lib?: "Ionicons" | "FontAwesome" | "AntDesign";
+    }
+  > = {
     home: {
-      name: "home-outline",
+      iconActive: "home",
+      iconInactive: "home-outline",
       label: "Beranda",
+      lib: "Ionicons",
     },
     regulation: {
-      name: "file-tray-full-outline",
+      iconActive: "file-tray-full",
+      iconInactive: "file-tray-full-outline",
       label: "Regulasi",
+      lib: "Ionicons",
     },
     product: {
-      name: "bag-handle-outline",
+      iconActive: "bag-handle",
+      iconInactive: "bag-handle-outline",
       label: "Produk",
+      lib: "Ionicons",
     },
     faq: {
-      name: "comments", // Ganti dengan nama ikon FontAwesome5
+      iconActive: "comments",
+      iconInactive: "comments-o",
       label: "Faq",
+      lib: "FontAwesome",
     },
     profile: {
-      name: "person-outline",
+      iconActive: "person",
+      iconInactive: "person-outline",
       label: "Profil",
+      lib: "Ionicons",
     },
   };
 
@@ -36,9 +59,10 @@ export default function TabNavigator() {
     <Tabs
       screenOptions={({ route }) => {
         const config = tabConfig[route.name] || {
-          name: "ellipse-outline",
-          backgroundColor: "#1475BA",
+          iconActive: "ellipse",
+          iconInactive: "ellipse-outline",
           label: route.name.charAt(0).toUpperCase() + route.name.slice(1),
+          lib: "Ionicons",
         };
 
         let badgeCount: number | undefined = undefined;
@@ -49,11 +73,35 @@ export default function TabNavigator() {
         }
 
         return {
-          tabBarIcon: ({ color, size }) => {
-            if (route.name === "faq") {
-              return <FontAwesome5 name={config.name as keyof typeof FontAwesome5.glyphMap} size={size} color={color} />;
+          tabBarIcon: ({ color, size, focused }) => {
+            const iconName = focused ? config.iconActive : config.iconInactive;
+
+            switch (config.lib) {
+              case "FontAwesome":
+                return (
+                  <FontAwesome
+                    name={iconName as keyof typeof FontAwesome.glyphMap}
+                    size={size}
+                    color={color}
+                  />
+                );
+              case "AntDesign":
+                return (
+                  <AntDesign
+                    name={iconName as keyof typeof AntDesign.glyphMap}
+                    size={size}
+                    color={color}
+                  />
+                );
+              default:
+                return (
+                  <Ionicons
+                    name={iconName as keyof typeof Ionicons.glyphMap}
+                    size={size}
+                    color={color}
+                  />
+                );
             }
-            return <Ionicons name={config.name as keyof typeof Ionicons.glyphMap} size={size} color={color} />;
           },
           headerShown: false,
           tabBarStyle: {
@@ -62,8 +110,8 @@ export default function TabNavigator() {
             borderTopWidth: 0,
             borderTopRightRadius: 10,
             borderTopLeftRadius: 10,
-            position: "absolute", // penting supaya radius terlihat clean
-            overflow: "hidden", // penting supaya anak-anaknya tidak keluar dari radius
+            position: "absolute",
+            overflow: "hidden",
           },
           tabBarLabelStyle: {
             fontSize: 12,

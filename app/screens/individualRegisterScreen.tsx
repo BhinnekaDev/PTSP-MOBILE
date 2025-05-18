@@ -210,6 +210,7 @@ export default function IndividualRegisterScreen() {
         {step === 1 && (
           <Button
             style="bg-[#1475BA] mt-12 py-3 px-28 rounded-xl"
+            textStyle="text-white"
             onPress={() => setStep(2)}
             activeOpacity={0.8}
           >
@@ -219,9 +220,11 @@ export default function IndividualRegisterScreen() {
       </View>
       {step === 2 && (
         <Button
+          onPress={() => router.push("/(tabs)/home")}
           style={`mt-4 py-3 rounded-xl ${
             isChecked ? "bg-[#1475BA] px-20" : "bg-gray-400 px-8"
           }`}
+          textStyle={`${isChecked ? "text-white" : "text-black"}`}
           disabled={!isChecked}
         >
           {isChecked ? "Simpan Data" : "Setujui Syarat untuk Lanjut"}

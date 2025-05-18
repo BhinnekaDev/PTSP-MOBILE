@@ -7,6 +7,7 @@ import {
   ImageSourcePropType,
 } from "react-native";
 import { ButtonProps } from "../interfaces/buttonProps";
+import { useRouter } from "expo-router";
 
 interface ExtendedButtonProps extends ButtonProps {
   image?: ImageSourcePropType;
@@ -25,21 +26,19 @@ const Button: React.FC<ExtendedButtonProps> = ({
   activeOpacity,
   disabled,
 }) => {
+  const router = useRouter();
   return (
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
       activeOpacity={activeOpacity}
-      className={`rounded-md items-center justify-center flex-row gap-2 ${style}`}
+      className={`items-center justify-center flex-row gap-2 ${style}`}
     >
       {icon && iconPosition === "left" && <View>{icon}</View>}
       {image && imagePosition === "left" && (
         <Image source={image} style={{ width: 20, height: 20 }} />
       )}
-      <Text
-        className={textStyle}
-        style={{ color: "#fff", fontFamily: "LexBold", fontSize: 16 }}
-      >
+      <Text className={textStyle} style={{ fontFamily: "LexBold" }}>
         {children}
       </Text>
       {icon && iconPosition === "right" && <View>{icon}</View>}

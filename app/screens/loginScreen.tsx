@@ -78,7 +78,8 @@ export default function LoginScreen() {
           style={{ transform: [{ translateX: buttonTranslateX }] }}
         >
           <Button
-            style="bg-[#73BF40] px-4 py-3 mt-9"
+            style="bg-[#73BF40] px-4 py-3 mt-9 rounded-md"
+            textStyle="text-white"
             iconPosition="left"
             image={require("@/assets/images/LoginScreen/google.png")}
             onPress={() => router.push("/screens/registerScreen")}
