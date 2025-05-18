@@ -30,10 +30,10 @@ export default function ProfileTabs() {
   return (
     <LinearGradient
       colors={["#1475BA", "#399385", "#6BBC3F"]} //
-      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      style={{ flex: 1, justifyContent: "center", alignItems: "center", marginTop: -80 }}
     >
       {!activePopup && (
-        <Animated.View style={{ opacity: fadeAnim, width: "100%", alignItems: "center" }}>
+        <Animated.View style={{ opacity: fadeAnim, width: "100%", height: "80%", justifyContent: "center", alignItems: "center" }}>
           <Text className="text-white text-2xl mb-10" style={{ fontFamily: "LexBold" }}>
             Pengaturan Profil
           </Text>
@@ -56,7 +56,7 @@ export default function ProfileTabs() {
             />
           </View>
 
-          <View className="w-full px-12 mt-0">
+          <View className="w-[90%] mt-0">
             <View className="bg-white px-4 py-6 rounded-lg">
               {/* TOMBOL SUNTING PROFIL */}
               <ButtonCustom
@@ -64,7 +64,7 @@ export default function ProfileTabs() {
                 textClassName="text-black text-lg pl-4"
                 iconLeft={<Octicons name="checklist" size={24} color="white" className="rounded-full p-3 bg-[#399385]" />}
                 text="Sunting Profil"
-                iconRight={<MaterialIcons name="keyboard-arrow-right" size={24} color="black" className="pl-16" />}
+                iconRight={<MaterialIcons name="keyboard-arrow-right" size={24} color="black" />}
                 onPress={() => handleShowPopup("editProfile")}
                 textStyle={{ fontFamily: "LexRegular" }}
               />
@@ -74,7 +74,7 @@ export default function ProfileTabs() {
                 textClassName="text-black text-lg pl-4"
                 iconLeft={<Feather name="bell" size={24} color="white" className="rounded-full p-3 bg-[#399385]" />}
                 text="Notifikasi"
-                iconRight={<MaterialIcons name="keyboard-arrow-right" size={24} color="black" className="pl-16" />}
+                iconRight={<MaterialIcons name="keyboard-arrow-right" size={24} color="black" />}
                 onPress={() => handleShowPopup("notificationProfile")}
                 textStyle={{ fontFamily: "LexRegular" }}
               />
@@ -84,7 +84,7 @@ export default function ProfileTabs() {
                 textClassName="text-black text-lg pl-4"
                 iconLeft={<Feather name="lock" size={24} color="white" className="rounded-full p-3 bg-[#399385]" />}
                 text="Keamanan"
-                iconRight={<MaterialIcons name="keyboard-arrow-right" size={24} color="black" className="pl-16" />}
+                iconRight={<MaterialIcons name="keyboard-arrow-right" size={24} color="black" />}
                 onPress={() => handleShowPopup("securityProfile")}
                 textStyle={{ fontFamily: "LexRegular" }}
               />

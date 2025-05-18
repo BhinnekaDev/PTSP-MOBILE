@@ -1,63 +1,75 @@
-import React, { useState } from "react";
-import { View, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
+import React from "react";
+import { View, ScrollView, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
 
 // COMPONENTS
-import BackButton from "@/components/headerBackButton";
 import ButtonCustom from "@/components/buttonCustom";
-import GenderDropdown from "@/components/formDropdown";
-import InputField from "@/components/formInput";
+import NavCartOrder from "@/components/navCartOrder";
 
-export default function CartOrderScreen({ onClose }: { onClose: () => void }) {
-  const [noIdentitas, setNoIdentitas] = useState("1234567890111213");
-  const [namaLengkap, setNamaLengkap] = useState("");
-  const [jenisKelamin, setJenisKelamin] = useState("");
-  const [pekerjaan, setPekerjaan] = useState("");
-  const [pendidikan, setPendidikan] = useState("");
-
+export default function CartOrderScreen() {
+  const router = useRouter();
   return (
-    <View className="flex-1 bg-white py-10 gap-10">
-      <View className="bg-[#1475BA] rounded-b-[10px]   ">
-        <BackButton
-          title="Keamanan" //
-          buttonClassName="mr-auto py-2   "
-          textClassName="text-[23px] mr-auto text-left bg-yellow-500 "
-          onPress={onClose}
-        />
-      </View>
-      <LinearGradient colors={["#1475BA", "#FFFFFF", "#6BBC3F"]} style={{ flex: 1 }}>
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="flex-1">
-          <View className="flex-1 ">
-            <ScrollView contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 140 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-              <View className="mt-4 space-y-4">
-                <InputField label="No Identitas" value={noIdentitas} onChangeText={setNoIdentitas} keyboardType="numeric" />
-                <InputField label="Nama Lengkap" value={namaLengkap} onChangeText={setNamaLengkap} placeholder="Nama lengkap" />
-                <GenderDropdown selected={jenisKelamin} onSelect={setJenisKelamin} />
-                <InputField label="Pekerjaan" value={pekerjaan} onChangeText={setPekerjaan} placeholder="Pekerjaan" />
-                <InputField label="Pendidikan Terakhir" value={pendidikan} onChangeText={setPendidikan} placeholder="Pendidikan Terakhir" />
+    <View className="flex-1 bg-white gap-4">
+      <NavCartOrder
+        text="Keranjang Saya" //
+        textClassName="ml-4 text-left"
+        onPressLeftIcon={() => router.back()}
+        isTouchable={false}
+      />
+      <View className="flex-1  px-4   ">
+        <LinearGradient
+          colors={["#1475BA", "#FFFFFF", "#6BBC3F"]} //
+          style={{ flex: 1, borderRadius: 12 }}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <View className="flex-1 w-full ">
+            <ScrollView contentContainerStyle={{ padding: 24, paddingBottom: 160 }} showsVerticalScrollIndicator={false}>
+              {/* Kartu Produk */}
+              <View
+                style={{
+                  backgroundColor: "#fff",
+                  borderRadius: 12,
+                  padding: 16,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  elevation: 4,
+                  shadowColor: "#000",
+                  shadowOpacity: 0.1,
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowRadius: 4,
+                }}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontWeight: "bold", fontSize: 14 }}>ATLAS WINDROSE WILAYAH INDONESIA</Text>
+                  <Text style={{ fontSize: 12 }}>PERIODE 1981–2010</Text>
+                </View>
+                <Text style={{ fontWeight: "bold", fontSize: 12 }}>Rp 1.500.000</Text>
               </View>
             </ScrollView>
 
             {/* BUTTON FIXED DI BAGIAN BAWAH */}
             <View className="absolute bottom-6 w-full px-10">
               <ButtonCustom
-                classNameContainer="bg-[#73BF40] py-3 rounded-lg"
-                text="Simpan Data"
+                classNameContainer="bg-[#1475BA] py-3 rounded-lg" //
+                text="Ajukan Sekarang"
                 textClassName="text-[20px] text-center text-white"
-                onPress={() => {
-                  console.log({
-                    noIdentitas,
-                    namaLengkap,
-                    jenisKelamin,
-                    pekerjaan,
-                    pendidikan,
-                  });
-                }}
+                onPress={() => alert("Ajukan Sekarang")}
+                isTouchable={false}
               />
             </View>
           </View>
-        </KeyboardAvoidingView>
-      </LinearGradient>
+        </LinearGradient>
+      </View>
+      {/* BAR BAWAH */}
+      <View
+        style={{
+          height: "4%",
+          backgroundColor: "#1475BA",
+          width: "100%",
+        }}
+      />
     </View>
   );
 }
