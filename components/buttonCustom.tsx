@@ -16,6 +16,7 @@ const ButtonCustom = ({
   textStyle,
   onLayout,
   isTouchable = true,
+  containerStyle,
 }: ButtonCustomProps) => {
   return (
     <TouchableOpacity
@@ -23,6 +24,7 @@ const ButtonCustom = ({
       activeOpacity={isTouchable ? 0.7 : 1}
       disabled={!isTouchable}
       className={`px-4 py-3 rounded-lg ${classNameContainer}`}
+      style={containerStyle}
     >
       <View className="flex-row items-center justify-between w-full">
         {/* ICON KIRI */}

@@ -18,4 +18,5 @@ export interface ButtonCustomProps {
   onLayout?: (event: any) => void;
   isTouchable?: boolean;
   activeOpacity?: number;
+  containerStyle?: ViewStyle;
 }
