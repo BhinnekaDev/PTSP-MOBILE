@@ -1,97 +1,30 @@
 import React, { useState } from "react";
-import { View, ScrollView, Text, TouchableOpacity, Alert, Image, Modal, Pressable } from "react-native";
+import { View, ScrollView, Text, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import * as DocumentPicker from "expo-document-picker";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { WebView } from "react-native-webview";
-import * as Linking from "expo-linking";
-import * as FileSystem from "expo-file-system";
+
 // COMPONENTS
 import ButtonCustom from "@/components/buttonCustom";
 import NavCartOrder from "@/components/navCartOrder";
+import FormDropdownSelect from "@/components/formDropdownSelect";
+import FilePreviewModal from "@/components/FilePreviewModal";
 
-interface FileWithBase64 {
-  uri: string;
-  mimeType: string;
-  base64: string | null;
-  size: number;
-  name: string;
-}
+// HOOK
+import { useFilePreview } from "@/hooks/Frontend/FilePreviewModalScreen/useFilePreview";
+import { useSelectDocument } from "@/hooks/Frontend/FilePreviewModalScreen/useSelectDocument";
 
 export default function SubmissionScreen() {
   const router = useRouter();
-  const [file, setFile] = useState<FileWithBase64 | null>(null);
-  const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const allowedMimeTypes = ["image/*", "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
-
-  const pickDocument = async () => {
-    try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: allowedMimeTypes,
-        copyToCacheDirectory: true,
-      });
-
-      if (!result.canceled && result.assets?.length > 0) {
-        const selectedFile = result.assets[0];
-
-        const mime = selectedFile.mimeType || "";
-        const isAllowed = allowedMimeTypes.some((type) => (type === "image/*" ? mime.startsWith("image/") : mime === type));
-
-        if (!isAllowed) {
-          Alert.alert("File Tidak Didukung", "Silakan pilih file berupa gambar, PDF, atau Word.");
-          setUploadSuccess(false);
-          setFile(null);
-          return;
-        }
-
-        let base64Data = null;
-
-        if (mime === "application/pdf") {
-          base64Data = await FileSystem.readAsStringAsync(selectedFile.uri, {
-            encoding: FileSystem.EncodingType.Base64,
-          });
-        }
-
-        setFile({ ...selectedFile, base64: base64Data } as FileWithBase64); // simpan base64 juga
-        setUploadSuccess(true);
-        await AsyncStorage.setItem("uploadedFile", JSON.stringify(selectedFile));
-        Alert.alert("Berhasil", "File berhasil dipilih dan disimpan sementara!");
-      } else {
-        setUploadSuccess(false);
-        console.log("User membatalkan pemilihan file.");
-      }
-    } catch (error) {
-      console.error("Gagal memilih file:", error);
-      Alert.alert("Error", "Terjadi kesalahan saat memilih file.");
-    }
-  };
-
-  // Fungsi buka file eksternal dengan aplikasi lain
-  const openFileExternal = async () => {
-    if (file && file.uri) {
-      const supported = await Linking.canOpenURL(file.uri);
-      if (supported) {
-        await Linking.openURL(file.uri);
-      } else {
-        Alert.alert("Error", "Tidak dapat membuka file ini.");
-      }
-    }
-  };
+  const [jenisKelamin, setJenisKelamin] = useState("");
+  const { file, pickDocument, uploadSuccess } = useSelectDocument();
+  const { modalVisible, setModalVisible, pdfViewerHtml, openFileExternal } = useFilePreview(file);
 
   return (
     <View className="flex-1 bg-white gap-4">
       <NavCartOrder text="Keranjang Saya" textClassName="ml-4 text-left" onPressLeftIcon={() => router.back()} isTouchable={false} />
 
       <View className="flex-1 px-4">
-        <LinearGradient
-          colors={["#1475BA", "#FFFFFF", "#6BBC3F"]} //
-          style={{ flex: 1, borderRadius: 12 }}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
+        <LinearGradient colors={["#1475BA", "#FFFFFF", "#6BBC3F"]} style={{ flex: 1, borderRadius: 12 }} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
           <View className="flex-1 w-full py-6">
             <Text className="font-bold text-[20px] self-center" style={{ fontFamily: "LexBold" }}>
               Pengajuan Anda
@@ -107,11 +40,29 @@ export default function SubmissionScreen() {
                 </View>
 
                 <View className="pt-4 px-4 pb-4">
-                  <Text>Lorem ipsum dolor sit amet</Text>
+                  <FormDropdownSelect
+                    showLabel={false}
+                    toggleDropdownClassName="border-[#D9D9D9] rounded-[5px]"
+                    label="Jenis Kegiatan" //
+                    DropdownSelectClassName="border-[#D9D9D9] rounded-[5px]"
+                    options={[
+                      "Penanggulangan Bencana", //
+                      "Kegiatan Keagamaan",
+                      "Kegiatan Sosial",
+                      "Kegiatan Pertahanan dan Keamanan",
+                      "Kegiatan Pemerintahan",
+                      "Kegiatan Pendidikan dan Penelitian Non Komersil",
+                      "Pelayanan Informasi dengan Tarif PNBP",
+                      "Pelayanan Informasi dengan Tarif PNBP",
+                      "Kegiatan Pemerintahan",
+                    ]}
+                    selected={jenisKelamin}
+                    onSelect={setJenisKelamin}
+                  />
                 </View>
               </View>
 
-              {/* Form Kegiatan Penanggulangan Bencana */}
+              {/* FORM KEGIATAN PENAGGULANGAN BENCANA */}
               <View className="bg-white rounded-[10px] flex-col border-[#1475BA] border-2">
                 <View className="bg-[#1475BA] rounded-t-[4px] rounded-b-[10px] w-full py-2 flex items-center justify-center">
                   <Text className="text-[18px] text-white py-4 text-center" style={{ fontFamily: "LexMedium" }}>
@@ -122,8 +73,19 @@ export default function SubmissionScreen() {
                 <View className="pt-6 px-4 pb-4">
                   <Text style={{ fontFamily: "LexSemiBold", marginBottom: 12 }}>Data Keperluan</Text>
 
-                  <TouchableOpacity onPress={pickDocument} className="bg-[#1475BA] py-3 rounded-[8px] mb-4" style={{ alignItems: "center" }}>
-                    <Text style={{ color: "white", fontFamily: "LexSemiBold" }}>Upload File</Text>
+                  <TouchableOpacity
+                    onPress={pickDocument} //
+                    className="bg-[#1475BA] py-3 rounded-[8px] mb-4"
+                    style={{ alignItems: "center" }}
+                  >
+                    <Text
+                      style={{
+                        color: "white",
+                        fontFamily: "LexSemiBold",
+                      }}
+                    >
+                      Upload File
+                    </Text>
                   </TouchableOpacity>
 
                   {uploadSuccess && file && (
@@ -154,72 +116,39 @@ export default function SubmissionScreen() {
               </View>
             </ScrollView>
 
-            {/* Tombol ajukan */}
+            {/* TOMBOL AJUKAN SEKARANG */}
             <View className="w-[80%] self-center">
               <ButtonCustom
                 classNameContainer="bg-[#1475BA] py-3 rounded-[10px]"
                 text="AJUKAN SEKARANG"
                 textClassName="text-[14px] text-center text-white"
-                onPress={() => (file ? Alert.alert("Pengajuan", "Data telah diajukan!") : Alert.alert("Gagal", "Silakan upload file terlebih dahulu."))}
+                onPress={() => router.push("/screens/orderScreen")}
                 textStyle={{ fontFamily: "LexSemiBold" }}
                 isTouchable={true}
+                containerStyle={{
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 4 }, // hanya ke bawah
+                  shadowOpacity: 0.3,
+                  shadowRadius: 3,
+                  elevation: 4, // Android
+                }}
               />
             </View>
           </View>
         </LinearGradient>
       </View>
 
-      {/* Bar bawah */}
+      {/* MODAL PREVIEW */}
+      <FilePreviewModal
+        visible={modalVisible} //
+        onClose={() => setModalVisible(false)}
+        file={file}
+        pdfViewerHtml={pdfViewerHtml}
+        onOpenExternal={openFileExternal}
+      />
+
+      {/* BAR BAWAH */}
       <View className="w-full bg-[#1475BA] h-[4%]" />
-
-      {/* Modal Preview File */}
-      <Modal visible={modalVisible} animationType="slide" transparent={true} onRequestClose={() => setModalVisible(false)}>
-        <View className="flex-1 justify-center items-center bg-black/60 px-4">
-          <View className="w-full max-h-[85%] bg-white rounded-xl p-3 shadow-md">
-            <Pressable onPress={() => setModalVisible(false)} className="absolute top-2 right-2 z-10 bg-[#1475BA] rounded-full px-3 py-1">
-              <Text style={{ color: "white", fontSize: 18 }}>✕</Text>
-            </Pressable>
-
-            {/* Preview gambar */}
-            {file && file.mimeType && file.mimeType.startsWith("image/") ? (
-              <Image
-                source={{ uri: file.uri }}
-                style={{
-                  width: "100%",
-                  height: "80%",
-                  resizeMode: "contain",
-                  borderRadius: 12,
-                }}
-              />
-            ) : file && file.mimeType === "application/pdf" ? (
-              <View style={{ width: "100%", height: 500 }}>
-                <WebView source={{ uri: file.uri }} style={{ flex: 1 }} onError={() => Alert.alert("Error", "Gagal memuat PDF")} />
-              </View>
-            ) : (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  padding: 20,
-                }}
-              >
-                <Text style={{ marginBottom: 10, fontWeight: "bold" }}>Preview tidak tersedia untuk jenis file ini.</Text>
-                <TouchableOpacity
-                  onPress={openFileExternal}
-                  style={{
-                    padding: 12,
-                    backgroundColor: "#1475BA",
-                    borderRadius: 8,
-                  }}
-                >
-                  <Text style={{ color: "white" }}>Buka File dengan Aplikasi Lain</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 }

@@ -70,13 +70,7 @@ export default function CartOrderScreen() {
         </LinearGradient>
       </View>
       {/* BAR BAWAH */}
-      <View
-        style={{
-          height: "4%",
-          backgroundColor: "#1475BA",
-          width: "100%",
-        }}
-      />
+      <View className="w-full bg-[#1475BA] h-[4%]" />
     </View>
   );
 }

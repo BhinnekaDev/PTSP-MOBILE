@@ -4,7 +4,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 // OUR COMPONENTS
 import BackButton from "@/components/headerBackButton";
 import ButtonCustom from "@/components/buttonCustom";
-import GenderDropdown from "@/components/formDropdown";
+import FormDropdownSelect from "@/components/formDropdownSelect";
 import InputField from "@/components/formInput";
 
 export default function EditProfile({ onClose }: { onClose: () => void }) {
@@ -46,8 +46,19 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
                 onChangeText={setNamaLengkap}
                 placeholder="Nama lengkap"
               />
-              <GenderDropdown
-                selected={jenisKelamin} //
+              <FormDropdownSelect
+                labelClassName="px-6 mt-4 mb-2" //
+                toggleDropdownClassName="w-[87%] border-[#6BBC3F]"
+                label="Jenis Kelamin"
+                labelStyle={{ fontFamily: "LexBold" }}
+                DropdownSelectClassName="w-[87%] border-[#6BBC3F]"
+                options={[
+                  "Laki - Laki", //
+                  "Perempuan",
+                ]}
+                selectedTextStyle={{ fontFamily: "LexRegular" }}
+                iconColor="#6BBC3F"
+                selected={jenisKelamin}
                 onSelect={setJenisKelamin}
               />
               <InputField
