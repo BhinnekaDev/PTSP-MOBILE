@@ -125,42 +125,125 @@ export default function Product() {
         contentContainerStyle={{ paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
       >
-        <Text
-          style={{ fontFamily: "LexBold" }}
-          className="text-lg text-center mt-3"
-        >
-          Produk Jasa
-        </Text>
-        <View className="items-center justify-center mt-3 gap-6">
-          {filteredProducts.map((item, idx) => (
-            <View
-              key={idx}
-              className="border-2 border-[#6BBC3F] w-80 h-72 rounded-lg items-center justify-center gap-4"
+        {activeCategory === "Semua" ? (
+          <>
+            <Text
+              style={{ fontFamily: "LexBold" }}
+              className="text-lg text-center mt-3"
             >
-              {item.icon}
-              <Text
-                style={{ fontFamily: "LexBold" }}
-                className="text-center text-xl"
-              >
-                {item.title}
-              </Text>
-              <Text
-                style={{ fontFamily: "LexRegular" }}
-                className="text-center text-sm"
-              >
-                {item.desc}
-              </Text>
-              <Button
-                style="bg-[#1475BA] px-6 py-2 rounded-xl"
-                textStyle="text-sm text-white"
-                onPress={() => router.push(item.route)}
-              >
-                Lihat Produk
-              </Button>
+              Produk Informasi
+            </Text>
+            <View className="items-center justify-center mt-3 gap-6">
+              {allProducts
+                .filter((item) => item.category === "Informasi")
+                .map((item, idx) => (
+                  <View
+                    key={`informasi-${idx}`}
+                    className="border-2 border-[#6BBC3F] w-80 h-72 rounded-lg items-center justify-center gap-4"
+                  >
+                    {item.icon}
+                    <Text
+                      style={{ fontFamily: "LexBold" }}
+                      className="text-center text-xl"
+                    >
+                      {item.title}
+                    </Text>
+                    <Text
+                      style={{ fontFamily: "LexRegular" }}
+                      className="text-center text-sm"
+                    >
+                      {item.desc}
+                    </Text>
+                    <Button
+                      style="bg-[#1475BA] px-6 py-2 rounded-xl"
+                      textStyle="text-sm text-white"
+                      onPress={() => router.push(item.route)}
+                    >
+                      Lihat Produk
+                    </Button>
+                  </View>
+                ))}
             </View>
-          ))}
-        </View>
+
+            <Text
+              style={{ fontFamily: "LexBold" }}
+              className="text-lg text-center mt-10"
+            >
+              Produk Jasa
+            </Text>
+            <View className="items-center justify-center mt-3 gap-6">
+              {allProducts
+                .filter((item) => item.category === "Jasa")
+                .map((item, idx) => (
+                  <View
+                    key={`jasa-${idx}`}
+                    className="border-2 border-[#6BBC3F] w-80 h-72 rounded-lg items-center justify-center gap-4"
+                  >
+                    {item.icon}
+                    <Text
+                      style={{ fontFamily: "LexBold" }}
+                      className="text-center text-xl"
+                    >
+                      {item.title}
+                    </Text>
+                    <Text
+                      style={{ fontFamily: "LexRegular" }}
+                      className="text-center text-sm"
+                    >
+                      {item.desc}
+                    </Text>
+                    <Button
+                      style="bg-[#1475BA] px-6 py-2 rounded-xl"
+                      textStyle="text-sm text-white"
+                      onPress={() => router.push(item.route)}
+                    >
+                      Lihat Produk
+                    </Button>
+                  </View>
+                ))}
+            </View>
+          </>
+        ) : (
+          <>
+            <Text
+              style={{ fontFamily: "LexBold" }}
+              className="text-lg text-center mt-3"
+            >
+              Produk {activeCategory}
+            </Text>
+            <View className="items-center justify-center mt-3 gap-6">
+              {filteredProducts.map((item, idx) => (
+                <View
+                  key={idx}
+                  className="border-2 border-[#6BBC3F] w-80 h-72 rounded-lg items-center justify-center gap-4"
+                >
+                  {item.icon}
+                  <Text
+                    style={{ fontFamily: "LexBold" }}
+                    className="text-center text-xl"
+                  >
+                    {item.title}
+                  </Text>
+                  <Text
+                    style={{ fontFamily: "LexRegular" }}
+                    className="text-center text-sm"
+                  >
+                    {item.desc}
+                  </Text>
+                  <Button
+                    style="bg-[#1475BA] px-6 py-2 rounded-xl"
+                    textStyle="text-sm text-white"
+                    onPress={() => router.push(item.route)}
+                  >
+                    Lihat Produk
+                  </Button>
+                </View>
+              ))}
+            </View>
+          </>
+        )}
       </ScrollView>
     </View>
   );
 }
+ 
