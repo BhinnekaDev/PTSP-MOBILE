@@ -1,9 +1,11 @@
 import { Image, Animated, View, Easing, Text } from "react-native";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import Button from "@/components/button";
+import { useRouter } from "expo-router";
 
 export default function WelcomeScreen({ onFinish }: { onFinish: () => void }) {
+  const router = useRouter();
   const translateY = useRef(new Animated.Value(0)).current;
   const fadeGradient = useRef(new Animated.Value(0)).current;
   const fadeBg = useRef(new Animated.Value(1)).current;
@@ -128,7 +130,13 @@ export default function WelcomeScreen({ onFinish }: { onFinish: () => void }) {
             transform: [{ translateY: slideButtonY }],
           }}
         >
-          <Button style="bg-[#73BF40] px-20 py-3 mt-9" onPress={handleStart}>
+          <Button
+            style="bg-[#73BF40] px-20 py-3 mt-9 rounded-md"
+            activeOpacity={0.8}
+            textStyle="text-white"
+            // onPress={() => router.push("/(tabs)/home")}
+            onPress={handleStart}
+          >
             Mulai
           </Button>
         </Animated.View>

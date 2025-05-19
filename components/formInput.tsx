@@ -30,6 +30,7 @@ const FormInput = ({
         onChangeText={onChangeText}
         placeholder={placeholder}
         keyboardType={keyboardType}
+        style={{ fontFamily: "LexRegular" }}
       />
     </View>
   );

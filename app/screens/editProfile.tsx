@@ -17,37 +17,37 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
   return (
     <View className="flex-1 justify-center items-center bg-transparent">
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"} //
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1, width: "100%" }}
         keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 20}
       >
         <View className="flex-1 bg-white p-6  rounded-[20px] w-full ">
           <BackButton
-            title="Sunting Profil" //
+            title="Sunting Profil"
             buttonClassName="mr-12"
             textClassName="text-[23px]"
             onPress={onClose}
           />
           <ScrollView
-            contentContainerStyle={{ paddingBottom: 20 }} //
+            contentContainerStyle={{ paddingBottom: 20 }}
             keyboardShouldPersistTaps="handled"
             style={{ flex: 1 }}
           >
             <View className="mt-4 space-y-4">
               <InputField
-                label="No Identitas" //
+                label="No Identitas"
                 value={noIdentitas}
                 onChangeText={setNoIdentitas}
                 keyboardType="numeric"
               />
               <InputField
-                label="Nama Lengkap" //
+                label="Nama Lengkap"
                 value={namaLengkap}
                 onChangeText={setNamaLengkap}
                 placeholder="Nama lengkap"
               />
               <GenderDropdown
-                selected={jenisKelamin} //
+                selected={jenisKelamin}
                 onSelect={setJenisKelamin}
               />
               <InputField
