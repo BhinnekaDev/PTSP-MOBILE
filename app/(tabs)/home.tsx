@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
 // OUR ICONS
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -10,6 +11,7 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Feather from "@expo/vector-icons/Feather";
 
 export default function ProfileTabs() {
+  const router = useRouter();
   return (
     <LinearGradient
       colors={["#1475BA", "#399385", "#6BBC3F"]}
@@ -30,7 +32,11 @@ export default function ProfileTabs() {
           <TouchableOpacity activeOpacity={0.3} className="p-1">
             <MaterialIcons name="shopping-cart" size={24} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.3} className="p-1 relative">
+          <TouchableOpacity
+            activeOpacity={0.3}
+            className="p-1 relative"
+            onPress={() => router.push("/screens/chatScreen")}
+          >
             <Ionicons name="chatbubble-ellipses" size={24} color="white" />
             <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
               <Text className="text-white text-[11px] font-bold">3</Text>
