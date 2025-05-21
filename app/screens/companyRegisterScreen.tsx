@@ -207,49 +207,19 @@ export default function CompanyRegisterScreen() {
         )}
 
         {step === 1 && (
-<<<<<<< HEAD
-          <Button
-            style="bg-[#73BF40] mt-12 py-3 px-28 rounded-xl"
-            textStyle="text-white"
-            onPress={() => setStep(2)}
-            activeOpacity={0.8}
-          >
-=======
           <Button style="bg-[#73BF40] mt-12 py-3 px-28 rounded-xl" onPress={() => setStep(2)} activeOpacity={0.8}>
->>>>>>> bhinnekadev24/bhi-338-fitur-checkout
             Selanjutnya
           </Button>
         )}
       </View>
       {(step === 2 || step === 3) && (
-<<<<<<< HEAD
-        <Button
-          style="bg-[#73BF40] mt-6 py-3 px-28 rounded-xl"
-          textStyle="text-white"
-          onPress={() => setStep(step + 1)}
-          activeOpacity={0.8}
-        >
-=======
         <Button style="bg-[#73BF40] mt-6 py-3 px-28 rounded-xl" onPress={() => setStep(step + 1)} activeOpacity={0.8}>
->>>>>>> bhinnekadev24/bhi-338-fitur-checkout
           Selanjutnya
         </Button>
       )}
 
       {step === 4 && (
-<<<<<<< HEAD
-        <Button
-          style={`mt-6 py-3 rounded-xl ${
-            isChecked ? "bg-[#1475BA] px-20" : "bg-gray-400 px-8"
-          }`}
-          textStyle={`${isChecked ? "text-white" : "text-black"}`}
-          disabled={!isChecked}
-          activeOpacity={0.8}
-          onPress={() => router.push("/(tabs)/home")}
-        >
-=======
         <Button style={`mt-6 py-3 rounded-xl ${isChecked ? "bg-[#1475BA] px-20" : "bg-gray-400 px-8"}`} disabled={!isChecked}>
->>>>>>> bhinnekadev24/bhi-338-fitur-checkout
           {isChecked ? "Simpan Data" : "Setujui Syarat untuk Lanjut"}
         </Button>
       )}
