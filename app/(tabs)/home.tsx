@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
 // OUR ICONS
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -8,8 +9,13 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Feather from "@expo/vector-icons/Feather";
+import { ButtonCustomProps } from "@/interfaces/buttonCustomProps";
 
-export default function ProfileTabs() {
+export default function ProfileTabs({
+  count = 1, //
+  onPressRightIcon,
+}: ButtonCustomProps) {
+  const router = useRouter();
   return (
     <LinearGradient
       colors={["#1475BA", "#399385", "#6BBC3F"]} //
@@ -23,15 +29,20 @@ export default function ProfileTabs() {
         <View>
           <Image source={require("@/assets/images/HomeScreen/logo.png")} className="w-44 h-12 object-cover" />
         </View>
-        <View className="flex-row gap-4">
-          <TouchableOpacity activeOpacity={0.3} className="p-1">
+        <View className="flex-row gap-6 items-center">
+          <TouchableOpacity activeOpacity={0.3} className="p-1" onPress={() => router.push("/screens/cartOrderScreen")}>
             <MaterialIcons name="shopping-cart" size={24} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.3} className="p-1 relative">
-            <Ionicons name="chatbubble-ellipses" size={24} color="white" />
-            <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
-              <Text className="text-white text-[11px] font-bold">3</Text>
-            </View>
+
+          <TouchableOpacity activeOpacity={0.7} onPress={onPressRightIcon} className="p-1">
+            <Ionicons name="chatbubbles-outline" size={28} color="white" />
+            {count > 0 && (
+              <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
+                <Text className="text-white text-[10px]" style={{ fontFamily: "LexBold" }}>
+                  {count}
+                </Text>
+              </View>
+            )}
           </TouchableOpacity>
         </View>
       </View>
