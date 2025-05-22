@@ -1,4 +1,3 @@
-// hooks/useAjukanTransition.js
 import { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { Animated } from "react-native";
