@@ -17,7 +17,7 @@ import useAjukanTransition from "@/hooks/Frontend/orderScreen/useAnimationButton
 
 export default function OrderScreen() {
   const router = useRouter();
-  const { showButtonPlus, animatedValue } = useAjukanTransition();
+  const { showButtonPlus, animatedValue, animatedOpacity } = useAjukanTransition();
 
   return (
     <View className="flex-1 bg-white gap-4">
@@ -30,8 +30,8 @@ export default function OrderScreen() {
               Pesanan Anda
             </Text>
 
-            <ScrollView contentContainerStyle={{ padding: 24 }} showsVerticalScrollIndicator={false}>
-              {/* Form Pengajuan Kegiatan */}
+            <ScrollView contentContainerStyle={{ padding: 14 }} showsVerticalScrollIndicator={false}>
+              {/* FORM PENGAJUAN KEGIATAN */}
               <View className="bg-white rounded-[10px] flex-col border-[#D9D9D9] border-2 mb-10">
                 <View className="bg-[#D9D9D9] rounded-t-[4px] rounded-b-[10px] w-full py-2 flex items-center justify-center">
                   <Text className="text-[18px] text-black py-4" style={{ fontFamily: "LexMedium" }}>
@@ -102,6 +102,7 @@ export default function OrderScreen() {
                     textClassName="text-[14px] text-center text-white"
                     textStyle={{ fontFamily: "LexSemiBold" }}
                     isTouchable={true}
+                    onPress={() => router.push("/screens/orderTrackingScreen")}
                     containerStyle={{
                       shadowColor: "#000",
                       shadowOffset: { width: 0, height: 4 }, // hanya ke bawah
@@ -122,6 +123,7 @@ export default function OrderScreen() {
                   transform: [{ translateX: animatedValue }],
                   alignSelf: "flex-end",
                   marginHorizontal: 16,
+                  opacity: animatedOpacity,
                 }}
               >
                 <ButtonCustom
