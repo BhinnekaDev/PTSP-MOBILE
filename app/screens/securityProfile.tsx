@@ -7,6 +7,9 @@ import ButtonCustom from "@/components/buttonCustom";
 import InputField from "@/components/formInput";
 import AccountCloseAlert from "@/components/accountCloseAlert";
 
+// OUR UTILS
+import { validationEmail } from "@/utils/validationEmail";
+
 export default function SecurityProfile({ onClose }: { onClose: () => void }) {
   const [telepon, setTelepon] = useState("");
   const [email, setEmail] = useState("");
@@ -49,7 +52,7 @@ export default function SecurityProfile({ onClose }: { onClose: () => void }) {
               <InputField
                 label="Email" //
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={(input) => setEmail(validationEmail(input))}
                 placeholder="Masukkan email"
                 keyboardType="email-address"
               />

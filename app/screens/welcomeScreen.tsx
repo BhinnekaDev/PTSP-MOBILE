@@ -72,6 +72,7 @@ export default function WelcomeScreen({ onFinish }: { onFinish: () => void }) {
       setTimeout(() => {
         onFinish();
         router.push("/(tabs)/home");
+        // router.push("/screens/loginScreen");
       }, 1000);
     });
   };
@@ -104,10 +105,9 @@ export default function WelcomeScreen({ onFinish }: { onFinish: () => void }) {
           }}
         >
           <Button
-            style="bg-[#73BF40] px-20 py-3 mt-9 rounded-md"
+            style="bg-[#73BF40] px-20 py-3 mt-9 rounded-md" //
             activeOpacity={0.8}
             textStyle="text-white"
-            // onPress={() => router.push("/(tabs)/home")}
             onPress={handleStart}
           >
             Mulai

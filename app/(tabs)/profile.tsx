@@ -16,6 +16,7 @@ import UserProfile from "@/components/userProfile";
 import EditProfile from "@/app/screens/editProfile";
 import NotificationProfile from "@/app/screens/notificationProfile";
 import SecurityProfile from "@/app/screens/securityProfile";
+import { router } from "expo-router";
 
 export default function ProfileTabs() {
   const {
@@ -52,7 +53,7 @@ export default function ProfileTabs() {
               text="Pesanan Saya"
               iconLeft={<Octicons name="checklist" size={20} color="white" />}
               textClassName="ml-2 text-white"
-              onPress={() => alert("Pesanan Saya")}
+              onPress={() => router.push("/screens/orderScreen")}
             />
           </View>
 

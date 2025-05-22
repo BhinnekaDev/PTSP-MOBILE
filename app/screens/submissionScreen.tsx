@@ -42,9 +42,9 @@ export default function SubmissionScreen() {
                 <View className="pt-4 px-4 pb-4">
                   <FormDropdownSelect
                     showLabel={false}
-                    toggleDropdownClassName="border-[#D9D9D9] rounded-[5px]"
+                    toggleDropdownClassName="w-full border-[#D9D9D9] rounded-[5px]"
                     label="Jenis Kegiatan" //
-                    DropdownSelectClassName="border-[#D9D9D9] rounded-[5px]"
+                    DropdownSelectClassName="w-full border-[#D9D9D9] rounded-[5px]"
                     options={[
                       "Penanggulangan Bencana", //
                       "Kegiatan Keagamaan",
