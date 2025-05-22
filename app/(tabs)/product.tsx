@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import Button from "@/components/button";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -63,24 +57,14 @@ export default function Product() {
     },
   ];
 
-  const filteredProducts =
-    activeCategory === "Semua"
-      ? allProducts
-      : allProducts.filter((item) => item.category === activeCategory);
+  const filteredProducts = activeCategory === "Semua" ? allProducts : allProducts.filter((item) => item.category === activeCategory);
 
   return (
     <View className="flex-1">
-      <View className="bg-[#1475BA] flex-row justify-between w-full items-center px-4 pt-14 pb-4 rounded-xl shadow-md">
+      <View className="bg-[#1475BA] flex-row justify-between w-full items-center px-4 py-4 rounded-b-[10px] shadow-md">
         <View className="bg-white flex-row justify-between flex-1 items-center pl-3 rounded-full">
-          <TextInput
-            className="flex-1 py-1"
-            placeholder="Cari"
-            style={{ fontFamily: "LexRegular" }}
-          />
-          <TouchableOpacity
-            activeOpacity={0.5}
-            className="bg-[#72C02C] rounded-full py-2 px-3"
-          >
+          <TextInput className="flex-1 py-1" placeholder="Cari" style={{ fontFamily: "LexRegular" }} />
+          <TouchableOpacity activeOpacity={0.5} className="bg-[#72C02C] rounded-full py-2 px-3">
             <Octicons name="search" size={20} color="white" />
           </TouchableOpacity>
         </View>
@@ -102,13 +86,7 @@ export default function Product() {
 
       <View className="flex-row justify-center gap-4 items-center py-2">
         {["Semua", "Informasi", "Jasa"].map((cat) => (
-          <TouchableOpacity
-            key={cat}
-            onPress={() => setActiveCategory(cat)}
-            className={`py-2 px-4 rounded-full ${
-              activeCategory === cat ? "bg-[#1475BA]" : "bg-transparent"
-            }`}
-          >
+          <TouchableOpacity key={cat} onPress={() => setActiveCategory(cat)} className={`py-2 px-4 rounded-full ${activeCategory === cat ? "bg-[#1475BA]" : "bg-transparent"}`}>
             <Text
               style={{
                 fontFamily: "LexBold",
@@ -121,82 +99,47 @@ export default function Product() {
         ))}
       </View>
 
-      <ScrollView
-        contentContainerStyle={{ paddingBottom: 100 }}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
         {activeCategory === "Semua" ? (
           <>
-            <Text
-              style={{ fontFamily: "LexBold" }}
-              className="text-lg text-center mt-3"
-            >
+            <Text style={{ fontFamily: "LexBold" }} className="text-lg text-center mt-3">
               Produk Informasi
             </Text>
             <View className="items-center justify-center mt-3 gap-6">
               {allProducts
                 .filter((item) => item.category === "Informasi")
                 .map((item, idx) => (
-                  <View
-                    key={`informasi-${idx}`}
-                    className="border-2 border-[#6BBC3F] w-80 h-72 rounded-lg items-center justify-center gap-4"
-                  >
+                  <View key={`informasi-${idx}`} className="border-2 border-[#6BBC3F] w-80 h-72 rounded-lg items-center justify-center gap-4">
                     {item.icon}
-                    <Text
-                      style={{ fontFamily: "LexBold" }}
-                      className="text-center text-xl"
-                    >
+                    <Text style={{ fontFamily: "LexBold" }} className="text-center text-xl">
                       {item.title}
                     </Text>
-                    <Text
-                      style={{ fontFamily: "LexRegular" }}
-                      className="text-center text-sm"
-                    >
+                    <Text style={{ fontFamily: "LexRegular" }} className="text-center text-sm">
                       {item.desc}
                     </Text>
-                    <Button
-                      style="bg-[#1475BA] px-6 py-2 rounded-xl"
-                      textStyle="text-sm text-white"
-                      onPress={() => router.push(item.route)}
-                    >
+                    <Button style="bg-[#1475BA] px-6 py-2 rounded-xl" textStyle="text-sm text-white" onPress={() => router.push(item.route)}>
                       Lihat Produk
                     </Button>
                   </View>
                 ))}
             </View>
 
-            <Text
-              style={{ fontFamily: "LexBold" }}
-              className="text-lg text-center mt-10"
-            >
+            <Text style={{ fontFamily: "LexBold" }} className="text-lg text-center mt-10">
               Produk Jasa
             </Text>
             <View className="items-center justify-center mt-3 gap-6">
               {allProducts
                 .filter((item) => item.category === "Jasa")
                 .map((item, idx) => (
-                  <View
-                    key={`jasa-${idx}`}
-                    className="border-2 border-[#6BBC3F] w-80 h-72 rounded-lg items-center justify-center gap-4"
-                  >
+                  <View key={`jasa-${idx}`} className="border-2 border-[#6BBC3F] w-80 h-72 rounded-lg items-center justify-center gap-4">
                     {item.icon}
-                    <Text
-                      style={{ fontFamily: "LexBold" }}
-                      className="text-center text-xl"
-                    >
+                    <Text style={{ fontFamily: "LexBold" }} className="text-center text-xl">
                       {item.title}
                     </Text>
-                    <Text
-                      style={{ fontFamily: "LexRegular" }}
-                      className="text-center text-sm"
-                    >
+                    <Text style={{ fontFamily: "LexRegular" }} className="text-center text-sm">
                       {item.desc}
                     </Text>
-                    <Button
-                      style="bg-[#1475BA] px-6 py-2 rounded-xl"
-                      textStyle="text-sm text-white"
-                      onPress={() => router.push(item.route)}
-                    >
+                    <Button style="bg-[#1475BA] px-6 py-2 rounded-xl" textStyle="text-sm text-white" onPress={() => router.push(item.route)}>
                       Lihat Produk
                     </Button>
                   </View>
@@ -205,36 +148,20 @@ export default function Product() {
           </>
         ) : (
           <>
-            <Text
-              style={{ fontFamily: "LexBold" }}
-              className="text-lg text-center mt-3"
-            >
+            <Text style={{ fontFamily: "LexBold" }} className="text-lg text-center mt-3">
               Produk {activeCategory}
             </Text>
             <View className="items-center justify-center mt-3 gap-6">
               {filteredProducts.map((item, idx) => (
-                <View
-                  key={idx}
-                  className="border-2 border-[#6BBC3F] w-80 h-72 rounded-lg items-center justify-center gap-4"
-                >
+                <View key={idx} className="border-2 border-[#6BBC3F] w-80 h-72 rounded-lg items-center justify-center gap-4">
                   {item.icon}
-                  <Text
-                    style={{ fontFamily: "LexBold" }}
-                    className="text-center text-xl"
-                  >
+                  <Text style={{ fontFamily: "LexBold" }} className="text-center text-xl">
                     {item.title}
                   </Text>
-                  <Text
-                    style={{ fontFamily: "LexRegular" }}
-                    className="text-center text-sm"
-                  >
+                  <Text style={{ fontFamily: "LexRegular" }} className="text-center text-sm">
                     {item.desc}
                   </Text>
-                  <Button
-                    style="bg-[#1475BA] px-6 py-2 rounded-xl"
-                    textStyle="text-sm text-white"
-                    onPress={() => router.push(item.route)}
-                  >
+                  <Button style="bg-[#1475BA] px-6 py-2 rounded-xl" textStyle="text-sm text-white" onPress={() => router.push(item.route)}>
                     Lihat Produk
                   </Button>
                 </View>
@@ -246,4 +173,3 @@ export default function Product() {
     </View>
   );
 }
- 
