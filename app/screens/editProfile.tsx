@@ -16,39 +16,13 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
 
   return (
     <View className="flex-1 justify-center items-center bg-transparent">
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1, width: "100%" }}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 20}
-      >
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1, width: "100%" }} keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 20}>
         <View className="flex-1 bg-white p-6  rounded-[20px] w-full ">
-          <BackButton
-            title="Sunting Profil"
-            buttonClassName="mr-12"
-            textClassName="text-[23px]"
-            onPress={onClose}
-          />
-          <ScrollView
-            contentContainerStyle={{ paddingBottom: 20 }}
-            keyboardShouldPersistTaps="handled"
-            style={{ flex: 1 }}
-          >
+          <BackButton title="Sunting Profil" buttonClassName="mr-12" textClassName="text-[23px]" onPress={onClose} />
+          <ScrollView contentContainerStyle={{ paddingBottom: 20 }} keyboardShouldPersistTaps="handled" style={{ flex: 1 }}>
             <View className="mt-4 space-y-4">
-              <InputField
-                label="No Identitas"
-                value={noIdentitas}
-                onChangeText={setNoIdentitas}
-                keyboardType="numeric"
-              />
-              <InputField
-                label="Nama Lengkap"
-                value={namaLengkap}
-                onChangeText={setNamaLengkap}
-                placeholder="Nama lengkap"
-              />
-<<<<<<< HEAD
-              <GenderDropdown
-=======
+              <InputField label="No Identitas" value={noIdentitas} onChangeText={setNoIdentitas} keyboardType="numeric" />
+              <InputField label="Nama Lengkap" value={namaLengkap} onChangeText={setNamaLengkap} placeholder="Nama lengkap" />
               <FormDropdownSelect
                 labelClassName="px-6 mt-4 mb-2" //
                 toggleDropdownClassName="w-[87%] border-[#6BBC3F]"
@@ -61,7 +35,6 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
                 ]}
                 selectedTextStyle={{ fontFamily: "LexRegular" }}
                 iconColor="#6BBC3F"
->>>>>>> bhinnekadev24/bhi-338-fitur-checkout
                 selected={jenisKelamin}
                 onSelect={setJenisKelamin}
               />
