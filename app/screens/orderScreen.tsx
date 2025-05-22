@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ScrollView, Text } from "react-native";
+import { View, ScrollView, Text, Animated } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 
@@ -12,8 +12,12 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import ButtonCustom from "@/components/buttonCustom";
 import NavCartOrder from "@/components/navCartOrder";
 
+// OUR HOOKS
+import useAjukanTransition from "@/hooks/Frontend/orderScreen/useAnimationButtonPlus";
+
 export default function OrderScreen() {
   const router = useRouter();
+  const { showButtonPlus, animatedValue } = useAjukanTransition();
 
   return (
     <View className="flex-1 bg-white gap-4">
@@ -111,23 +115,33 @@ export default function OrderScreen() {
             </ScrollView>
 
             {/* TOMBOL AJUKAN SEKARANG */}
-            <View className="w-[40%] self-end mx-4">
-              <ButtonCustom
-                classNameContainer="bg-[#1475BA] rounded-[10px] py-1" //
-                iconLeft={<Entypo name="plus" size={32} color="white" />}
-                text="Tambah"
-                textClassName="text-[20px] text-center text-white"
-                textStyle={{ fontFamily: "LexSemiBold" }}
-                isTouchable={true}
-                containerStyle={{
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 4 }, // hanya ke bawah
-                  shadowOpacity: 0.3,
-                  shadowRadius: 3,
-                  elevation: 4, // Android
+
+            {showButtonPlus && (
+              <Animated.View
+                style={{
+                  transform: [{ translateX: animatedValue }],
+                  alignSelf: "flex-end",
+                  marginHorizontal: 16,
                 }}
-              />
-            </View>
+              >
+                <ButtonCustom
+                  classNameContainer="bg-[#1475BA] rounded-[10px] py-1 w-[160px]"
+                  iconLeft={<Entypo name="plus" size={32} color="white" />}
+                  text="Tambah"
+                  textClassName="text-[20px] text-center text-white"
+                  textStyle={{ fontFamily: "LexSemiBold" }}
+                  onPress={() => alert("Tambah")}
+                  isTouchable={true}
+                  containerStyle={{
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 3,
+                    elevation: 4,
+                  }}
+                />
+              </Animated.View>
+            )}
           </View>
         </LinearGradient>
       </View>

@@ -10,8 +10,8 @@ import FormDropdownSelect from "@/components/formDropdownSelect";
 import FilePreviewModal from "@/components/FilePreviewModal";
 
 // HOOK
-import { useFilePreview } from "@/hooks/Frontend/FilePreviewModalScreen/useFilePreview";
-import { useSelectDocument } from "@/hooks/Frontend/FilePreviewModalScreen/useSelectDocument";
+import { useFilePreview } from "@/hooks/Frontend/filePreviewModalScreen/useFilePreview";
+import { useSelectDocument } from "@/hooks/Frontend/filePreviewModalScreen/useSelectDocument";
 
 export default function SubmissionScreen() {
   const router = useRouter();
@@ -122,7 +122,7 @@ export default function SubmissionScreen() {
                 classNameContainer="bg-[#1475BA] py-3 rounded-[10px]"
                 text="AJUKAN SEKARANG"
                 textClassName="text-[14px] text-center text-white"
-                onPress={() => router.push("/screens/orderScreen")}
+                onPress={() => router.push({ pathname: "/screens/orderScreen", params: { triggerSubmission: "true" } })}
                 textStyle={{ fontFamily: "LexSemiBold" }}
                 isTouchable={true}
                 containerStyle={{
