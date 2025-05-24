@@ -10,8 +10,8 @@ import FormDropdownSelect from "@/components/formDropdownSelect";
 import FilePreviewModal from "@/components/FilePreviewModal";
 
 // HOOK
-import { useFilePreview } from "@/hooks/Frontend/FilePreviewModalScreen/useFilePreview";
-import { useSelectDocument } from "@/hooks/Frontend/FilePreviewModalScreen/useSelectDocument";
+import { useFilePreview } from "@/hooks/Frontend/filePreviewModalScreen/useFilePreview";
+import { useSelectDocument } from "@/hooks/Frontend/filePreviewModalScreen/useSelectDocument";
 
 export default function SubmissionScreen() {
   const router = useRouter();
