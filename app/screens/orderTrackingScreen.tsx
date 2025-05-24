@@ -144,15 +144,15 @@ export default function OrderScreen() {
                   {/* Baris 1: Alamat Pengiriman dan Ringkasan Pesanan sejajar horizontal */}
                   <View className="flex flex-row gap-2 mb-10">
                     {/* Alamat Pengiriman - lebar lebih besar */}
-                    <View className="bg-white rounded-[10px] border-[#73BF40] border-2 p-4" style={{ flex: 2 }}>
-                      <Text className="font-bold mb-2">Alamat Pengiriman</Text>
+                    <View className="bg-white rounded-[10px] border-[#73BF40] border-2 p-4 gap-2" style={{ flex: 2 }}>
+                      <Text className="font-bold mb-2 ">Alamat Pengiriman</Text>
                       <Text>{item.alamatPengiriman.nama}</Text>
                       <Text>{item.alamatPengiriman.telepon}</Text>
                       <Text>{item.alamatPengiriman.email}</Text>
                     </View>
 
                     {/* Ringkasan Pesanan - lebar lebih kecil */}
-                    <View className="bg-white rounded-[10px] border-[#73BF40] border-2 p-4" style={{ flex: 1 }}>
+                    <View className="bg-white rounded-[10px] border-[#73BF40] border-2 p-4 gap-2" style={{ flex: 1 }}>
                       <Text className="font-bold mb-2">Ringkasan Pesanan</Text>
                       <View className="flex-row justify-between flex-wrap">
                         <Text>Total Pesanan:</Text>
@@ -170,7 +170,7 @@ export default function OrderScreen() {
 
                     {/* Informasi dengan jarak antar item (space-between) */}
                     <View className="flex-row justify-between mt-4 mb-4">
-                      <Text>Informasi:</Text>
+                      <Text>Informasi</Text>
                       <Text>{item.informasi}</Text>
                     </View>
 
