@@ -7,12 +7,16 @@ import ButtonCustom from "@/components/buttonCustom";
 import FormDropdownSelect from "@/components/formDropdownSelect";
 import InputField from "@/components/formInput";
 
+// OUR UTILS
+import { validationFullString } from "@/utils/validationFullString";
+import { validationStringNumber } from "@/utils/validationStringNumber";
+
 export default function EditProfile({ onClose }: { onClose: () => void }) {
-  const [noIdentitas, setNoIdentitas] = useState("1234567890111213");
-  const [namaLengkap, setNamaLengkap] = useState("");
+  const [identityNumber, setIdentityNumber] = useState("1234567890111213");
+  const [fullName, setFullName] = useState("");
   const [jenisKelamin, setJenisKelamin] = useState("");
-  const [pekerjaan, setPekerjaan] = useState("");
-  const [pendidikan, setPendidikan] = useState("");
+  const [job, setJob] = useState("");
+  const [education, setEducation] = useState("");
 
   return (
     <View className="flex-1 justify-center items-center bg-transparent">
@@ -21,8 +25,18 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
           <BackButton title="Sunting Profil" buttonClassName="mr-12" textClassName="text-[23px]" onPress={onClose} />
           <ScrollView contentContainerStyle={{ paddingBottom: 20 }} keyboardShouldPersistTaps="handled" style={{ flex: 1 }}>
             <View className="mt-4 space-y-4">
-              <InputField label="No Identitas" value={noIdentitas} onChangeText={setNoIdentitas} keyboardType="numeric" />
-              <InputField label="Nama Lengkap" value={namaLengkap} onChangeText={setNamaLengkap} placeholder="Nama lengkap" />
+              <InputField
+                label="No Identitas" //
+                value={identityNumber}
+                onChangeText={setIdentityNumber}
+                keyboardType="numeric"
+              />
+              <InputField
+                label="Nama Lengkap" //
+                value={fullName}
+                onChangeText={(input) => setFullName(validationFullString(input, 50))}
+                placeholder="Nama lengkap"
+              />
               <FormDropdownSelect
                 labelClassName="px-6 mt-4 mb-2" //
                 toggleDropdownClassName="w-[87%] border-[#6BBC3F]"
@@ -40,14 +54,14 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
               />
               <InputField
                 label="Pekerjaan" //
-                value={pekerjaan}
-                onChangeText={setPekerjaan}
+                value={job}
+                onChangeText={(input) => setJob(validationFullString(input, 30))}
                 placeholder="Pekerjaan"
               />
               <InputField
                 label="Pendidikan Terakhir" //
-                value={pendidikan}
-                onChangeText={setPendidikan}
+                value={education}
+                onChangeText={(input) => setEducation(validationStringNumber(input, 30))}
                 placeholder="Pendidikan Terakhir"
               />
             </View>
@@ -60,7 +74,7 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
               text="Simpan Data"
               textClassName="text-[20px] text-center text-white"
               onPress={() => {
-                console.log({ noIdentitas, namaLengkap, jenisKelamin, pekerjaan, pendidikan });
+                console.log({ identityNumber, fullName, jenisKelamin, job, education });
               }}
             />
           </View>

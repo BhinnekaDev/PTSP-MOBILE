@@ -9,6 +9,8 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Feather from "@expo/vector-icons/Feather";
+
+// OUR INTERFACES
 import { ButtonCustomProps } from "@/interfaces/buttonCustomProps";
 
 export default function ProfileTabs({

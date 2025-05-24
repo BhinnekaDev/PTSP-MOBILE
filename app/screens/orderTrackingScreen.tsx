@@ -13,7 +13,7 @@ import ButtonCustom from "@/components/buttonCustom";
 import NavCartOrder from "@/components/navCartOrder";
 
 // OUR CONSTANTS
-import dataPesanan from "@/constant/dataPesanan";
+import dataPesanan from "@/constants/dataPesanan";
 
 // OUR HOOKS
 import useAjukanTransition from "@/hooks/Frontend/orderScreen/useAnimationButtonPlus";
