@@ -10,6 +10,8 @@ interface FormInputProps {
   placeholder?: string;
   keyboardType?: TextInputProps["keyboardType"];
   textClassName?: string;
+  multiline?: boolean;
+  textAlignVertical?: "auto" | "top" | "center" | "bottom";
 }
 
 const FormInput = ({
@@ -20,6 +22,8 @@ const FormInput = ({
   onChangeText,
   placeholder,
   keyboardType,
+  multiline,
+  textAlignVertical,
 }: FormInputProps) => {
   return (
     <View className="mt-4 px-6 py-1 ">
@@ -27,11 +31,13 @@ const FormInput = ({
         {label}
       </Text>
       <TextInput
-        className={`border rounded-[10px] p-4 ${textClassName}`} //
+        className={`border  rounded-[10px] p-4 ${textClassName}`} //
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
         keyboardType={keyboardType}
+        multiline={multiline}
+        textAlignVertical={textAlignVertical}
         style={{ fontFamily: "LexRegular" }}
       />
     </View>
