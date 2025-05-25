@@ -9,10 +9,12 @@ interface FormInputProps {
   onChangeText: (text: string) => void;
   placeholder?: string;
   keyboardType?: TextInputProps["keyboardType"];
+  textClassName?: string;
 }
 
 const FormInput = ({
   fontLexBold = { fontFamily: "LexBold" }, //
+  textClassName,
   label,
   value,
   onChangeText,
@@ -25,7 +27,7 @@ const FormInput = ({
         {label}
       </Text>
       <TextInput
-        className="border border-[#6BBC3F] rounded-[10px] p-4" //
+        className={`border rounded-[10px] p-4 ${textClassName}`} //
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}

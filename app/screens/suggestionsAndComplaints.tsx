@@ -1,74 +1,92 @@
-import React from "react";
-import { View, ScrollView, Text, Image } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import React, { useState } from "react";
+import { View, ScrollView, Text, TouchableOpacity, TextInput } from "react-native";
 import { useRouter } from "expo-router";
 
-// COMPONENTS
-import ButtonCustom from "@/components/buttonCustom";
+// OUR COMPONENTS
 import NavCartOrder from "@/components/navCartOrder";
+import InputField from "@/components/formInput";
+
+// OUR UTILS
+import { validationFullString } from "@/utils/validationFullString";
 
 export default function SuggestionsAndComplaints() {
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState<"Saran" | "Pengaduan">("Saran");
+  const [fullName, setFullName] = useState("");
+
+  const [pengaduan, setPengaduan] = useState("");
+
   return (
     <View className="flex-1 bg-white gap-4">
-      <NavCartOrder
-        text="Keranjang Saya" //
-        textClassName="ml-4 text-left"
-        onPressLeftIcon={() => router.back()}
-        isTouchable={false}
-      />
-      <View className="flex-1  px-4   ">
-        <LinearGradient
-          colors={["#1475BA", "#FFFFFF", "#6BBC3F"]} //
-          style={{ flex: 1, borderRadius: 12 }}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <View className="flex-1 w-full ">
-            <ScrollView contentContainerStyle={{ padding: 24, paddingBottom: 160 }} showsVerticalScrollIndicator={false}>
-              {/* Kartu Produk */}
-              <View className="bg-white rounded-[12px] p-6 shadow flex-col gap-10 border-black border-2">
-                {/* ICON DAN TEKS */}
-                <View className="flex-row items-center gap-3">
-                  <Image source={require("@/assets/images/CartCheckoutScreen/Checkout.png")} className="w-14 h-14" resizeMode="contain" />
-                  <Text className="font-bold text-[14px] flex-1">ATLAS WINDROSE WILAYAH INDONESIA PERIODE 1981–2010</Text>
-                </View>
+      <NavCartOrder text="Saran Dan Pengaduan" textClassName="ml-4 text-left" onPressLeftIcon={() => router.back()} isTouchable={false} />
 
-                {/* HARGA */}
-                <Text className="font-bold text-[12px] self-end">Rp 1.500.000</Text>
-              </View>
-            </ScrollView>
-
-            {/* BUTTON FIXED DI BAGIAN BAWAH */}
-            <View className="flex bottom-6 w-full flex-row justify-between gap-2 px-2">
-              <View className="flex flex-row items-center bg-[#1475BA] py-3 rounded-[10px] px-4 flex-1 justify-between">
-                <Text className="text-white " style={{ fontFamily: "LexSemiBold" }}>
-                  Total Harga
-                </Text>
-                <Text className="text-white  ml-4" style={{ fontFamily: "LexSemiBold" }}>
-                  1.500.000
-                </Text>
-              </View>
-
-              <ButtonCustom
-                classNameContainer="bg-[#1475BA] py-3 rounded-[10px] w-[120px]"
-                text="Lanjutkan Pemesanan"
-                textClassName="text-[11px] text-center text-white"
-                onPress={() => router.push("/screens/submissionScreen")}
-                textStyle={{ fontFamily: "LexSemiBold" }}
-                isTouchable={true}
-                containerStyle={{
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 4 }, // hanya ke bawah
-                  shadowOpacity: 0.3,
-                  shadowRadius: 3,
-                  elevation: 4, // Android
-                }}
-              />
-            </View>
-          </View>
-        </LinearGradient>
+      {/* TAB BUTTON */}
+      <View className="flex-row justify-center gap-4 px-4">
+        {["Saran", "Pengaduan"].map((tab) => (
+          <TouchableOpacity key={tab} onPress={() => setActiveTab(tab as "Saran" | "Pengaduan")} className={`px-4 py-2 rounded-full ${activeTab === tab ? "bg-[#1475BA]" : "bg-gray-200"}`}>
+            <Text
+              style={{
+                fontFamily: "LexBold",
+                color: activeTab === tab ? "white" : "black",
+              }}
+            >
+              {tab}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </View>
+
+      {/* BODY */}
+      <View className="flex-1 px-4">
+        {/* === SARAN === */}
+        {activeTab === "Saran" && (
+          <View className="flex-1 py-6">
+            <Text className="font-bold text-[20px]" style={{ fontFamily: "LexBold" }}>
+              Saran
+            </Text>
+
+            <ScrollView contentContainerStyle={{ paddingVertical: 24 }} showsVerticalScrollIndicator={false}>
+              <InputField
+                label="Nama Lengkap" //
+                textClassName="border border-[#3498DB] " //
+                value={fullName}
+                onChangeText={(input) => setFullName(validationFullString(input, 50))}
+                placeholder="Nama lengkap"
+              />
+              <InputField
+                label="Email" //
+                textClassName="border border-[#3498DB] " //
+                value={fullName}
+                onChangeText={(input) => setFullName(validationFullString(input, 50))}
+                placeholder="Nama lengkap"
+              />
+            </ScrollView>
+          </View>
+        )}
+
+        {/* === PENGADUAN === */}
+        {activeTab === "Pengaduan" && (
+          <View className="flex-1 py-6">
+            <Text className="font-bold text-[20px]" style={{ fontFamily: "LexBold" }}>
+              Pengaduan
+            </Text>
+
+            <ScrollView contentContainerStyle={{ paddingVertical: 24 }} showsVerticalScrollIndicator={false}>
+              <TextInput
+                placeholder="Tulis pengaduan kamu di sini..."
+                value={pengaduan}
+                onChangeText={setPengaduan}
+                multiline
+                numberOfLines={8}
+                className="bg-gray-100 rounded-lg p-4 text-base text-black"
+                textAlignVertical="top"
+                style={{ fontFamily: "LexReg" }}
+              />
+            </ScrollView>
+          </View>
+        )}
+      </View>
+
       {/* BAR BAWAH */}
       <View className="w-full bg-[#1475BA] h-[4%]" />
     </View>
