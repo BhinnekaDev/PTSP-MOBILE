@@ -87,7 +87,7 @@ export default function ProfileTabs({
               Panduan{"\n"}Pelayanan
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.4} className="flex-col items-center justify-center gap-1">
+          <TouchableOpacity activeOpacity={0.4} className="flex-col items-center justify-center gap-1" onPress={() => router.push("/screens/suggestionsAndComplaints")}>
             <MaterialCommunityIcons name="email-fast-outline" size={30} color="white" />
             <Text style={{ fontFamily: "LexRegular" }} className="text-white text-center">
               Saran &{"\n"}Pengaduan
