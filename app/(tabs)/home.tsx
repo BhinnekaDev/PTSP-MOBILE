@@ -9,6 +9,8 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Feather from "@expo/vector-icons/Feather";
+
+// OUR INTERFACES
 import { ButtonCustomProps } from "@/interfaces/buttonCustomProps";
 
 export default function ProfileTabs({
@@ -85,7 +87,7 @@ export default function ProfileTabs({
               Panduan{"\n"}Pelayanan
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.4} className="flex-col items-center justify-center gap-1">
+          <TouchableOpacity activeOpacity={0.4} className="flex-col items-center justify-center gap-1" onPress={() => router.push("/screens/suggestionsAndComplaints")}>
             <MaterialCommunityIcons name="email-fast-outline" size={30} color="white" />
             <Text style={{ fontFamily: "LexRegular" }} className="text-white text-center">
               Saran &{"\n"}Pengaduan

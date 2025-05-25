@@ -102,6 +102,7 @@ export default function OrderScreen() {
                     textClassName="text-[14px] text-center text-white"
                     textStyle={{ fontFamily: "LexSemiBold" }}
                     isTouchable={true}
+                    onPress={() => router.push("/screens/orderTrackingScreen")}
                     containerStyle={{
                       shadowColor: "#000",
                       shadowOffset: { width: 0, height: 4 }, // hanya ke bawah

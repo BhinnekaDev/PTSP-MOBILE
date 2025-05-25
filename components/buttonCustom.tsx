@@ -23,7 +23,7 @@ const ButtonCustom = ({
       onPress={onPress} //
       activeOpacity={isTouchable ? 0.7 : 1}
       disabled={!isTouchable}
-      className={`px-4 py-3 rounded-lg ${classNameContainer}`}
+      className={`px-4 py-3  ${classNameContainer}`}
       style={containerStyle}
     >
       <View className="flex-row items-center justify-between w-full">

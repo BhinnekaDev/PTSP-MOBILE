@@ -81,7 +81,7 @@ export default function FormDropdownSelect({
       )}
       <TouchableOpacity
         onPress={toggleDropdown} //
-        className={`w-full self-center flex-row justify-between items-center border  rounded-[5px] p-3 ${toggleDropdownClassName}`}
+        className={` self-center flex-row justify-between items-center border  rounded-[5px] p-3  ${toggleDropdownClassName}`}
         activeOpacity={0.8}
       >
         <Text className="text-black" style={[FontLexSemiBold, selectedTextStyle]}>
@@ -96,7 +96,7 @@ export default function FormDropdownSelect({
             height: animatedHeight,
             opacity: animatedOpacity,
           }}
-          className={`w-full self-center overflow-hidden border border-t-0  bg-white rounded-b-[10px] ${DropdownSelectClassName}`}
+          className={` self-center overflow-hidden border border-t-0  bg-white rounded-b-[10px] ${DropdownSelectClassName}`}
         >
           <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={true} style={{ flexGrow: 0 }}>
             {options.map((option, index) => (
