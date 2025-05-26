@@ -9,15 +9,21 @@ interface FormInputProps {
   onChangeText: (text: string) => void;
   placeholder?: string;
   keyboardType?: TextInputProps["keyboardType"];
+  textClassName?: string;
+  multiline?: boolean;
+  textAlignVertical?: "auto" | "top" | "center" | "bottom";
 }
 
 const FormInput = ({
   fontLexBold = { fontFamily: "LexBold" }, //
+  textClassName,
   label,
   value,
   onChangeText,
   placeholder,
   keyboardType,
+  multiline,
+  textAlignVertical,
 }: FormInputProps) => {
   return (
     <View className="mt-4 px-6 py-1 ">
@@ -25,11 +31,13 @@ const FormInput = ({
         {label}
       </Text>
       <TextInput
-        className="border border-[#6BBC3F] rounded-[10px] p-4" //
+        className={`border  rounded-[10px] p-4 ${textClassName}`} //
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
         keyboardType={keyboardType}
+        multiline={multiline}
+        textAlignVertical={textAlignVertical}
         style={{ fontFamily: "LexRegular" }}
       />
     </View>

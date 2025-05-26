@@ -1,6 +1,11 @@
 import React from "react";
 import { View, Text, Animated } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
+
+// OUR SCREENS
+import NotificationProfile from "@/app/screens/notificationProfile";
+import SecurityProfile from "@/app/screens/securityProfile";
 
 // OUR ICONS
 import { MaterialIcons } from "@expo/vector-icons";
@@ -14,10 +19,9 @@ import { useProfilePopup } from "@/hooks/Frontend/profileScreen/usePopupAnimatio
 import ButtonCustom from "@/components/buttonCustom";
 import UserProfile from "@/components/userProfile";
 import EditProfile from "@/app/screens/editProfile";
-import NotificationProfile from "@/app/screens/notificationProfile";
-import SecurityProfile from "@/app/screens/securityProfile";
 
 export default function ProfileTabs() {
+  const router = useRouter();
   const {
     activePopup, //
     animatedWidth,
@@ -52,7 +56,7 @@ export default function ProfileTabs() {
               text="Pesanan Saya"
               iconLeft={<Octicons name="checklist" size={20} color="white" />}
               textClassName="ml-2 text-white"
-              onPress={() => alert("Pesanan Saya")}
+              onPress={() => router.push("/screens/orderScreen")}
             />
           </View>
 
