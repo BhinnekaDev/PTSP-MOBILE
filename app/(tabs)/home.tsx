@@ -10,6 +10,9 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Feather from "@expo/vector-icons/Feather";
 
+// OUR COMPONENTS
+import ButtonShopAndChat from "@/components/buttonShopAndChat";
+
 export default function ProfileTabs() {
   const router = useRouter();
   return (
@@ -26,21 +29,7 @@ export default function ProfileTabs() {
           <Image source={require("@/assets/images/HomeScreen/logo.png")} className="w-44 h-12 object-cover" />
         </View>
         <View className="flex-row gap-6 items-center">
-          <TouchableOpacity activeOpacity={0.3} className="p-1 relative" onPress={() => router.push("/screens/cartOrderScreen")}>
-            <MaterialIcons name="shopping-cart" size={24} color="white" />
-            <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
-              <Text className="text-white text-[11px] font-bold">0</Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity activeOpacity={0.7} onPress={() => router.push("/screens/chatScreen")} className="p-1">
-            <Ionicons name="chatbubbles-outline" size={28} color="white" />
-            <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
-              <Text className="text-white text-[10px]" style={{ fontFamily: "LexBold" }}>
-                4
-              </Text>
-            </View>
-          </TouchableOpacity>
+          <ButtonShopAndChat />
         </View>
       </View>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 15, paddingBottom: 10 }} showsVerticalScrollIndicator={false}>

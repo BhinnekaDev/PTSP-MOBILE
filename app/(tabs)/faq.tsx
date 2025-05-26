@@ -1,10 +1,11 @@
 import React from "react";
 import { View, ScrollView, Text, Image, TouchableOpacity, Animated } from "react-native";
-import { useRouter } from "expo-router";
 
 // OUR ICONS
-import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+
+// OUR COMPONENTS
+import ButtonShopAndChat from "@/components/buttonShopAndChat";
 
 // OUR HOOKS
 import useDropdownAnimation from "@/hooks/Frontend/faqScreen/useAnimationFaq";
@@ -16,7 +17,6 @@ import dataFaq from "@/constants/dataFaq";
 import { ButtonCustomProps } from "@/interfaces/buttonCustomProps";
 
 export default function FAQ({ count = 1 }: ButtonCustomProps) {
-  const router = useRouter();
   const { openIndex, animatedValues, toggleDropdown } = useDropdownAnimation(dataFaq.length);
 
   return (
@@ -25,23 +25,7 @@ export default function FAQ({ count = 1 }: ButtonCustomProps) {
       <View className="bg-[#1475BA] flex-row justify-between w-full items-center px-6 pb-4 rounded-b-[10px] shadow-md">
         <Image source={require("@/assets/images/HomeScreen/logo.png")} className="w-44 h-12 object-cover" />
         <View className="flex-row gap-6 items-center">
-          <TouchableOpacity activeOpacity={0.3} className="p-1 relative" onPress={() => router.push("/screens/cartOrderScreen")}>
-            <MaterialIcons name="shopping-cart" size={24} color="white" />
-            <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
-              <Text className="text-white text-[11px] font-bold">0</Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity activeOpacity={0.7} onPress={() => router.push("/screens/chatScreen")} className="p-1">
-            <Ionicons name="chatbubbles-outline" size={28} color="white" />
-            {count > 0 && (
-              <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
-                <Text className="text-white text-[10px]" style={{ fontFamily: "LexBold" }}>
-                  {count}
-                </Text>
-              </View>
-            )}
-          </TouchableOpacity>
+          <ButtonShopAndChat />
         </View>
       </View>
 
