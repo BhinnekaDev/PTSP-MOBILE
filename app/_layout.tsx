@@ -16,7 +16,7 @@ export default function RootLayout() {
 
   return (
     <>
-      {/* STATUS BAR UNTUK IOS */}
+      {/* STATUS BAR UNTUK IOS ATAS*/}
       {Platform.OS === "ios" && <View style={{ height: 44, backgroundColor: "#1475BA" }} />}
 
       {/* STATUS BAR UNTUK ANDROID*/}
