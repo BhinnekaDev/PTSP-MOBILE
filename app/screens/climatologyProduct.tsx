@@ -17,7 +17,6 @@ import { ButtonCustomProps } from "@/interfaces/buttonCustomProps";
 
 export default function ClimatologyProduct({
   count = 1, //
-  onPressRightIcon,
 }: ButtonCustomProps) {
   return (
     <View className="flex-1">

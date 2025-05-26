@@ -15,7 +15,7 @@ import Button from "@/components/button";
 // OUR HOOKS
 import { ButtonCustomProps } from "@/interfaces/buttonCustomProps";
 
-export default function Product({ count = 1, onPressRightIcon }: ButtonCustomProps) {
+export default function Product({ count = 1 }: ButtonCustomProps) {
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState("Semua");
 

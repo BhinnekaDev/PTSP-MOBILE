@@ -15,7 +15,7 @@ import dataFaq from "@/constants/dataFaq";
 // OUR INTERFACES
 import { ButtonCustomProps } from "@/interfaces/buttonCustomProps";
 
-export default function FAQ({ count = 1, onPressRightIcon }: ButtonCustomProps) {
+export default function FAQ({ count = 1 }: ButtonCustomProps) {
   const router = useRouter();
   const { openIndex, animatedValues, toggleDropdown } = useDropdownAnimation(dataFaq.length);
 

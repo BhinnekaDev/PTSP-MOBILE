@@ -18,7 +18,6 @@ import { ButtonCustomProps } from "@/interfaces/buttonCustomProps";
 
 export default function MeteorologyProduct({
   count = 1, //
-  onPressRightIcon,
 }: ButtonCustomProps) {
   return (
     <View className="flex-1">
