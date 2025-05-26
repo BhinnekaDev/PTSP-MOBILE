@@ -17,6 +17,7 @@ export default function ProfileTabs({
   count = 1, //
   onPressRightIcon,
 }: ButtonCustomProps) {
+
   const router = useRouter();
   return (
     <LinearGradient

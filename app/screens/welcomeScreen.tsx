@@ -108,6 +108,7 @@ export default function WelcomeScreen({ onFinish }: { onFinish: () => void }) {
             style="bg-[#73BF40] px-20 py-3 mt-9 rounded-md" //
             activeOpacity={0.8}
             textStyle="text-white"
+            // onPress={handleStart}
             onPress={handleStart}
           >
             Mulai
