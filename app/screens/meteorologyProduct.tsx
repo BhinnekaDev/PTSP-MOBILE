@@ -2,8 +2,7 @@ import React from "react";
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-// OUR COMPONENTS
-import Button from "@/components/button";
+
 // OUR ICONS
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -11,7 +10,16 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Octicons from "@expo/vector-icons/Octicons";
 import Foundation from "@expo/vector-icons/Foundation";
 
-export default function MeteorologyProduct() {
+// OUR COMPONENTS
+import Button from "@/components/button";
+
+// OUR INTERFACES
+import { ButtonCustomProps } from "@/interfaces/buttonCustomProps";
+
+export default function MeteorologyProduct({
+  count = 1, //
+  onPressRightIcon,
+}: ButtonCustomProps) {
   return (
     <View className="flex-1">
       <View className="bg-[#1475BA] flex-row justify-between w-full items-center px-4 py-4 rounded-b-[10px] shadow-md">
@@ -24,18 +32,19 @@ export default function MeteorologyProduct() {
             <Octicons name="search" size={20} color="white" />
           </TouchableOpacity>
         </View>
-        <View className="flex-row gap-4 ml-12">
-          <TouchableOpacity activeOpacity={0.3} className="p-1 relative">
+        <View className="flex-row gap-4 ml-12 items-center">
+          <TouchableOpacity activeOpacity={0.3} className="p-1" onPress={() => router.push("/screens/cartOrderScreen")}>
             <MaterialIcons name="shopping-cart" size={24} color="white" />
-            <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
-              <Text className="text-white text-[11px] font-bold">0</Text>
-            </View>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.3} className="p-1 relative">
-            <Ionicons name="chatbubble-ellipses" size={24} color="white" />
-            <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
-              <Text className="text-white text-[11px] font-bold">3</Text>
-            </View>
+          <TouchableOpacity activeOpacity={0.7} onPress={onPressRightIcon} className="p-1">
+            <Ionicons name="chatbubbles-outline" size={28} color="white" />
+            {count > 0 && (
+              <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
+                <Text className="text-white text-[10px]" style={{ fontFamily: "LexBold" }}>
+                  {count}
+                </Text>
+              </View>
+            )}
           </TouchableOpacity>
         </View>
       </View>

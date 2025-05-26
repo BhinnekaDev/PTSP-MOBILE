@@ -42,6 +42,7 @@ export default function SecurityProfile({ onClose }: { onClose: () => void }) {
               {/* INPUT NO TELEPON */}
               <InputField
                 label="No HP / Telepon" //
+                textClassName="border-[#6BBC3F]"
                 value={telepon}
                 onChangeText={setTelepon}
                 placeholder="Masukkan nomor telepon"
@@ -51,6 +52,7 @@ export default function SecurityProfile({ onClose }: { onClose: () => void }) {
               {/* INPUT EMAIL */}
               <InputField
                 label="Email" //
+                textClassName="border-[#6BBC3F]"
                 value={email}
                 onChangeText={(input) => setEmail(validationEmail(input))}
                 placeholder="Masukkan email"

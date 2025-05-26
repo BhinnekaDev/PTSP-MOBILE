@@ -13,7 +13,11 @@ import ButtonCustom from "@/components/buttonCustom";
 import NavCartOrder from "@/components/navCartOrder";
 
 // OUR CONSTANTS
+<<<<<<< HEAD
 import dataPesanan from "@/constant/dataPesanan";
+=======
+import dataPesanan from "@/constants/dataPesanan";
+>>>>>>> bhinnekadev24/bhi-356-faq-dan-saran-pengaduan
 
 // OUR HOOKS
 import useAjukanTransition from "@/hooks/Frontend/orderScreen/useAnimationButtonPlus";

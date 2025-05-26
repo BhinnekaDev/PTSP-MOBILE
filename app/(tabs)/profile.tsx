@@ -1,6 +1,11 @@
 import React from "react";
 import { View, Text, Animated } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
+
+// OUR SCREENS
+import NotificationProfile from "@/app/screens/notificationProfile";
+import SecurityProfile from "@/app/screens/securityProfile";
 
 // OUR ICONS
 import { MaterialIcons } from "@expo/vector-icons";
@@ -14,11 +19,15 @@ import { useProfilePopup } from "@/hooks/Frontend/profileScreen/usePopupAnimatio
 import ButtonCustom from "@/components/buttonCustom";
 import UserProfile from "@/components/userProfile";
 import EditProfile from "@/app/screens/editProfile";
+<<<<<<< HEAD
 import NotificationProfile from "@/app/screens/notificationProfile";
 import SecurityProfile from "@/app/screens/securityProfile";
 import { router } from "expo-router";
+=======
+>>>>>>> bhinnekadev24/bhi-356-faq-dan-saran-pengaduan
 
 export default function ProfileTabs() {
+  const router = useRouter();
   const {
     activePopup, //
     animatedWidth,
