@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, TouchableOpacity, View, Image } from "react-native";
-import { ButtonProps } from "../interfaces/buttonProps";
+import { ButtonProps } from "@/interfaces/buttonProps";
 
 const Button = ({
   children, //
