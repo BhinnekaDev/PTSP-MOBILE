@@ -31,8 +31,11 @@ export default function ClimatologyProduct({
           </TouchableOpacity>
         </View>
         <View className="flex-row gap-4 ml-12 items-center">
-          <TouchableOpacity activeOpacity={0.3} className="p-1" onPress={() => router.push("/screens/cartOrderScreen")}>
+          <TouchableOpacity activeOpacity={0.3} className="p-1 relative" onPress={() => router.push("/screens/cartOrderScreen")}>
             <MaterialIcons name="shopping-cart" size={24} color="white" />
+            <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
+              <Text className="text-white text-[11px] font-bold">0</Text>
+            </View>
           </TouchableOpacity>
 
           <TouchableOpacity activeOpacity={0.7} onPress={() => router.push("/screens/chatScreen")} className="p-1">
