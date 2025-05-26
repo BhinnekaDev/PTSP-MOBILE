@@ -10,12 +10,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Feather from "@expo/vector-icons/Feather";
 
-// OUR INTERFACES
-import { ButtonCustomProps } from "@/interfaces/buttonCustomProps";
-
-export default function ProfileTabs({
-  count = 1, //
-}: ButtonCustomProps) {
+export default function ProfileTabs() {
   const router = useRouter();
   return (
     <LinearGradient
@@ -40,13 +35,11 @@ export default function ProfileTabs({
 
           <TouchableOpacity activeOpacity={0.7} onPress={() => router.push("/screens/chatScreen")} className="p-1">
             <Ionicons name="chatbubbles-outline" size={28} color="white" />
-            {count > 0 && (
-              <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
-                <Text className="text-white text-[10px]" style={{ fontFamily: "LexBold" }}>
-                  {count}
-                </Text>
-              </View>
-            )}
+            <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
+              <Text className="text-white text-[10px]" style={{ fontFamily: "LexBold" }}>
+                4
+              </Text>
+            </View>
           </TouchableOpacity>
         </View>
       </View>

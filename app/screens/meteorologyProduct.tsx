@@ -13,12 +13,7 @@ import Foundation from "@expo/vector-icons/Foundation";
 // OUR COMPONENTS
 import Button from "@/components/button";
 
-// OUR INTERFACES
-import { ButtonCustomProps } from "@/interfaces/buttonCustomProps";
-
-export default function MeteorologyProduct({
-  count = 1, //
-}: ButtonCustomProps) {
+export default function MeteorologyProduct() {
   return (
     <View className="flex-1">
       <View className="bg-[#1475BA] flex-row justify-between w-full items-center px-4 py-4 rounded-b-[10px] shadow-md">
@@ -38,15 +33,14 @@ export default function MeteorologyProduct({
               <Text className="text-white text-[11px] font-bold">0</Text>
             </View>
           </TouchableOpacity>
+
           <TouchableOpacity activeOpacity={0.7} onPress={() => router.push("/screens/chatScreen")} className="p-1">
             <Ionicons name="chatbubbles-outline" size={28} color="white" />
-            {count > 0 && (
-              <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
-                <Text className="text-white text-[10px]" style={{ fontFamily: "LexBold" }}>
-                  {count}
-                </Text>
-              </View>
-            )}
+            <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
+              <Text className="text-white text-[10px]" style={{ fontFamily: "LexBold" }}>
+                4
+              </Text>
+            </View>
           </TouchableOpacity>
         </View>
       </View>

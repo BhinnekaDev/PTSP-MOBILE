@@ -34,7 +34,6 @@ export default function NavCartOrder({
       <TouchableOpacity
         activeOpacity={0.7} //
         onPress={onPressRightIcon ?? (() => router.push("/screens/chatScreen"))}
-        // className="absolute right-4 top-1/2 -translate-y-1/2"
         className="absolute right-4"
       >
         <Ionicons name="chatbubbles-outline" size={28} color="white" />
