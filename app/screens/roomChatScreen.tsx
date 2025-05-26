@@ -30,9 +30,7 @@ export default function Chat() {
       </View>
 
       <ScrollView contentContainerStyle={{ paddingBottom: 140, paddingHorizontal: 10 }} showsVerticalScrollIndicator={false}></ScrollView>
-      <View className="bg-[#1475BA] w-full h-7 items-center justify-center">
-        <View className="bg-white w-32 h-1.5 rounded-full" />
-      </View>
+      <View className="bg-[#1475BA] w-full h-7 items-center justify-center" />
     </View>
   );
 }
