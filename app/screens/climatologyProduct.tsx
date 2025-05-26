@@ -36,7 +36,7 @@ export default function ClimatologyProduct({
             <MaterialIcons name="shopping-cart" size={24} color="white" />
           </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.7} onPress={onPressRightIcon} className="p-1">
+          <TouchableOpacity activeOpacity={0.7} onPress={() => router.push("/screens/chatScreen")} className="p-1">
             <Ionicons name="chatbubbles-outline" size={28} color="white" />
             {count > 0 && (
               <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">

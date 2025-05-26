@@ -25,10 +25,14 @@ export default function FAQ({ count = 1, onPressRightIcon }: ButtonCustomProps) 
       <View className="bg-[#1475BA] flex-row justify-between w-full items-center px-6 pb-4 rounded-b-[10px] shadow-md">
         <Image source={require("@/assets/images/HomeScreen/logo.png")} className="w-44 h-12 object-cover" />
         <View className="flex-row gap-6 items-center">
-          <TouchableOpacity activeOpacity={0.3} className="p-1" onPress={() => router.push("/screens/cartOrderScreen")}>
+          <TouchableOpacity activeOpacity={0.3} className="p-1 relative" onPress={() => router.push("/screens/cartOrderScreen")}>
             <MaterialIcons name="shopping-cart" size={24} color="white" />
+            <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
+              <Text className="text-white text-[11px] font-bold">0</Text>
+            </View>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.7} onPress={onPressRightIcon} className="p-1">
+
+          <TouchableOpacity activeOpacity={0.7} onPress={() => router.push("/screens/chatScreen")} className="p-1">
             <Ionicons name="chatbubbles-outline" size={28} color="white" />
             {count > 0 && (
               <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">

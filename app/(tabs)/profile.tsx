@@ -19,12 +19,6 @@ import { useProfilePopup } from "@/hooks/Frontend/profileScreen/usePopupAnimatio
 import ButtonCustom from "@/components/buttonCustom";
 import UserProfile from "@/components/userProfile";
 import EditProfile from "@/app/screens/editProfile";
-<<<<<<< HEAD
-import NotificationProfile from "@/app/screens/notificationProfile";
-import SecurityProfile from "@/app/screens/securityProfile";
-import { router } from "expo-router";
-=======
->>>>>>> bhinnekadev24/bhi-356-faq-dan-saran-pengaduan
 
 export default function ProfileTabs() {
   const router = useRouter();

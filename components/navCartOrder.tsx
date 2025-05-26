@@ -1,4 +1,5 @@
 import { View, TouchableOpacity, Text } from "react-native";
+import { router } from "expo-router";
 
 // OUR ICONS
 import { AntDesign, Ionicons } from "@expo/vector-icons";
@@ -32,7 +33,7 @@ export default function NavCartOrder({
       {/* ICON KANAN */}
       <TouchableOpacity
         activeOpacity={0.7} //
-        onPress={onPressRightIcon}
+        onPress={onPressRightIcon ?? (() => router.push("/screens/chatScreen"))}
         // className="absolute right-4 top-1/2 -translate-y-1/2"
         className="absolute right-4"
       >

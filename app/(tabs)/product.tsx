@@ -1,14 +1,21 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
-import Button from "@/components/button";
+
+// OUR ICONS
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Feather from "@expo/vector-icons/Feather";
 import Octicons from "@expo/vector-icons/Octicons";
 
-export default function Product() {
+// OUR COMPONENTS
+import Button from "@/components/button";
+
+// OUR HOOKS
+import { ButtonCustomProps } from "@/interfaces/buttonCustomProps";
+
+export default function Product({ count = 1, onPressRightIcon }: ButtonCustomProps) {
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState("Semua");
 
@@ -69,17 +76,21 @@ export default function Product() {
           </TouchableOpacity>
         </View>
         <View className="flex-row gap-4 ml-12">
-          <TouchableOpacity activeOpacity={0.3} className="p-1 relative">
+          <TouchableOpacity activeOpacity={0.3} className="p-1 relative" onPress={() => router.push("/screens/cartOrderScreen")}>
             <MaterialIcons name="shopping-cart" size={24} color="white" />
             <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
               <Text className="text-white text-[11px] font-bold">0</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.3} className="p-1 relative">
-            <Ionicons name="chatbubble-ellipses" size={24} color="white" />
-            <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
-              <Text className="text-white text-[11px] font-bold">3</Text>
-            </View>
+          <TouchableOpacity activeOpacity={0.7} onPress={() => router.push("/screens/chatScreen")} className="p-1">
+            <Ionicons name="chatbubbles-outline" size={28} color="white" />
+            {count > 0 && (
+              <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
+                <Text className="text-white text-[10px]" style={{ fontFamily: "LexBold" }}>
+                  {count}
+                </Text>
+              </View>
+            )}
           </TouchableOpacity>
         </View>
       </View>
