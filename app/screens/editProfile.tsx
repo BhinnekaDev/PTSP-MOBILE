@@ -41,10 +41,10 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
               />
               <FormDropdownSelect
                 labelClassName="px-6 mt-4 mb-2" //
-                toggleDropdownClassName="w-[87%] border-[#6BBC3F]"
+                toggleDropdownClassName="w-[87%] border-[#6BBC3F] rounded-[10px] "
                 label="Jenis Kelamin"
                 labelStyle={{ fontFamily: "LexBold" }}
-                DropdownSelectClassName="w-[87%] border-[#6BBC3F]"
+                DropdownSelectClassName="w-[87%] border-[#6BBC3F] rounded-[10px]"
                 options={[
                   "Laki - Laki", //
                   "Perempuan",
