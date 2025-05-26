@@ -13,12 +13,8 @@ export default function TabNavigator() {
   const tabConfig: Record<
     string,
     {
-      iconActive:
-        | keyof typeof Ionicons.glyphMap
-        | keyof typeof FontAwesome.glyphMap;
-      iconInactive:
-        | keyof typeof Ionicons.glyphMap
-        | keyof typeof FontAwesome.glyphMap;
+      iconActive: keyof typeof Ionicons.glyphMap | keyof typeof FontAwesome.glyphMap;
+      iconInactive: keyof typeof Ionicons.glyphMap | keyof typeof FontAwesome.glyphMap;
       label: string;
       lib?: "Ionicons" | "FontAwesome" | "AntDesign";
     }
@@ -78,29 +74,11 @@ export default function TabNavigator() {
 
             switch (config.lib) {
               case "FontAwesome":
-                return (
-                  <FontAwesome
-                    name={iconName as keyof typeof FontAwesome.glyphMap}
-                    size={size}
-                    color={color}
-                  />
-                );
+                return <FontAwesome name={iconName as keyof typeof FontAwesome.glyphMap} size={size} color={color} />;
               case "AntDesign":
-                return (
-                  <AntDesign
-                    name={iconName as keyof typeof AntDesign.glyphMap}
-                    size={size}
-                    color={color}
-                  />
-                );
+                return <AntDesign name={iconName as keyof typeof AntDesign.glyphMap} size={size} color={color} />;
               default:
-                return (
-                  <Ionicons
-                    name={iconName as keyof typeof Ionicons.glyphMap}
-                    size={size}
-                    color={color}
-                  />
-                );
+                return <Ionicons name={iconName as keyof typeof Ionicons.glyphMap} size={size} color={color} />;
             }
           },
           headerShown: false,
