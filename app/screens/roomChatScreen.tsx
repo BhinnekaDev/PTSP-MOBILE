@@ -161,6 +161,8 @@ export default function RoomChat() {
                   onLongPress={() => {
                     setSelectedMessage(msg);
                     setShowOptionMessage(true);
+                    setShowEmojiPicker(false);
+                    setShowAttachmentOptions(false);
                   }}
                   delayLongPress={400}
                   activeOpacity={0.85}
@@ -213,7 +215,13 @@ export default function RoomChat() {
       </ScrollView>
       <View className="px-5 pt-2 mb-5">
         <View className="flex-row items-center justify-center p-2 border border-gray-300 rounded-xl">
-          <TouchableOpacity onPress={() => setShowEmojiPicker((prev) => !prev)}>
+          <TouchableOpacity
+            onPress={() => {
+              setShowEmojiPicker((prev) => !prev);
+              setShowAttachmentOptions(false);
+              setSelectedMessage(null);
+            }}
+          >
             <Entypo
               name="emoji-happy"
               size={24}
@@ -235,7 +243,11 @@ export default function RoomChat() {
           />
 
           <TouchableOpacity
-            onPress={() => setShowAttachmentOptions((prev) => !prev)}
+            onPress={() => {
+              setShowAttachmentOptions((prev) => !prev);
+              setShowEmojiPicker(false);
+              setSelectedMessage(null);
+            }}
           >
             <Entypo
               name="attachment"
