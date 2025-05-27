@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { GestureResponderEvent, StyleProp, ViewStyle } from "react-native";
+import { GestureResponderEvent, StyleProp, ViewStyle, ImageSourcePropType } from "react-native";
 
 export interface ButtonProps {
   children: ReactNode;
@@ -10,4 +10,6 @@ export interface ButtonProps {
   disabled?: boolean;
   textStyle?: string;
   activeOpacity?: number;
+  image?: ImageSourcePropType;
+  imagePosition?: "left" | "right";
 }

@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import Animated, {
-  FadeInDown,
   useSharedValue,
   useAnimatedStyle,
   withTiming,
+  FadeInDown,
   FadeInUp,
 } from "react-native-reanimated";
 import { useRouter } from "expo-router";
+// OUR ICONS
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Feather from "@expo/vector-icons/Feather";
@@ -58,7 +59,7 @@ export default function Chat() {
 
   return (
     <View className="flex-1">
-      <View className="bg-[#1475BA] flex-row w-full items-center px-4 pt-20 pb-4 rounded-xl shadow-md">
+      <View className="bg-[#1475BA] flex-row w-full items-center px-4 py-4 rounded-b-[10px] shadow-md">
         <TouchableOpacity
           onPress={() => router.back()}
           className="rounded-full p-1 mr-3"

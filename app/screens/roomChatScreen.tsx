@@ -24,12 +24,6 @@ type Message = {
   sender: "me" | "other";
 };
 
-type AlertOption = {
-  text: string;
-  onPress: () => void;
-  style?: "cancel" | "destructive";
-};
-
 export default function RoomChat() {
   const router = useRouter();
   const scrollViewRef = useRef<ScrollView>(null);
@@ -110,7 +104,7 @@ export default function RoomChat() {
 
   return (
     <View className="flex-1">
-      <View className="bg-[#1475BA] flex-row w-full items-center px-4 pt-20 pb-4 rounded-xl shadow-md gap-4">
+      <View className="bg-[#1475BA] flex-row w-full items-center px-4 py-4 rounded-b-[10px] shadow-md gap-4">
         <TouchableOpacity
           onPress={() => router.back()}
           className="rounded-full p-1"

@@ -11,7 +11,7 @@ export default function Index() {
   return (
     <View className="flex-1">
       {showSplash ? (
-        <SplashScreen onAnimationEnd={() => setShowSplash(false)} />
+        <SplashScreen onAnimationEnd={() => setShowSplash(false)} /> //
       ) : showWelcome ? (
         <WelcomeScreen onFinish={() => setShowWelcome(false)} />
       ) : (
