@@ -131,7 +131,9 @@ export default function Chat() {
         )}
       </ScrollView>
       <View className="bg-[#1475BA] w-full h-7 items-center justify-center">
-        <View className="bg-white w-32 h-1.5 rounded-full" />
+        <Animated.View entering={FadeInDown.duration(400)}>
+          <View className="bg-white w-32 h-1.5 rounded-full" />
+        </Animated.View>
       </View>
     </View>
   );
