@@ -71,8 +71,8 @@ export default function WelcomeScreen({ onFinish }: { onFinish: () => void }) {
     ]).start(() => {
       setTimeout(() => {
         onFinish();
-        // router.push("/(tabs)/home");
-        router.push("/screens/loginScreen");
+        router.push("/(tabs)/home");
+        // router.push("/screens/loginScreen");
       }, 1000);
     });
   };
