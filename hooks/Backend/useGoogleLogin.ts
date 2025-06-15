@@ -26,7 +26,7 @@ export const useGoogleLogin = () => {
       console.log("ID Token:", idToken);
 
       if (!idToken) {
-        throw new Error("ID Token tidak ditemukan.");
+        throw new Error("ID Token tidak ditemukan BRO.");
       }
 
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
