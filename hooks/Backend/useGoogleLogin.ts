@@ -1,19 +1,20 @@
-// useGoogleLogin.ts
 import { useRouter } from "expo-router";
-import { useEffect } from "react";
 import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import Constants from "expo-constants";
 
+const webClientId = Constants.expoConfig?.extra?.GOOGLE_WEB_CLIENT_ID;
+
+if (!webClientId) {
+  console.warn("❌ GOOGLE_WEB_CLIENT_ID tidak ditemukan. Cek app.config.js atau app.json");
+} else {
+  GoogleSignin.configure({
+    webClientId,
+  });
+}
+
 export const useGoogleLogin = () => {
   const router = useRouter();
-
-  useEffect(() => {
-    GoogleSignin.configure({
-      webClientId: Constants.expoConfig?.extra?.GOOGLE_WEB_CLIENT_ID,
-      offlineAccess: true,
-    });
-  }, []);
 
   const signIn = async () => {
     try {
@@ -25,9 +26,7 @@ export const useGoogleLogin = () => {
       const { idToken } = await GoogleSignin.getTokens();
       console.log("ID Token:", idToken);
 
-      if (!idToken) {
-        throw new Error("ID Token tidak ditemukan BRO.");
-      }
+      if (!idToken) throw new Error("ID Token tidak ditemukan.");
 
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
       const userCredential = await auth().signInWithCredential(googleCredential);
