@@ -35,7 +35,7 @@ export default function ProfileTabs() {
       <ScrollView contentContainerStyle={{ paddingHorizontal: 15, paddingBottom: 10 }} showsVerticalScrollIndicator={false}>
         <View className="py-4 gap-1">
           <Text style={{ fontFamily: "LexBold" }} className="text-white text-2xl">
-            Hai, Gibran
+            Hai, AdrianInDev
           </Text>
           <Text style={{ fontFamily: "LexRegular" }} className="text-white">
             selamat datang di pelayanan terpadu satu pintu!

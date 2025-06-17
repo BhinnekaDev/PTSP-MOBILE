@@ -47,6 +47,8 @@
     "expo-system-ui": "~5.0.7",
     "expo-web-browser": "~14.1.6",
     "nativewind": "^4.1.23",
+    "prettier": "^3.5.3",
+    "prettier-plugin-tailwindcss": "^0.6.12",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-icons": "^5.5.0",

@@ -1,17 +1,24 @@
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
-type IndividualData = {
+type CompanyData = {
   No_Identitas: string;
   Nama_Lengkap: string;
   Jenis_Kelamin: string;
   Pekerjaan: string;
   Pendidikan_Terakhir: string;
   No_Hp: string;
+  NPWP: string;
+  Nama_Perusahaan: string;
+  Alamat_Perusahaan: string;
+  Provinsi_Perusahaan: string;
+  Kabupaten_Kota_Perusahaan: string;
+  Email_Perusahaan: string;
+  No_Hp_Perusahaan: string;
 };
 
-export const useIndividualRegister = () => {
-  const register = async (data: IndividualData) => {
+export const useCompanyRegister = () => {
+  const register = async (data: CompanyData) => {
     try {
       const user = auth().currentUser;
       if (!user) throw new Error('User belum login');
@@ -19,7 +26,7 @@ export const useIndividualRegister = () => {
       const now = firestore.FieldValue.serverTimestamp();
 
       await firestore()
-        .collection('perorangan')
+        .collection('perusahaan')
         .doc(user.uid)
         .set({
           Email: user.email,
@@ -27,7 +34,7 @@ export const useIndividualRegister = () => {
           Tanggal_Pembuatan_Akun: now,
         });
 
-      console.log('✅ Registrasi perorangan berhasil disimpan ke Firestore');
+      console.log('✅ Registrasi perusahaan berhasil disimpan ke Firestore');
     } catch (error) {
       console.error('❌ Gagal menyimpan registrasi:', error);
       throw error;
@@ -40,7 +47,7 @@ export const useIndividualRegister = () => {
       if (!user) throw new Error('User belum login');
 
       const doc = await firestore()
-        .collection('perorangan')
+        .collection('perusahaan')
         .doc(user.uid)
         .get();
 
@@ -53,7 +60,7 @@ export const useIndividualRegister = () => {
       console.log('📦 Data User Terkini:', data);
       return data;
     } catch (error) {
-      console.error('❌ Gagal mengambil data perorangan terkini:', error);
+      console.error('❌ Gagal mengambil data perusahaan terkini:', error);
       throw error;
     }
   };
