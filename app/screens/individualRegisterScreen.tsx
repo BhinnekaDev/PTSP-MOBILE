@@ -4,33 +4,71 @@ import {
   TouchableOpacity,
   TextInput,
   Pressable,
-} from "react-native";
-import { useState } from "react";
-import { useRouter } from "expo-router";
-import { LinearGradient } from "expo-linear-gradient";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import Entypo from "@expo/vector-icons/Entypo";
-import Button from "@/components/button";
+  Alert,
+} from 'react-native';
+import { useState } from 'react';
+import { useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import Entypo from '@expo/vector-icons/Entypo';
+import Button from '@/components/button';
+
+import { useIndividualRegister } from '@/hooks/Backend/useIndividualRegister';
 
 export default function IndividualRegisterScreen() {
   const router = useRouter();
-  const [selectedGender, setSelectedGender] = useState("");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { register } = useIndividualRegister();
   const [step, setStep] = useState(1);
+  const [selectedGender, setSelectedGender] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
 
-  const options = ["Laki-laki", "Perempuan"];
+  // State input
+  const [noIdentitas, setNoIdentitas] = useState('');
+  const [namaLengkap, setNamaLengkap] = useState('');
+  const [pekerjaan, setPekerjaan] = useState('');
+  const [pendidikanTerakhir, setPendidikanTerakhir] = useState('');
+  const [noHp, setNoHp] = useState('');
 
-  const handleSelect = (gender: string) => {
-    setSelectedGender(gender);
-    setIsDropdownOpen(false);
+  const handleRegister = async () => {
+    if (
+      !noIdentitas || //
+      !namaLengkap ||
+      !selectedGender ||
+      !pekerjaan ||
+      !pendidikanTerakhir ||
+      !noHp
+    ) {
+      Alert.alert('Peringatan', 'Mohon lengkapi semua data terlebih dahulu.');
+      return;
+    }
+
+    try {
+      await register({
+        No_Identitas: noIdentitas,
+        Nama_Lengkap: namaLengkap,
+        Jenis_Kelamin: selectedGender,
+        Pekerjaan: pekerjaan,
+        Pendidikan_Terakhir: pendidikanTerakhir,
+        No_Hp: noHp,
+      });
+
+      Alert.alert('Berhasil', 'Registrasi berhasil disimpan!', [
+        {
+          text: 'OK',
+          onPress: () => router.push('/(tabs)/home'),
+        },
+      ]);
+    } catch {
+      Alert.alert('Gagal', 'Terjadi kesalahan saat menyimpan data.');
+    }
   };
 
   return (
     <View className="flex-1 items-center justify-center overflow-hidden">
       <View className="absolute inset-0">
         <LinearGradient
-          colors={["#1475BA", "#36918A", "#6BBC3F"]}
+          colors={['#1475BA', '#36918A', '#6BBC3F']} //
           locations={[0, 0.5, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -38,16 +76,16 @@ export default function IndividualRegisterScreen() {
         />
       </View>
 
-      <View className="justify-center items-center mb-10">
+      <View className="mb-10 items-center justify-center">
         <Text
-          className="text-3xl text-white text-center"
-          style={{ fontFamily: "LexBold" }}
+          className="text-center text-3xl text-white"
+          style={{ fontFamily: 'LexBold' }}
         >
           Daftar Perorangan
         </Text>
       </View>
 
-      <View className="relative items-center bg-white rounded-lg px-6 py-8">
+      <View className="relative items-center rounded-lg bg-white px-6 py-8">
         <TouchableOpacity
           onPress={() => {
             if (step === 1) {
@@ -61,45 +99,50 @@ export default function IndividualRegisterScreen() {
           <Ionicons name="arrow-back-circle" size={32} color="black" />
         </TouchableOpacity>
         <Text
-          className="text-3xl text-center mb-4"
-          style={{ fontFamily: "LexBold" }}
+          className="mb-4 text-center text-3xl"
+          style={{ fontFamily: 'LexBold' }}
         >
           Data Diri
         </Text>
         {step === 1 && (
-          <View className="gap-6 mt-3">
+          <View className="mt-3 gap-6">
             <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: "LexBold" }}>
+              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
                 No Identitas
               </Text>
               <TextInput
+                value={noIdentitas}
+                onChangeText={setNoIdentitas}
                 keyboardType="phone-pad"
-                className="border border-[#6BBC3F] rounded-xl w-80 p-2"
-                style={{ fontFamily: "LexRegular" }}
+                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
+                style={{ fontFamily: 'LexRegular' }}
               />
             </View>
             <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: "LexBold" }}>
+              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
                 Nama Lengkap
               </Text>
               <TextInput
-                className="border border-[#6BBC3F] rounded-xl w-80 p-2"
-                style={{ fontFamily: "LexRegular" }}
+                value={namaLengkap}
+                onChangeText={setNamaLengkap}
+                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
+                style={{ fontFamily: 'LexRegular' }}
               />
             </View>
-            <View className="gap-1 w-80 relative">
-              <Text className="text-md ml-1" style={{ fontFamily: "LexBold" }}>
+            {/* Dropdown Gender */}
+            <View className="relative w-80 gap-1">
+              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
                 Jenis Kelamin
               </Text>
               <TouchableOpacity
                 onPress={() => setIsDropdownOpen((prev) => !prev)}
-                className="border border-[#6BBC3F] rounded-xl px-4 py-3 bg-white flex-row justify-between items-center"
+                className="flex-row items-center justify-between rounded-xl border border-[#6BBC3F] bg-white px-4 py-3"
               >
                 <Text
                   className="text-[#6BBC3F]"
-                  style={{ fontFamily: "LexRegular" }}
+                  style={{ fontFamily: 'LexRegular' }}
                 >
-                  {selectedGender || "Pilih jenis kelamin"}
+                  {selectedGender || 'Pilih jenis kelamin'}
                 </Text>
                 {isDropdownOpen ? (
                   <Entypo name="chevron-small-up" size={24} color="#6BBC3F" />
@@ -109,15 +152,18 @@ export default function IndividualRegisterScreen() {
               </TouchableOpacity>
 
               {isDropdownOpen && (
-                <View className="absolute top-[75px] z-10 w-full bg-white border border-[#6BBC3F] rounded-xl shadow-md">
-                  {options.map((item) => (
+                <View className="absolute top-[75px] z-10 w-full rounded-xl border border-[#6BBC3F] bg-white shadow-md">
+                  {['Laki-laki', 'Perempuan'].map((item) => (
                     <Pressable
                       key={item}
-                      onPress={() => handleSelect(item)}
+                      onPress={() => {
+                        setSelectedGender(item);
+                        setIsDropdownOpen(false);
+                      }}
                       className="px-4 py-3"
                     >
                       <Text
-                        style={{ fontFamily: "LexRegular" }}
+                        style={{ fontFamily: 'LexRegular' }}
                         className="text-[#6BBC3F]"
                       >
                         {item}
@@ -131,72 +177,80 @@ export default function IndividualRegisterScreen() {
         )}
 
         {step === 2 && (
-          <View className="gap-6 pb-2 mt-2">
+          <View className="mt-2 gap-6 pb-2">
             <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: "LexBold" }}>
+              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
                 Pekerjaan
               </Text>
               <TextInput
-                className="border border-[#6BBC3F] rounded-xl w-80 p-2"
-                style={{ fontFamily: "LexRegular" }}
+                value={pekerjaan}
+                onChangeText={setPekerjaan}
+                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
+                style={{ fontFamily: 'LexRegular' }}
               />
             </View>
             <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: "LexBold" }}>
+              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
                 Pendidikan Terakhir
               </Text>
               <TextInput
-                className="border border-[#6BBC3F] rounded-xl w-80 p-2"
-                style={{ fontFamily: "LexRegular" }}
+                value={pendidikanTerakhir}
+                onChangeText={setPendidikanTerakhir}
+                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
+                style={{ fontFamily: 'LexRegular' }}
               />
             </View>
             <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: "LexBold" }}>
+              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
                 No HP / No Telp
               </Text>
               <TextInput
+                value={noHp}
+                onChangeText={setNoHp}
                 keyboardType="phone-pad"
-                className="border border-[#6BBC3F] rounded-xl w-80 p-2"
-                style={{ fontFamily: "LexRegular" }}
+                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
+                style={{ fontFamily: 'LexRegular' }}
               />
             </View>
 
+            {/* Checkbox */}
             <TouchableOpacity
               onPress={() => setIsChecked(!isChecked)}
               className="flex-row items-start"
               activeOpacity={0.8}
             >
-              <View className="w-5 h-5 mr-2 border border-gray-400 rounded items-center justify-center mt-1">
+              <View className="mr-2 mt-1 h-5 w-5 items-center justify-center rounded border border-gray-400">
                 {isChecked && <Entypo name="check" size={14} color="black" />}
               </View>
               <Text
                 className="flex-1 text-sm"
-                style={{ fontFamily: "LexRegular" }}
+                style={{ fontFamily: 'LexRegular' }}
               >
                 Dengan ini saya menyetujui semua syarat dan ketentuan sebagai
                 pengguna Aplikasi PTSP BMKG.
               </Text>
             </TouchableOpacity>
 
+            {/* Ketentuan */}
             <View>
-              <Text className="text-sm" style={{ fontFamily: "LexBold" }}>
+              <Text className="text-sm" style={{ fontFamily: 'LexBold' }}>
                 Ketentuan Pengguna Perorangan:
               </Text>
-              <View className="flex-row items-start gap-2 mt-2">
+              <View className="mt-2 flex-row items-start gap-2">
                 <Text className="text-lg">•</Text>
                 <Text
-                  className="text-xs flex-1"
-                  style={{ fontFamily: "LexRegular" }}
+                  className="flex-1 text-xs"
+                  style={{ fontFamily: 'LexRegular' }}
                 >
                   Pengguna yang terdaftar pada Web PTSP BMKG tunduk pada aturan
                   yang berlaku.
                 </Text>
               </View>
-              <View className="flex-row items-start gap-2 mt-1">
+              <View className="mt-1 flex-row items-start gap-2">
                 <Text className="text-lg">•</Text>
                 <Text
-                  className="text-xs flex-1"
-                  style={{ fontFamily: "LexRegular" }}
+                  className="flex-1 text-xs"
+                  style={{ fontFamily: 'LexRegular' }}
                 >
                   Tidak menyalahgunakan akun terdaftar kepada pihak yang tidak
                   berkepentingan dan memanfaatkannya untuk melakukan tindakan
@@ -209,7 +263,7 @@ export default function IndividualRegisterScreen() {
 
         {step === 1 && (
           <Button
-            style="bg-[#1475BA] mt-12 py-3 px-28 rounded-xl"
+            style="bg-[#1475BA] mt-12 py-3 px-28 rounded-xl" //
             textStyle="text-white"
             onPress={() => setStep(2)}
             activeOpacity={0.8}
@@ -220,14 +274,14 @@ export default function IndividualRegisterScreen() {
       </View>
       {step === 2 && (
         <Button
-          onPress={() => router.push("/(tabs)/home")}
+          onPress={handleRegister}
           style={`mt-4 py-3 rounded-xl ${
-            isChecked ? "bg-[#1475BA] px-20" : "bg-gray-400 px-8"
+            isChecked ? 'bg-[#1475BA] px-20' : 'bg-gray-400 px-8' //
           }`}
-          textStyle={`${isChecked ? "text-white" : "text-black"}`}
+          textStyle={`${isChecked ? 'text-white' : 'text-black'}`}
           disabled={!isChecked}
         >
-          {isChecked ? "Simpan Data" : "Setujui Syarat untuk Lanjut"}
+          {isChecked ? 'Simpan Data' : 'Setujui Syarat untuk Lanjut'}
         </Button>
       )}
     </View>
