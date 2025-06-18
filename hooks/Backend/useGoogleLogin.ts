@@ -1,18 +1,17 @@
 import { useRouter } from 'expo-router';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import { db, firebaseAuth, GoogleAuthProvider } from '@/lib/firebase';
 import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import '@/lib/auth/googleConfig'; // Konfigurasi Google Sign-In
+import '@/lib/auth/googleConfig';
 
 export const useGoogleLogin = () => {
   const router = useRouter();
 
   const checkUserRegistration = async (uid: string) => {
-    const peroranganRef = firestore().collection('perorangan').doc(uid);
-    const perusahaanRef = firestore().collection('perusahaan').doc(uid);
+    const peroranganRef = db.collection('perorangan').doc(uid);
+    const perusahaanRef = db.collection('perusahaan').doc(uid);
 
     const [peroranganDoc, perusahaanDoc] = await Promise.all([
       peroranganRef.get(),
@@ -41,13 +40,14 @@ export const useGoogleLogin = () => {
       if (!idToken)
         throw new Error('ID Token tidak ditemukan setelah login Google.');
 
-      const credential = auth.GoogleAuthProvider.credential(idToken);
-      const userCredential = await auth().signInWithCredential(credential);
+      const credential = GoogleAuthProvider.credential(idToken);
+      const userCredential =
+        await firebaseAuth.signInWithCredential(credential);
       const user = userCredential.user;
 
       console.log('🔥 Login Firebase berhasil:', user.email);
 
-      // Step 3: Cek apakah user sudah terdaftar di Firestore
+      // Step 3: Cek apakah user sudah terdaftar di db
       const registrationStatus = await checkUserRegistration(user.uid);
 
       if (

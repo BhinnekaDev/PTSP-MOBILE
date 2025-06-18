@@ -1,5 +1,4 @@
-import firestore from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
+import { db, firebaseAuth, serverTimestamp } from '@/lib/firebase';
 
 type IndividualData = {
   No_Identitas: string;
@@ -13,12 +12,12 @@ type IndividualData = {
 export const useIndividualRegister = () => {
   const register = async (data: IndividualData) => {
     try {
-      const user = auth().currentUser;
+      const user = firebaseAuth.currentUser;
       if (!user) throw new Error('User belum login');
 
-      const now = firestore.FieldValue.serverTimestamp();
+      const now = serverTimestamp();
 
-      await firestore()
+      await db
         .collection('perorangan')
         .doc(user.uid)
         .set({
@@ -36,13 +35,10 @@ export const useIndividualRegister = () => {
 
   const fetchCurrentUserData = async () => {
     try {
-      const user = auth().currentUser;
+      const user = firebaseAuth.currentUser;
       if (!user) throw new Error('User belum login');
 
-      const doc = await firestore()
-        .collection('perorangan')
-        .doc(user.uid)
-        .get();
+      const doc = await db.collection('perorangan').doc(user.uid).get();
 
       if (!doc.exists) {
         console.log('📭 Data tidak ditemukan');
