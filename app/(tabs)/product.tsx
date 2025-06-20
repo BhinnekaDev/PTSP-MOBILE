@@ -1,3 +1,5 @@
+// app/screens/Product.tsx
+
 import React, { useState } from 'react';
 import {
   View,
@@ -19,6 +21,9 @@ import ButtonShopAndChat from '@/components/buttonShopAndChat';
 
 // OUR UTILS
 import { getHeaderPaddingVertical } from '@/utils/platformStyleAndroidIos';
+
+// IMPORT THE SHARED TYPES
+import { ProductType } from '@/interfaces/productDataProps';
 
 export default function Product() {
   const headerPaddingVertical = getHeaderPaddingVertical();
@@ -165,7 +170,9 @@ export default function Product() {
                       onPress={() =>
                         router.push({
                           pathname: item.pathname,
-                          params: { category: item.paramCategory }, // Hanya satu parameter 'category'
+                          params: {
+                            category: item.paramCategory as ProductType,
+                          },
                         })
                       }
                     >
@@ -210,7 +217,9 @@ export default function Product() {
                       onPress={() =>
                         router.push({
                           pathname: item.pathname,
-                          params: { category: item.paramCategory }, // Hanya satu parameter 'category'
+                          params: {
+                            category: item.paramCategory as ProductType,
+                          },
                         })
                       }
                     >
@@ -256,7 +265,7 @@ export default function Product() {
                     onPress={() =>
                       router.push({
                         pathname: item.pathname,
-                        params: { category: item.paramCategory }, // Hanya satu parameter 'category'
+                        params: { category: item.paramCategory as ProductType },
                       })
                     }
                   >

@@ -1,16 +1,9 @@
+// hooks/Backend/useGetProductsByCategory.ts
+
 import { useEffect, useState } from 'react';
 import { db } from '@/lib/firebase';
+import { ProductData } from '@/interfaces/productDataProps';
 
-type ProductData = {
-  Deskripsi: string;
-  Harga: number;
-  Nama: string;
-  Nomor_Rekening: number;
-  Pemilik: string;
-  Status: string;
-};
-
-// Hook ini sekarang menerima HANYA satu 'category' string
 export const useGetProductsByCategory = (compositeCategory: string) => {
   const [products, setProducts] = useState<ProductData[]>([]);
   const [ownerName, setOwnerName] = useState<string>('');
@@ -30,7 +23,6 @@ export const useGetProductsByCategory = (compositeCategory: string) => {
         setLoading(true);
         setError(null);
 
-        // Memecah compositeCategory menjadi productType dan actualCategory
         const parts = compositeCategory.split('_');
         if (parts.length < 2) {
           console.error(`❌ Format kategori tidak valid: ${compositeCategory}`);
@@ -39,8 +31,8 @@ export const useGetProductsByCategory = (compositeCategory: string) => {
           return;
         }
 
-        const productType = parts[0].toLowerCase(); // 'informasi' atau 'jasa'
-        const actualCategory = parts.slice(1).join('_'); // 'Meteorologi', 'Klimatologi', 'Geofisika'
+        const productType = parts[0].toLowerCase();
+        const actualCategory = parts.slice(1).join('_');
 
         let collectionName;
         if (productType === 'informasi') {
@@ -56,12 +48,16 @@ export const useGetProductsByCategory = (compositeCategory: string) => {
 
         const collectionRef = db.collection(collectionName);
         const snapshot = await collectionRef
-          .where('Pemilik', '==', actualCategory) // Gunakan actualCategory untuk filter Pemilik
+          .where('Pemilik', '==', actualCategory)
           .get();
 
         const fetchedProducts: ProductData[] = [];
         snapshot.forEach((doc) => {
-          fetchedProducts.push(doc.data() as ProductData);
+          // *** PERBAIKAN KRUSIAL: Memastikan ID dokumen disertakan ***
+          fetchedProducts.push({
+            id: doc.id, // Ambil ID dokumen dari Firebase
+            ...(doc.data() as Omit<ProductData, 'id'>), // Ambil data lainnya, kecuali 'id'
+          });
         });
 
         setProducts(fetchedProducts);
@@ -69,7 +65,7 @@ export const useGetProductsByCategory = (compositeCategory: string) => {
         if (fetchedProducts.length > 0) {
           setOwnerName(fetchedProducts[0].Pemilik);
         } else {
-          setOwnerName(actualCategory); // Fallback ke nama kategori jika tidak ada produk
+          setOwnerName(actualCategory);
         }
       } catch (err) {
         console.error(

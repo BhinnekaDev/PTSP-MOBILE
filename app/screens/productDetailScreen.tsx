@@ -1,3 +1,5 @@
+// app/screens/ProductDetailScreen.tsx
+
 import React from 'react';
 import {
   View,
@@ -13,7 +15,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Octicons from '@expo/vector-icons/Octicons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import Feather from '@expo/vector-icons/Feather';
 
 // OUR COMPONENTS
 import Button from '@/components/button';
@@ -23,27 +24,31 @@ import { ProductCardInfoButton } from '@/components/productCardInfoButton';
 // OUR UTILS
 import { getHeaderPaddingVertical } from '@/utils/platformStyleAndroidIos';
 
-// OUR NEW HOOK
+// OUR HOOKS
 import { useGetProductsByCategory } from '@/hooks/Backend/useGetProductsByCategory';
 import { usePopupAnimation } from '@/hooks/Frontend/popUpInfoCard/usePopupAnimation';
+import { useAddToCart } from '@/hooks/Backend/useAddToCart';
+
+// Import ProductType karena digunakan dalam type assertion
+import { ProductType } from '@/interfaces/productDataProps';
 
 export default function ProductDetailScreen() {
   const headerPaddingVertical = getHeaderPaddingVertical();
   const params = useLocalSearchParams();
   const compositeCategory = params.category as string;
 
-  // Memecah informationOrService untuk tampilan
   const informationOrService = compositeCategory
     ? compositeCategory.split('_')
     : ['', ''];
-  const productType = informationOrService[0]; // 'Informasi' atau 'Jasa'
-  const categoryForIcon = informationOrService.slice(1).join('_'); // 'Meteorologi', 'Klimatologi', dll.
+  const productType = informationOrService[0];
+  const categoryForIcon = informationOrService.slice(1).join('_');
 
-  // Gunakan hook dengan compositeCategory
   const { products, ownerName, loading, error } =
     useGetProductsByCategory(compositeCategory);
   const { activePopupIndex, togglePopup, closePopup, fadeAnim } =
     usePopupAnimation();
+
+  const { loadingAddToCart, addToCart } = useAddToCart();
 
   const getCategoryIcon = (cat: string) => {
     switch (cat) {
@@ -52,7 +57,7 @@ export default function ProductDetailScreen() {
       case 'Klimatologi':
         return <FontAwesome6 name="cloud-bolt" size={60} color="#6BBC3F" />;
       case 'Geofisika':
-        return <Feather name="wind" size={60} color="#6BBC3F" />;
+        return <FontAwesome6 name="wind" size={60} color="#6BBC3F" />;
       default:
         return <FontAwesome6 name="info-circle" size={60} color="#6BBC3F" />;
     }
@@ -134,14 +139,11 @@ export default function ProductDetailScreen() {
               </Text>
             ) : products.length > 0 ? (
               products.map((item, index) => (
-                // PEMBUNGKUS CARD
                 <View
                   key={index}
                   className="my-3 items-center justify-center gap-6"
                 >
-                  {/* MODIFIKASI PENTING DI SINI: */}
                   <View className="relative w-80 flex-col items-center justify-around gap-2 rounded-lg border-2 border-black bg-white p-4">
-                    {/* BUTTON INFO CARD */}
                     <ProductCardInfoButton
                       productIndex={index}
                       activePopupIndex={activePopupIndex}
@@ -150,7 +152,6 @@ export default function ProductDetailScreen() {
                       closePopup={closePopup}
                     />
 
-                    {/* ICON KATEGORI */}
                     {getCategoryIcon(categoryForIcon)}
 
                     <Text
@@ -178,10 +179,13 @@ export default function ProductDetailScreen() {
                         <Ionicons name="cart-outline" size={20} color="white" />
                       }
                       onPress={() =>
-                        console.log('Tambahkan ke keranjang:', item.Nama)
+                        addToCart(item, productType as ProductType)
                       }
+                      disabled={loadingAddToCart}
                     >
-                      Masukan Ke Keranjang
+                      {loadingAddToCart
+                        ? 'Menambahkan...'
+                        : 'Masukan Ke Keranjang'}
                     </Button>
                   </View>
                 </View>
