@@ -3,6 +3,7 @@ import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 
+// OUR HOOKS
 import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 
 // OUR ICONS
@@ -16,7 +17,11 @@ import Feather from '@expo/vector-icons/Feather';
 // OUR COMPONENTS
 import ButtonShopAndChat from '@/components/buttonShopAndChat';
 
+// OUR UTILS
+import { getHeaderPaddingVertical } from '@/utils/platformStyleAndroidIos';
+
 export default function ProfileTabs() {
+  const headerPaddingVertical = getHeaderPaddingVertical();
   const router = useRouter();
   const { profile, loading } = useGetUserProfile();
   if (loading) return <Text>Loading...</Text>;
@@ -29,7 +34,9 @@ export default function ProfileTabs() {
       end={{ x: 1, y: 1 }}
       style={{ flex: 1 }}
     >
-      <View className="w-full flex-row items-center justify-between rounded-xl bg-[#1475BA] px-6 pb-4 shadow-md">
+      <View
+        className={`w-full flex-row items-center justify-between rounded-xl bg-[#1475BA] px-6 shadow-md ${headerPaddingVertical}`}
+      >
         <View>
           <Image
             source={require('@/assets/images/HomeScreen/logo.png')}
