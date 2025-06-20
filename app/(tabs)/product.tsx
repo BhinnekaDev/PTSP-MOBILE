@@ -127,7 +127,7 @@ export default function Product() {
             <View className="self-center py-2 pt-5">
               <Text
                 style={{ fontFamily: 'LexBold' }}
-                className="rounded-full bg-[#72C02C] px-6 py-1 text-lg" // Added some padding for better appearance
+                className="rounded-full bg-[#72C02C] px-6 py-1 text-lg"
               >
                 Produk Informasi
               </Text>
@@ -167,7 +167,7 @@ export default function Product() {
             <View className="self-center py-2 pt-5">
               <Text
                 style={{ fontFamily: 'LexBold' }}
-                className="rounded-full bg-[#72C02C] px-6 py-1 text-lg" // Added some padding for better appearance
+                className="rounded-full bg-[#72C02C] px-6 py-1 text-lg"
               >
                 Produk Jasa
               </Text>
@@ -206,12 +206,15 @@ export default function Product() {
           </>
         ) : (
           <>
-            <Text
-              style={{ fontFamily: 'LexBold' }}
-              className="mt-3 text-center text-lg"
-            >
-              Produk {activeCategory}
-            </Text>
+            <View className="self-center py-2 pt-5">
+              <Text
+                style={{ fontFamily: 'LexBold' }}
+                className="rounded-full bg-[#72C02C] px-6 py-1 text-lg"
+              >
+                Produk {activeCategory}
+              </Text>
+            </View>
+
             <View className="mt-3 items-center justify-center gap-6">
               {filteredProducts.map((item, idx) => (
                 <View

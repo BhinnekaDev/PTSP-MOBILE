@@ -11,19 +11,26 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 // OUR ICONS
 import Ionicons from '@expo/vector-icons/Ionicons';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Octicons from '@expo/vector-icons/Octicons';
-import Foundation from '@expo/vector-icons/Foundation';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 // OUR COMPONENTS
 import Button from '@/components/button';
 import ButtonShopAndChat from '@/components/buttonShopAndChat';
+import { ProductCardInfoButton } from '@/components/productCardInfoButton'; // Import komponen info button
 
 // OUR UTILS
 import { getHeaderPaddingVertical } from '@/utils/platformStyleAndroidIos';
 
+// OUR HOOKS
+import { useGetMeteorologyProducts } from '@/hooks/Backend/useGetMeteorologyProducts'; // Untuk data produk
+import { usePopupAnimation } from '@/hooks/Frontend/popUpInfoCard/usePopupAnimation'; // Import hook animasi pop-up baru
+
 export default function MeteorologyProduct() {
   const headerPaddingVertical = getHeaderPaddingVertical();
+  const { products, loading, error } = useGetMeteorologyProducts();
+  const { activePopupIndex, togglePopup, closePopup, fadeAnim } =
+    usePopupAnimation();
 
   return (
     <View className="flex-1">
@@ -50,6 +57,7 @@ export default function MeteorologyProduct() {
           <ButtonShopAndChat />
         </View>
       </View>
+
       <View className="flex-1 px-4 pt-4">
         <LinearGradient
           colors={['#1475BA', '#fff', '#6BBC3F']}
@@ -64,6 +72,13 @@ export default function MeteorologyProduct() {
           <ScrollView
             contentContainerStyle={{ paddingBottom: 20 }}
             showsVerticalScrollIndicator={false}
+            onScrollBeginDrag={() => {
+              // Panggil closePopup dari hook
+              if (activePopupIndex !== null) {
+                closePopup();
+              }
+            }}
+            scrollEventThrottle={16}
           >
             <Text
               style={{ fontFamily: 'LexBold' }}
@@ -77,90 +92,79 @@ export default function MeteorologyProduct() {
             >
               Stasiun Meteorologi
             </Text>
-            <View className="my-3 items-center justify-center gap-6">
-              <View className="relative h-72 w-80 items-center justify-center gap-4 rounded-lg border-2 border-black bg-white">
-                <View className="absolute right-3 top-3">
-                  <Foundation name="info" size={28} color="black" />
+
+            {loading ? (
+              <Text
+                style={{ fontFamily: 'LexRegular' }}
+                className="text-center text-black"
+              >
+                Memuat produk...
+              </Text>
+            ) : error ? (
+              <Text
+                style={{ fontFamily: 'LexRegular' }}
+                className="text-center text-red-500"
+              >
+                {error}
+              </Text>
+            ) : products.length > 0 ? (
+              products.map((item, index) => (
+                <View
+                  key={index}
+                  className="my-3 items-center justify-center gap-6"
+                >
+                  <View className="relative h-72 w-80 items-center justify-center gap-4 rounded-lg border-2 border-black bg-white">
+                    {/* BUTTON INFO CARD */}
+                    <ProductCardInfoButton
+                      productIndex={index} // Teruskan indeks produk
+                      activePopupIndex={activePopupIndex}
+                      togglePopup={togglePopup}
+                      fadeAnim={fadeAnim}
+                      closePopup={closePopup}
+                    />
+
+                    <FontAwesome6 name="mountain" size={60} color="#6BBC3F" />
+                    <Text
+                      style={{ fontFamily: 'LexMedium' }}
+                      className="text-md text-center"
+                    >
+                      {item.Nama}
+                    </Text>
+                    <Text
+                      style={{ fontFamily: 'LexRegular' }}
+                      className="text-center text-lg"
+                    >
+                      Rp {item.Harga.toLocaleString('id-ID')}
+                    </Text>
+                    <Text
+                      style={{ fontFamily: 'LexRegular' }}
+                      className="text-center text-sm"
+                    >
+                      {item.Deskripsi}
+                    </Text>
+                    <Button
+                      style="bg-[#1475BA] px-4 py-2 rounded-full"
+                      textStyle="text-xs text-white uppercase"
+                      icon={
+                        <Ionicons name="cart-outline" size={20} color="white" />
+                      }
+                      onPress={() =>
+                        console.log('Tambahkan ke keranjang:', item.Nama)
+                      }
+                    >
+                      Masukan Ke Keranjang
+                    </Button>
+                  </View>
                 </View>
-                <FontAwesome6 name="mountain" size={60} color="#6BBC3F" />
-                <Text
-                  style={{ fontFamily: 'LexMedium' }}
-                  className="text-md text-center"
-                >
-                  ATLAS WINDROSE WILAYAH INDONESIA PERIODE 1981-2010
-                </Text>
-                <Text
-                  style={{ fontFamily: 'LexRegular' }}
-                  className="text-center text-lg"
-                >
-                  Rp 1.500.000
-                </Text>
-                <Button
-                  style="bg-[#1475BA] px-4 py-2 rounded-full"
-                  textStyle="text-xs text-white uppercase"
-                  icon={
-                    <Ionicons name="cart-outline" size={20} color="white" />
-                  }
-                >
-                  Masukan Ke Keranjang
-                </Button>
-              </View>
-            </View>
-            <View className="my-3 items-center justify-center gap-6">
-              <View className="relative h-72 w-80 items-center justify-center gap-4 rounded-lg border-2 border-black bg-white">
-                <View className="absolute right-2 top-2">
-                  <Foundation name="info" size={26} color="black" />
-                </View>
-                <FontAwesome6 name="mountain" size={60} color="#6BBC3F" />
-                <Text
-                  style={{ fontFamily: 'LexMedium' }}
-                  className="text-md text-center"
-                >
-                  KARBON MONOKSIDA (CO)
-                </Text>
-                <Text
-                  style={{ fontFamily: 'LexRegular' }}
-                  className="text-center text-lg"
-                >
-                  Rp 1.500.000
-                </Text>
-                <Button
-                  style="bg-[#1475BA] px-4 py-2 rounded-full"
-                  textStyle="text-xs text-white uppercase"
-                  icon={
-                    <Ionicons name="cart-outline" size={20} color="white" />
-                  }
-                >
-                  Masukan Ke Keranjang
-                </Button>
-              </View>
-            </View>
-            <View className="my-3 items-center justify-center gap-6">
-              <View className="h-72 w-80 items-center justify-center gap-4 rounded-lg border-2 border-black bg-white">
-                <FontAwesome6 name="mountain" size={60} color="#6BBC3F" />
-                <Text
-                  style={{ fontFamily: 'LexMedium' }}
-                  className="text-md text-center"
-                >
-                  KARBON MONOKSIDA (CO)
-                </Text>
-                <Text
-                  style={{ fontFamily: 'LexRegular' }}
-                  className="text-center text-lg"
-                >
-                  Rp 1.500.000
-                </Text>
-                <Button
-                  style="bg-[#1475BA] px-4 py-2 rounded-full"
-                  textStyle="text-xs text-white uppercase"
-                  icon={
-                    <Ionicons name="cart-outline" size={20} color="white" />
-                  }
-                >
-                  Masukan Ke Keranjang
-                </Button>
-              </View>
-            </View>
+              ))
+            ) : (
+              <Text
+                style={{ fontFamily: 'LexRegular' }}
+                className="text-center text-black"
+              >
+                Tidak ada produk meteorologi ditemukan.
+              </Text>
+            )}
           </ScrollView>
         </LinearGradient>
       </View>
