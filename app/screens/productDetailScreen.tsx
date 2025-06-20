@@ -6,31 +6,57 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 
 // OUR ICONS
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Octicons from '@expo/vector-icons/Octicons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import Feather from '@expo/vector-icons/Feather';
 
 // OUR COMPONENTS
 import Button from '@/components/button';
 import ButtonShopAndChat from '@/components/buttonShopAndChat';
-import { ProductCardInfoButton } from '@/components/productCardInfoButton'; // Import komponen info button
+import { ProductCardInfoButton } from '@/components/productCardInfoButton';
 
 // OUR UTILS
 import { getHeaderPaddingVertical } from '@/utils/platformStyleAndroidIos';
 
-// OUR HOOKS
-import { useGetMeteorologyProducts } from '@/hooks/Backend/useGetMeteorologyProducts'; // Untuk data produk
-import { usePopupAnimation } from '@/hooks/Frontend/popUpInfoCard/usePopupAnimation'; // Import hook animasi pop-up baru
+// OUR NEW HOOK
+import { useGetProductsByCategory } from '@/hooks/Backend/useGetProductsByCategory';
+import { usePopupAnimation } from '@/hooks/Frontend/popUpInfoCard/usePopupAnimation';
 
-export default function MeteorologyProduct() {
+export default function ProductDetailScreen() {
   const headerPaddingVertical = getHeaderPaddingVertical();
-  const { products, loading, error } = useGetMeteorologyProducts();
+  const params = useLocalSearchParams();
+  const compositeCategory = params.category as string;
+
+  // Memecah informationOrService untuk tampilan
+  const informationOrService = compositeCategory
+    ? compositeCategory.split('_')
+    : ['', ''];
+  const productType = informationOrService[0]; // 'Informasi' atau 'Jasa'
+  const categoryForIcon = informationOrService.slice(1).join('_'); // 'Meteorologi', 'Klimatologi', dll.
+
+  // Gunakan hook dengan compositeCategory
+  const { products, ownerName, loading, error } =
+    useGetProductsByCategory(compositeCategory);
   const { activePopupIndex, togglePopup, closePopup, fadeAnim } =
     usePopupAnimation();
+
+  const getCategoryIcon = (cat: string) => {
+    switch (cat) {
+      case 'Meteorologi':
+        return <FontAwesome6 name="mountain" size={60} color="#6BBC3F" />;
+      case 'Klimatologi':
+        return <FontAwesome6 name="cloud-bolt" size={60} color="#6BBC3F" />;
+      case 'Geofisika':
+        return <Feather name="wind" size={60} color="#6BBC3F" />;
+      default:
+        return <FontAwesome6 name="info-circle" size={60} color="#6BBC3F" />;
+    }
+  };
 
   return (
     <View className="flex-1">
@@ -73,7 +99,6 @@ export default function MeteorologyProduct() {
             contentContainerStyle={{ paddingBottom: 20 }}
             showsVerticalScrollIndicator={false}
             onScrollBeginDrag={() => {
-              // Panggil closePopup dari hook
               if (activePopupIndex !== null) {
                 closePopup();
               }
@@ -84,13 +109,13 @@ export default function MeteorologyProduct() {
               style={{ fontFamily: 'LexBold' }}
               className="mt-4 text-center text-2xl"
             >
-              Informasi
+              Produk {productType}
             </Text>
             <Text
               style={{ fontFamily: 'LexMedium' }}
               className="text-md mb-4 mt-1 text-center uppercase"
             >
-              Stasiun Meteorologi
+              Stasiun {ownerName}
             </Text>
 
             {loading ? (
@@ -109,21 +134,25 @@ export default function MeteorologyProduct() {
               </Text>
             ) : products.length > 0 ? (
               products.map((item, index) => (
+                // PEMBUNGKUS CARD
                 <View
                   key={index}
                   className="my-3 items-center justify-center gap-6"
                 >
-                  <View className="relative h-72 w-80 items-center justify-center gap-4 rounded-lg border-2 border-black bg-white">
+                  {/* MODIFIKASI PENTING DI SINI: */}
+                  <View className="relative w-80 flex-col items-center justify-around gap-2 rounded-lg border-2 border-black bg-white p-4">
                     {/* BUTTON INFO CARD */}
                     <ProductCardInfoButton
-                      productIndex={index} // Teruskan indeks produk
+                      productIndex={index}
                       activePopupIndex={activePopupIndex}
                       togglePopup={togglePopup}
                       fadeAnim={fadeAnim}
                       closePopup={closePopup}
                     />
 
-                    <FontAwesome6 name="mountain" size={60} color="#6BBC3F" />
+                    {/* ICON KATEGORI */}
+                    {getCategoryIcon(categoryForIcon)}
+
                     <Text
                       style={{ fontFamily: 'LexMedium' }}
                       className="text-md text-center"
@@ -143,7 +172,7 @@ export default function MeteorologyProduct() {
                       {item.Deskripsi}
                     </Text>
                     <Button
-                      style="bg-[#1475BA] px-4 py-2 rounded-full"
+                      style="bg-[#1475BA] px-4 py-2 rounded-full mt-auto"
                       textStyle="text-xs text-white uppercase"
                       icon={
                         <Ionicons name="cart-outline" size={20} color="white" />
@@ -162,7 +191,7 @@ export default function MeteorologyProduct() {
                 style={{ fontFamily: 'LexRegular' }}
                 className="text-center text-black"
               >
-                Tidak ada produk meteorologi ditemukan.
+                Tidak ada produk {categoryForIcon} ditemukan.
               </Text>
             )}
           </ScrollView>

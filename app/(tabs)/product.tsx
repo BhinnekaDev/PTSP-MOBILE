@@ -32,42 +32,48 @@ export default function Product() {
       icon: <FontAwesome6 name="mountain" size={60} color="#3498DB" />,
       title: 'Stasiun Meteorologi',
       desc: 'Pemantauan dan pengamatan kondisi\ncuaca dan atmosfer, termasuk suhu,\nkelembapan, dan tekanan udara.',
-      route: '/screens/meteorologyProduct' as const,
+      pathname: '/screens/productDetailScreen' as const,
+      paramCategory: 'Informasi_Meteorologi',
     },
     {
       category: 'Informasi',
       icon: <FontAwesome6 name="cloud-bolt" size={60} color="#3498DB" />,
       title: 'Stasiun Klimatologi',
       desc: 'Penelitian dan analisis perubahan\niklim jangka panjang, pola cuaca, dan dampak lingkungan.',
-      route: '/screens/climatologyProduct' as const,
+      pathname: '/screens/productDetailScreen' as const,
+      paramCategory: 'Informasi_Klimatologi',
     },
     {
       category: 'Informasi',
       icon: <Feather name="wind" size={60} color="#3498DB" />,
       title: 'Stasiun Geofisika',
       desc: 'Pemantauan dan pengamatan kondisi\ncuaca dan atmosfer, termasuk suhu,\nkelembapan, dan tekanan udara.',
-      route: '/screens/geophysicsProduct' as const,
+      pathname: '/screens/productDetailScreen' as const,
+      paramCategory: 'Informasi_Geofisika',
     },
     {
       category: 'Jasa',
       icon: <FontAwesome6 name="mountain" size={60} color="#3498DB" />,
       title: 'Stasiun Meteorologi',
       desc: 'Pemantauan dan pengamatan kondisi\ncuaca dan atmosfer, termasuk suhu,\nkelembapan, dan tekanan udara.',
-      route: '/screens/meteorologyProduct' as const,
+      pathname: '/screens/productDetailScreen' as const,
+      paramCategory: 'Jasa_Meteorologi',
     },
     {
       category: 'Jasa',
       icon: <FontAwesome6 name="cloud-bolt" size={60} color="#3498DB" />,
       title: 'Stasiun Klimatologi',
       desc: 'Penelitian dan analisis perubahan\niklim jangka panjang, pola cuaca, dan dampak lingkungan.',
-      route: '/screens/climatologyProduct' as const,
+      pathname: '/screens/productDetailScreen' as const,
+      paramCategory: 'Jasa_Klimatologi',
     },
     {
       category: 'Jasa',
       icon: <Feather name="wind" size={60} color="#3498DB" />,
       title: 'Stasiun Geofisika',
       desc: 'Pemantauan dan pengamatan kondisi\ncuaca dan atmosfer, termasuk suhu,\nkelembapan, dan tekanan udara.',
-      route: '/screens/geophysicsProduct' as const,
+      pathname: '/screens/productDetailScreen' as const,
+      paramCategory: 'Jasa_Geofisika',
     },
   ];
 
@@ -156,7 +162,12 @@ export default function Product() {
                     <Button
                       style="bg-[#1475BA] px-6 py-2 rounded-xl"
                       textStyle="text-sm text-white"
-                      onPress={() => router.push(item.route)}
+                      onPress={() =>
+                        router.push({
+                          pathname: item.pathname,
+                          params: { category: item.paramCategory }, // Hanya satu parameter 'category'
+                        })
+                      }
                     >
                       Lihat Produk
                     </Button>
@@ -196,7 +207,12 @@ export default function Product() {
                     <Button
                       style="bg-[#1475BA] px-6 py-2 rounded-xl"
                       textStyle="text-sm text-white"
-                      onPress={() => router.push(item.route)}
+                      onPress={() =>
+                        router.push({
+                          pathname: item.pathname,
+                          params: { category: item.paramCategory }, // Hanya satu parameter 'category'
+                        })
+                      }
                     >
                       Lihat Produk
                     </Button>
@@ -237,7 +253,12 @@ export default function Product() {
                   <Button
                     style="bg-[#1475BA] px-6 py-2 rounded-xl"
                     textStyle="text-sm text-white"
-                    onPress={() => router.push(item.route)}
+                    onPress={() =>
+                      router.push({
+                        pathname: item.pathname,
+                        params: { category: item.paramCategory }, // Hanya satu parameter 'category'
+                      })
+                    }
                   >
                     Lihat Produk
                   </Button>
