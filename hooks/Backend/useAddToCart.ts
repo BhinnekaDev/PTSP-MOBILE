@@ -30,7 +30,6 @@ export const useAddToCart = () => {
 
     const lowercasedProductType = receivedProductType.toLowerCase();
 
-    // Pastikan cartCollectionRef dan userCartDocRef didefinisikan di sini
     const cartCollectionRef = db.collection('keranjang');
     const userCartDocRef = cartCollectionRef.doc(user.uid);
 
@@ -38,7 +37,6 @@ export const useAddToCart = () => {
       const collectionName =
         lowercasedProductType === 'informasi' ? 'informasi' : 'jasa';
 
-      // Gunakan product.id (ID yang diterima dari komponen) untuk mengambil data dari koleksi asli
       const productRef = db.collection(collectionName).doc(product.id);
       const productSnap = await productRef.get();
 
@@ -51,11 +49,26 @@ export const useAddToCart = () => {
         return;
       }
 
-      // *** PERBAIKAN KRUSIAL: Membangun kembali productData dengan ID dari productSnap.id ***
-      const productData = {
-        id: productSnap.id, // Ambil ID dari snapshot yang baru saja diambil
-        ...(productSnap.data() as Omit<ProductData, 'id'>), // Ambil data lainnya
-      };
+      // --- PERBAIKAN: Membangun kembali productData tanpa menggunakan Omit ---
+      // --- PERBAIKAN AKHIR: Memastikan 'id' selalu dari snapshot dan menghindari duplikasi ---
+      const productRawData = productSnap.data();
+
+      if (!productRawData) {
+        Alert.alert(
+          'Error',
+          'Data produk tidak ditemukan, meskipun produk ada.'
+        );
+        setLoadingAddToCart(false);
+        return;
+      }
+
+      // Explicitly define productData with the correct ID and spread the rest of the data.
+      // If productRawData *also* contains an 'id' field within its document,
+      // the 'id: productSnap.id' will correctly override it due to order.
+      const productData: ProductData = {
+        id: productSnap.id,
+        ...productRawData, // Spread the raw data from the document
+      } as ProductData; // Assert the final shape to ProductData
 
       const idField =
         lowercasedProductType === 'informasi' ? 'ID_Informasi' : 'ID_Jasa';
@@ -65,13 +78,13 @@ export const useAddToCart = () => {
 
       const newItemPayload = {
         Harga: productData.Harga,
-        [idField]: productData.id, // Ini akan menggunakan ID yang sudah benar dari productData
+        [idField]: productData.id,
         Kuantitas: 1,
         Nama: productData.Nama,
         Pemilik: productData.Pemilik,
         Total_Harga: productData.Harga,
-        // Jika Nomor_Rekening bisa opsional atau undefined, pastikan ditangani.
-        // Contoh: Nomor_Rekening: productData.Nomor_Rekening || null,
+        // Pastikan untuk menyertakan Nomor_Rekening jika itu bagian dari ProductData dan relevan untuk keranjang
+        // Nomor_Rekening: productData.Nomor_Rekening || null, // Example if it can be optional
       };
 
       const userCartDoc = await userCartDocRef.get();
@@ -81,7 +94,7 @@ export const useAddToCart = () => {
         const currentTypeArray = currentCartData?.[typeField] || [];
 
         const existingProductIndex = currentTypeArray.findIndex(
-          (item: any) => item[idField] === productData.id // Gunakan productData.id untuk konsistensi
+          (item: any) => item[idField] === productData.id
         );
 
         if (existingProductIndex !== -1) {
@@ -115,7 +128,6 @@ export const useAddToCart = () => {
       } else {
         await userCartDocRef.set({
           [typeField]: [newItemPayload],
-          ID_Pengguna: user.uid,
         });
         Alert.alert(
           'Berhasil',

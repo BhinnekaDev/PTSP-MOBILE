@@ -111,19 +111,24 @@ export default function Product() {
       </View>
 
       <View className="flex-row items-center justify-center gap-4 py-2">
-        {['Semua', 'Informasi', 'Jasa'].map((cat) => (
+        {['Semua', 'Informasi', 'Jasa'].map((buttonCategory) => (
           <TouchableOpacity
-            key={cat}
-            onPress={() => setActiveCategory(cat)}
-            className={`rounded-full px-4 py-2 ${activeCategory === cat ? 'bg-[#1475BA]' : 'bg-transparent'}`}
+            key={buttonCategory}
+            onPress={() => setActiveCategory(buttonCategory)}
+            activeOpacity={0.7}
+            className={`rounded-full px-4 py-2 ${
+              activeCategory === buttonCategory
+                ? 'bg-[#1475BA]'
+                : 'bg-transparent'
+            }`}
           >
             <Text
               style={{
                 fontFamily: 'LexBold',
-                color: activeCategory === cat ? 'white' : 'black',
+                color: activeCategory === buttonCategory ? 'white' : 'black',
               }}
             >
-              {cat}
+              {buttonCategory}
             </Text>
           </TouchableOpacity>
         ))}

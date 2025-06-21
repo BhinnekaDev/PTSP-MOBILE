@@ -29,7 +29,7 @@ import { useGetProductsByCategory } from '@/hooks/Backend/useGetProductsByCatego
 import { usePopupAnimation } from '@/hooks/Frontend/popUpInfoCard/usePopupAnimation';
 import { useAddToCart } from '@/hooks/Backend/useAddToCart';
 
-// Import ProductType karena digunakan dalam type assertion
+// OUT INTERFACES
 import { ProductType } from '@/interfaces/productDataProps';
 
 export default function ProductDetailScreen() {
