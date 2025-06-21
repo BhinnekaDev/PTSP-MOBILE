@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { db, firebaseAuth } from '@/lib/firebase';
-import { Alert } from 'react-native';
 import { router } from 'expo-router';
 import { ProductData, ProductType } from '@/interfaces/productDataProps';
+import { showMessage } from 'react-native-flash-message';
 
 type ProductDataForCart = ProductData;
 
@@ -19,17 +19,21 @@ export const useAddToCart = () => {
 
     const user = firebaseAuth.currentUser;
     if (!user) {
-      Alert.alert(
-        'Login Diperlukan',
-        'Anda harus login untuk menambahkan produk ke keranjang.'
-      );
+      showMessage({
+        message: 'Login Diperlukan',
+        description: 'Anda harus login untuk menambahkan produk ke keranjang.',
+        type: 'warning',
+        position: 'top',
+        icon: 'auto',
+        autoHide: true,
+        duration: 3000,
+      });
       router.push('/screens/loginScreen');
       setLoadingAddToCart(false);
       return;
     }
 
     const lowercasedProductType = receivedProductType.toLowerCase();
-
     const cartCollectionRef = db.collection('keranjang');
     const userCartDocRef = cartCollectionRef.doc(user.uid);
 
@@ -41,34 +45,32 @@ export const useAddToCart = () => {
       const productSnap = await productRef.get();
 
       if (!productSnap.exists()) {
-        Alert.alert(
-          'Produk Tidak Ditemukan',
-          'Maaf, produk ini tidak lagi tersedia di database atau ID-nya salah.'
-        );
+        showMessage({
+          message: 'Produk Tidak Ditemukan',
+          description:
+            'Maaf, produk ini tidak lagi tersedia di database atau ID-nya salah.',
+          type: 'danger',
+        });
         setLoadingAddToCart(false);
         return;
       }
 
-      // --- PERBAIKAN: Membangun kembali productData tanpa menggunakan Omit ---
-      // --- PERBAIKAN AKHIR: Memastikan 'id' selalu dari snapshot dan menghindari duplikasi ---
       const productRawData = productSnap.data();
 
       if (!productRawData) {
-        Alert.alert(
-          'Error',
-          'Data produk tidak ditemukan, meskipun produk ada.'
-        );
+        showMessage({
+          message: 'Error',
+          description: 'Data produk tidak ditemukan, meskipun produk ada.',
+          type: 'danger',
+        });
         setLoadingAddToCart(false);
         return;
       }
 
-      // Explicitly define productData with the correct ID and spread the rest of the data.
-      // If productRawData *also* contains an 'id' field within its document,
-      // the 'id: productSnap.id' will correctly override it due to order.
       const productData: ProductData = {
         id: productSnap.id,
-        ...productRawData, // Spread the raw data from the document
-      } as ProductData; // Assert the final shape to ProductData
+        ...productRawData,
+      } as ProductData;
 
       const idField =
         lowercasedProductType === 'informasi' ? 'ID_Informasi' : 'ID_Jasa';
@@ -83,8 +85,6 @@ export const useAddToCart = () => {
         Nama: productData.Nama,
         Pemilik: productData.Pemilik,
         Total_Harga: productData.Harga,
-        // Pastikan untuk menyertakan Nomor_Rekening jika itu bagian dari ProductData dan relevan untuk keranjang
-        // Nomor_Rekening: productData.Nomor_Rekening || null, // Example if it can be optional
       };
 
       const userCartDoc = await userCartDocRef.get();
@@ -115,31 +115,41 @@ export const useAddToCart = () => {
           await userCartDocRef.update({
             [typeField]: updatedTypeArray,
           });
-          Alert.alert(
-            'Berhasil',
-            'Kuantitas produk di keranjang telah diperbarui!'
-          );
+
+          showMessage({
+            message: 'Berhasil',
+            description: 'Kuantitas produk di keranjang telah diperbarui!',
+            type: 'success',
+          });
         } else {
           await userCartDocRef.update({
             [typeField]: [...currentTypeArray, newItemPayload],
           });
-          Alert.alert('Berhasil', 'Produk berhasil ditambahkan ke keranjang!');
+          showMessage({
+            message: 'Berhasil',
+            description: 'Produk berhasil ditambahkan ke keranjang!',
+            type: 'success',
+          });
         }
       } else {
         await userCartDocRef.set({
           [typeField]: [newItemPayload],
         });
-        Alert.alert(
-          'Berhasil',
-          'Produk berhasil ditambahkan ke keranjang baru!'
-        );
+        showMessage({
+          message: 'Berhasil',
+          description: 'Produk berhasil ditambahkan ke keranjang baru!',
+          type: 'success',
+        });
       }
     } catch (error: any) {
       console.error('Gagal menambahkan ke keranjang:', error);
-      Alert.alert(
-        'Error',
-        `Gagal menambahkan produk ke keranjang. Silakan coba lagi. ${error.message || ''}`
-      );
+      showMessage({
+        message: 'Error',
+        description: `Gagal menambahkan produk ke keranjang. Silakan coba lagi. ${
+          error.message || ''
+        }`,
+        type: 'danger',
+      });
     } finally {
       setLoadingAddToCart(false);
     }
