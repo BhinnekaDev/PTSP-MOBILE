@@ -24,20 +24,20 @@ export default function IndividualRegisterScreen() {
   const [isChecked, setIsChecked] = useState(false);
 
   // State input
-  const [noIdentitas, setNoIdentitas] = useState('');
-  const [namaLengkap, setNamaLengkap] = useState('');
-  const [pekerjaan, setPekerjaan] = useState('');
-  const [pendidikanTerakhir, setPendidikanTerakhir] = useState('');
-  const [noHp, setNoHp] = useState('');
+  const [identityNumber, setIdentityNumber] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [job, setJob] = useState('');
+  const [lastEducation, setLastEducation] = useState('');
+  const [numberPhone, setNumberPhone] = useState('');
 
   const handleRegister = async () => {
     if (
-      !noIdentitas || //
-      !namaLengkap ||
+      !identityNumber || //
+      !fullName ||
       !selectedGender ||
-      !pekerjaan ||
-      !pendidikanTerakhir ||
-      !noHp
+      !job ||
+      !lastEducation ||
+      !numberPhone
     ) {
       Alert.alert('Peringatan', 'Mohon lengkapi semua data terlebih dahulu.');
       return;
@@ -45,12 +45,12 @@ export default function IndividualRegisterScreen() {
 
     try {
       await register({
-        No_Identitas: noIdentitas,
-        Nama_Lengkap: namaLengkap,
+        No_Identitas: identityNumber,
+        Nama_Lengkap: fullName,
         Jenis_Kelamin: selectedGender,
-        Pekerjaan: pekerjaan,
-        Pendidikan_Terakhir: pendidikanTerakhir,
-        No_Hp: noHp,
+        Pekerjaan: job,
+        Pendidikan_Terakhir: lastEducation,
+        No_Hp: numberPhone,
       });
 
       Alert.alert('Berhasil', 'Registrasi berhasil disimpan!', [
@@ -111,8 +111,8 @@ export default function IndividualRegisterScreen() {
                 No Identitas
               </Text>
               <TextInput
-                value={noIdentitas}
-                onChangeText={setNoIdentitas}
+                value={identityNumber}
+                onChangeText={setIdentityNumber}
                 keyboardType="phone-pad"
                 className="w-80 rounded-xl border border-[#6BBC3F] p-2"
                 style={{ fontFamily: 'LexRegular' }}
@@ -123,8 +123,8 @@ export default function IndividualRegisterScreen() {
                 Nama Lengkap
               </Text>
               <TextInput
-                value={namaLengkap}
-                onChangeText={setNamaLengkap}
+                value={fullName}
+                onChangeText={setFullName}
                 className="w-80 rounded-xl border border-[#6BBC3F] p-2"
                 style={{ fontFamily: 'LexRegular' }}
               />
@@ -183,8 +183,8 @@ export default function IndividualRegisterScreen() {
                 Pekerjaan
               </Text>
               <TextInput
-                value={pekerjaan}
-                onChangeText={setPekerjaan}
+                value={job}
+                onChangeText={setJob}
                 className="w-80 rounded-xl border border-[#6BBC3F] p-2"
                 style={{ fontFamily: 'LexRegular' }}
               />
@@ -194,8 +194,8 @@ export default function IndividualRegisterScreen() {
                 Pendidikan Terakhir
               </Text>
               <TextInput
-                value={pendidikanTerakhir}
-                onChangeText={setPendidikanTerakhir}
+                value={lastEducation}
+                onChangeText={setLastEducation}
                 className="w-80 rounded-xl border border-[#6BBC3F] p-2"
                 style={{ fontFamily: 'LexRegular' }}
               />
@@ -205,8 +205,8 @@ export default function IndividualRegisterScreen() {
                 No HP / No Telp
               </Text>
               <TextInput
-                value={noHp}
-                onChangeText={setNoHp}
+                value={numberPhone}
+                onChangeText={setNumberPhone}
                 keyboardType="phone-pad"
                 className="w-80 rounded-xl border border-[#6BBC3F] p-2"
                 style={{ fontFamily: 'LexRegular' }}
