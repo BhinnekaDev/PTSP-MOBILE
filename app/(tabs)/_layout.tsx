@@ -1,53 +1,62 @@
-import React, { useState } from "react";
-import { Tabs } from "expo-router";
+import React, { useState } from 'react';
+import { Tabs } from 'expo-router';
+import { Platform } from 'react-native';
 
 // OUR ICONS
-import Ionicons from "@expo/vector-icons/Ionicons";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import Ionicons from '@expo/vector-icons/Ionicons';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import AntDesign from '@expo/vector-icons/AntDesign';
+
+// OUT UTILS
+import { getHeightLayoutTabs } from '@/utils/platformStyleAndroidIos';
 
 export default function TabNavigator() {
   const [jumlahNotifikasiPesanan] = useState(3);
   const [jumlahFavoritBaru] = useState(2);
+  const getHeightAndroidIos = getHeightLayoutTabs();
 
   const tabConfig: Record<
     string,
     {
-      iconActive: keyof typeof Ionicons.glyphMap | keyof typeof FontAwesome.glyphMap;
-      iconInactive: keyof typeof Ionicons.glyphMap | keyof typeof FontAwesome.glyphMap;
+      iconActive:
+        | keyof typeof Ionicons.glyphMap
+        | keyof typeof FontAwesome.glyphMap;
+      iconInactive:
+        | keyof typeof Ionicons.glyphMap
+        | keyof typeof FontAwesome.glyphMap;
       label: string;
-      lib?: "Ionicons" | "FontAwesome" | "AntDesign";
+      lib?: 'Ionicons' | 'FontAwesome' | 'AntDesign';
     }
   > = {
     home: {
-      iconActive: "home",
-      iconInactive: "home-outline",
-      label: "Beranda",
-      lib: "Ionicons",
+      iconActive: 'home',
+      iconInactive: 'home-outline',
+      label: 'Beranda',
+      lib: 'Ionicons',
     },
     regulation: {
-      iconActive: "file-tray-full",
-      iconInactive: "file-tray-full-outline",
-      label: "Regulasi",
-      lib: "Ionicons",
+      iconActive: 'file-tray-full',
+      iconInactive: 'file-tray-full-outline',
+      label: 'Regulasi',
+      lib: 'Ionicons',
     },
     product: {
-      iconActive: "bag-handle",
-      iconInactive: "bag-handle-outline",
-      label: "Produk",
-      lib: "Ionicons",
+      iconActive: 'bag-handle',
+      iconInactive: 'bag-handle-outline',
+      label: 'Produk',
+      lib: 'Ionicons',
     },
     faq: {
-      iconActive: "comments",
-      iconInactive: "comments-o",
-      label: "Faq",
-      lib: "FontAwesome",
+      iconActive: 'comments',
+      iconInactive: 'comments-o',
+      label: 'Faq',
+      lib: 'FontAwesome',
     },
     profile: {
-      iconActive: "person",
-      iconInactive: "person-outline",
-      label: "Profil",
-      lib: "Ionicons",
+      iconActive: 'person',
+      iconInactive: 'person-outline',
+      label: 'Profil',
+      lib: 'Ionicons',
     },
   };
 
@@ -55,16 +64,16 @@ export default function TabNavigator() {
     <Tabs
       screenOptions={({ route }) => {
         const config = tabConfig[route.name] || {
-          iconActive: "ellipse",
-          iconInactive: "ellipse-outline",
+          iconActive: 'ellipse',
+          iconInactive: 'ellipse-outline',
           label: route.name.charAt(0).toUpperCase() + route.name.slice(1),
-          lib: "Ionicons",
+          lib: 'Ionicons',
         };
 
         let badgeCount: number | undefined = undefined;
-        if (route.name === "order" && jumlahNotifikasiPesanan > 0) {
+        if (route.name === 'order' && jumlahNotifikasiPesanan > 0) {
           badgeCount = jumlahNotifikasiPesanan;
-        } else if (route.name === "favorite" && jumlahFavoritBaru > 0) {
+        } else if (route.name === 'favorite' && jumlahFavoritBaru > 0) {
           badgeCount = jumlahFavoritBaru;
         }
 
@@ -73,36 +82,54 @@ export default function TabNavigator() {
             const iconName = focused ? config.iconActive : config.iconInactive;
 
             switch (config.lib) {
-              case "FontAwesome":
-                return <FontAwesome name={iconName as keyof typeof FontAwesome.glyphMap} size={size} color={color} />;
-              case "AntDesign":
-                return <AntDesign name={iconName as keyof typeof AntDesign.glyphMap} size={size} color={color} />;
+              case 'FontAwesome':
+                return (
+                  <FontAwesome
+                    name={iconName as keyof typeof FontAwesome.glyphMap}
+                    size={size}
+                    color={color}
+                  />
+                );
+              case 'AntDesign':
+                return (
+                  <AntDesign
+                    name={iconName as keyof typeof AntDesign.glyphMap}
+                    size={size}
+                    color={color}
+                  />
+                );
               default:
-                return <Ionicons name={iconName as keyof typeof Ionicons.glyphMap} size={size} color={color} />;
+                return (
+                  <Ionicons
+                    name={iconName as keyof typeof Ionicons.glyphMap}
+                    size={size}
+                    color={color}
+                  />
+                );
             }
           },
           headerShown: false,
           tabBarStyle: {
-            height: 70,
-            backgroundColor: "#1475BA",
+            height: getHeightAndroidIos,
+            backgroundColor: '#1475BA',
             borderTopWidth: 0,
             borderTopRightRadius: 10,
             borderTopLeftRadius: 10,
-            position: "absolute",
-            overflow: "hidden",
+            position: 'absolute',
+            overflow: 'hidden',
           },
           tabBarLabelStyle: {
             fontSize: 12,
-            fontWeight: "600",
-            fontFamily: "LexSemiBold",
+            fontWeight: '600',
+            fontFamily: 'LexSemiBold',
           },
           tabBarLabel: config.label,
-          tabBarActiveTintColor: "#32CD32",
-          tabBarInactiveTintColor: "#ffffff",
+          tabBarActiveTintColor: '#32CD32',
+          tabBarInactiveTintColor: '#ffffff',
           tabBarBadge: badgeCount,
           tabBarBadgeStyle: {
-            backgroundColor: "red",
-            color: "white",
+            backgroundColor: 'red',
+            color: 'white',
             fontSize: 10,
           },
         };

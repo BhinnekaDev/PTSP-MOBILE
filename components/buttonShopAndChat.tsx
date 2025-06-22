@@ -1,9 +1,8 @@
-// components/HeaderIcons.tsx
-import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { useRouter } from "expo-router";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 type ButtonShopAndChatProps = {
   showButtonShop?: boolean;
@@ -21,14 +20,20 @@ export default function ButtonShopAndChat({
   const router = useRouter();
 
   return (
-    <View className="flex-row gap-4 items-center">
+    <View className="flex-row items-center gap-4">
       {/* Icon Shop */}
       {showButtonShop && (
-        <TouchableOpacity activeOpacity={0.3} className="p-1 relative" onPress={() => router.push("/screens/cartOrderScreen")}>
+        <TouchableOpacity
+          activeOpacity={0.3}
+          className="relative p-1"
+          onPress={() => router.push('/screens/cartOrderScreen')}
+        >
           <MaterialIcons name="shopping-cart" size={24} color="white" />
           {showShopCount > 0 && (
-            <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
-              <Text className="text-white text-[11px] font-bold">{showShopCount}</Text>
+            <View className="absolute -right-1.5 -top-1.5 h-5 w-5 items-center justify-center rounded-full bg-red-500">
+              <Text className="text-[11px] font-bold text-white">
+                {showShopCount}
+              </Text>
             </View>
           )}
         </TouchableOpacity>
@@ -36,11 +41,18 @@ export default function ButtonShopAndChat({
 
       {/* Icon Chat */}
       {showButtonChat && (
-        <TouchableOpacity activeOpacity={0.7} className="p-1 relative" onPress={() => router.push("/screens/chatScreen")}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          className="relative p-1"
+          onPress={() => router.push('/screens/chatScreen')}
+        >
           <Ionicons name="chatbubbles-outline" size={28} color="white" />
           {showhatCount > 0 && (
-            <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
-              <Text className="text-white text-[10px]" style={{ fontFamily: "LexBold" }}>
+            <View className="absolute -right-1.5 -top-1.5 h-5 w-5 items-center justify-center rounded-full bg-red-500">
+              <Text
+                className="text-[10px] text-white"
+                style={{ fontFamily: 'LexBold' }}
+              >
                 {showhatCount}
               </Text>
             </View>
