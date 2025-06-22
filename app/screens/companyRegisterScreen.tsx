@@ -28,34 +28,34 @@ export default function CompanyRegisterScreen() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
 
-  const [noIdentitas, setNoIdentitas] = useState('');
-  const [namaLengkap, setNamaLengkap] = useState('');
-  const [pekerjaan, setPekerjaan] = useState('');
-  const [pendidikanTerakhir, setPendidikanTerakhir] = useState('');
-  const [noHp, setNoHp] = useState('');
-  const [npwp, setNpwp] = useState('');
-  const [namaPerusahaan, setNamaPerusahaan] = useState('');
-  const [alamatPerusahaan, setAlamatPerusahaan] = useState('');
-  const [provinsiPerusahaan, setProvinsiPerusahaan] = useState('');
-  const [kabupatenKotaPerusahaan, setKabupatenKotaPerusahaan] = useState('');
-  const [emailPerusahaan, setEmailPerusahaan] = useState('');
-  const [noHpPerusahaan, setNoHpPerusahaan] = useState('');
+  const [identityNumber, setIdentityNumber] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [job, setJob] = useState('');
+  const [lastEducation, setLastEducation] = useState('');
+  const [numberPhone, setNumberPhone] = useState('');
+  const [npwpCompany, setNpwpCompany] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [companyAddress, setCompanyAddress] = useState('');
+  const [provinceCompany, setProvinceCompany] = useState('');
+  const [districtCityCompany, setDistrictCityCompany] = useState('');
+  const [emailCompany, setEmailCompany] = useState('');
+  const [companyNumberPhone, setCompanyNumberPhone] = useState('');
 
   const handleRegister = async () => {
     if (
-      !noIdentitas ||
-      !namaLengkap ||
+      !identityNumber ||
+      !fullName ||
       !selectedGender ||
-      !pekerjaan ||
-      !pendidikanTerakhir ||
-      !noHp ||
-      !npwp ||
-      !namaPerusahaan ||
-      !alamatPerusahaan ||
-      !provinsiPerusahaan ||
-      !kabupatenKotaPerusahaan ||
-      !emailPerusahaan ||
-      !noHpPerusahaan
+      !job ||
+      !lastEducation ||
+      !numberPhone ||
+      !npwpCompany ||
+      !companyName ||
+      !companyAddress ||
+      !provinceCompany ||
+      !districtCityCompany ||
+      !emailCompany ||
+      !companyNumberPhone
     ) {
       Alert.alert('Peringatan', 'Mohon lengkapi semua data terlebih dahulu.');
       return;
@@ -63,19 +63,19 @@ export default function CompanyRegisterScreen() {
 
     try {
       await register({
-        No_Identitas: noIdentitas,
-        Nama_Lengkap: namaLengkap,
+        No_Identitas: identityNumber,
+        Nama_Lengkap: fullName,
         Jenis_Kelamin: selectedGender,
-        Pekerjaan: pekerjaan,
-        Pendidikan_Terakhir: pendidikanTerakhir,
-        No_Hp: noHp,
-        NPWP: npwp,
-        Nama_Perusahaan: namaPerusahaan,
-        Alamat_Perusahaan: alamatPerusahaan,
-        Provinsi_Perusahaan: provinsiPerusahaan,
-        Kabupaten_Kota_Perusahaan: kabupatenKotaPerusahaan,
-        Email_Perusahaan: emailPerusahaan,
-        No_Hp_Perusahaan: noHpPerusahaan,
+        Pekerjaan: job,
+        Pendidikan_Terakhir: lastEducation,
+        No_Hp: numberPhone,
+        NPWP_Perusahaan: npwpCompany,
+        Nama_Perusahaan: companyName,
+        Alamat_Perusahaan: companyAddress,
+        Provinsi_Perusahaan: provinceCompany,
+        Kabupaten_Kota_Perusahaan: districtCityCompany,
+        Email_Perusahaan: emailCompany,
+        No_Hp_Perusahaan: companyNumberPhone,
       });
 
       Alert.alert('Berhasil', 'Registrasi berhasil disimpan!', [
@@ -137,8 +137,8 @@ export default function CompanyRegisterScreen() {
                 No Identitas
               </Text>
               <TextInput
-                value={noIdentitas}
-                onChangeText={setNoIdentitas}
+                value={identityNumber}
+                onChangeText={setIdentityNumber}
                 keyboardType="phone-pad"
                 className="w-80 rounded-xl border border-[#6BBC3F] p-2"
                 style={{ fontFamily: 'LexRegular' }}
@@ -149,8 +149,8 @@ export default function CompanyRegisterScreen() {
                 Nama Lengkap
               </Text>
               <TextInput
-                value={namaLengkap}
-                onChangeText={setNamaLengkap}
+                value={fullName}
+                onChangeText={setFullName}
                 className="w-80 rounded-xl border border-[#6BBC3F] p-2"
                 style={{ fontFamily: 'LexRegular' }}
               />
@@ -208,8 +208,8 @@ export default function CompanyRegisterScreen() {
                 Pekerjaan
               </Text>
               <TextInput
-                value={pekerjaan}
-                onChangeText={setPekerjaan}
+                value={job}
+                onChangeText={setJob}
                 className="w-80 rounded-xl border border-[#6BBC3F] p-2"
                 style={{ fontFamily: 'LexRegular' }}
               />
@@ -219,8 +219,8 @@ export default function CompanyRegisterScreen() {
                 Pendidikan Terakhir
               </Text>
               <TextInput
-                value={pendidikanTerakhir}
-                onChangeText={setPendidikanTerakhir}
+                value={lastEducation}
+                onChangeText={setLastEducation}
                 className="w-80 rounded-xl border border-[#6BBC3F] p-2"
                 style={{ fontFamily: 'LexRegular' }}
               />
@@ -230,8 +230,8 @@ export default function CompanyRegisterScreen() {
                 No HP / No Telp
               </Text>
               <TextInput
-                value={noHp}
-                onChangeText={setNoHp}
+                value={numberPhone}
+                onChangeText={setNumberPhone}
                 keyboardType="phone-pad"
                 className="w-80 rounded-xl border border-[#6BBC3F] p-2"
                 style={{ fontFamily: 'LexRegular' }}
@@ -275,11 +275,11 @@ export default function CompanyRegisterScreen() {
           <View className="mt-2 gap-6 pb-2">
             <View className="gap-1">
               <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
-                NPWP
+                NPWP Perusahaan
               </Text>
               <TextInput
-                value={npwp}
-                onChangeText={setNpwp}
+                value={npwpCompany}
+                onChangeText={setNpwpCompany}
                 keyboardType="phone-pad"
                 className="w-80 rounded-xl border border-[#6BBC3F] p-2"
                 style={{ fontFamily: 'LexRegular' }}
@@ -290,8 +290,8 @@ export default function CompanyRegisterScreen() {
                 Nama Perusahaan
               </Text>
               <TextInput
-                value={namaPerusahaan}
-                onChangeText={setNamaPerusahaan}
+                value={companyName}
+                onChangeText={setCompanyName}
                 className="w-80 rounded-xl border border-[#6BBC3F] p-2"
                 style={{ fontFamily: 'LexRegular' }}
               />
@@ -301,8 +301,8 @@ export default function CompanyRegisterScreen() {
                 Alamat Perusahaan
               </Text>
               <TextInput
-                value={alamatPerusahaan}
-                onChangeText={setAlamatPerusahaan}
+                value={companyAddress}
+                onChangeText={setCompanyAddress}
                 multiline={true}
                 numberOfLines={4}
                 textAlignVertical="top"
@@ -315,8 +315,8 @@ export default function CompanyRegisterScreen() {
                 Provinsi
               </Text>
               <TextInput
-                value={provinsiPerusahaan}
-                onChangeText={setProvinsiPerusahaan}
+                value={provinceCompany}
+                onChangeText={setProvinceCompany}
                 className="w-80 rounded-xl border border-[#6BBC3F] p-2"
                 style={{ fontFamily: 'LexRegular' }}
               />
@@ -330,8 +330,8 @@ export default function CompanyRegisterScreen() {
                 Kabupaten / Kota
               </Text>
               <TextInput
-                value={kabupatenKotaPerusahaan}
-                onChangeText={setKabupatenKotaPerusahaan}
+                value={districtCityCompany}
+                onChangeText={setDistrictCityCompany}
                 className="w-80 rounded-xl border border-[#6BBC3F] p-2"
                 style={{ fontFamily: 'LexRegular' }}
               />
@@ -341,8 +341,8 @@ export default function CompanyRegisterScreen() {
                 Email Perusahaan
               </Text>
               <TextInput
-                value={emailPerusahaan}
-                onChangeText={setEmailPerusahaan}
+                value={emailCompany}
+                onChangeText={setEmailCompany}
                 className="w-80 rounded-xl border border-[#6BBC3F] p-2"
                 style={{ fontFamily: 'LexRegular' }}
               />
@@ -352,8 +352,8 @@ export default function CompanyRegisterScreen() {
                 No HP / No Telp Perusahaan
               </Text>
               <TextInput
-                value={noHpPerusahaan}
-                onChangeText={setNoHpPerusahaan}
+                value={companyNumberPhone}
+                onChangeText={setCompanyNumberPhone}
                 keyboardType="phone-pad"
                 className="w-80 rounded-xl border border-[#6BBC3F] p-2"
                 style={{ fontFamily: 'LexRegular' }}

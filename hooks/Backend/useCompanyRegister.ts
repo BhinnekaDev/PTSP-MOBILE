@@ -7,7 +7,7 @@ type CompanyData = {
   Pekerjaan: string;
   Pendidikan_Terakhir: string;
   No_Hp: string;
-  NPWP: string;
+  NPWP_Perusahaan: string;
   Nama_Perusahaan: string;
   Alamat_Perusahaan: string;
   Provinsi_Perusahaan: string;

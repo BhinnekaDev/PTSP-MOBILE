@@ -1,24 +1,24 @@
-import React from "react";
-import { View, Text, Animated } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
+import React from 'react';
+import { View, Text, Animated } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
 
 // OUR SCREENS
-import NotificationProfile from "@/app/screens/notificationProfile";
-import SecurityProfile from "@/app/screens/securityProfile";
+import NotificationProfile from '@/app/screens/notificationProfile';
+import SecurityProfile from '@/app/screens/securityProfile';
 
 // OUR ICONS
-import { MaterialIcons } from "@expo/vector-icons";
-import Octicons from "@expo/vector-icons/Octicons";
-import Feather from "@expo/vector-icons/Feather";
+import { MaterialIcons } from '@expo/vector-icons';
+import Octicons from '@expo/vector-icons/Octicons';
+import Feather from '@expo/vector-icons/Feather';
 
 // OUR HOOKS
-import { useProfilePopup } from "@/hooks/Frontend/profileScreen/usePopupAnimation";
+import { useProfilePopup } from '@/hooks/Frontend/profileScreen/usePopupAnimation';
 
 // OUR COMPONENTS
-import ButtonCustom from "@/components/buttonCustom";
-import UserProfile from "@/components/userProfile";
-import EditProfile from "@/app/screens/editProfile";
+import ButtonCustom from '@/components/buttonCustom';
+import UserProfile from '@/components/userProfile';
+import EditProfile from '@/app/screens/editProfileScreen';
 
 export default function ProfileTabs() {
   const router = useRouter();
@@ -33,12 +33,28 @@ export default function ProfileTabs() {
 
   return (
     <LinearGradient
-      colors={["#1475BA", "#399385", "#6BBC3F"]} //
-      style={{ flex: 1, justifyContent: "center", alignItems: "center", marginTop: -80 }}
+      colors={['#1475BA', '#399385', '#6BBC3F']} //
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: -80,
+      }}
     >
       {!activePopup && (
-        <Animated.View style={{ opacity: fadeAnim, width: "100%", height: "80%", justifyContent: "center", alignItems: "center" }}>
-          <Text className="text-white text-2xl mb-10" style={{ fontFamily: "LexBold" }}>
+        <Animated.View
+          style={{
+            opacity: fadeAnim,
+            width: '100%',
+            height: '80%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Text
+            className="mb-10 text-2xl text-white"
+            style={{ fontFamily: 'LexBold' }}
+          >
             Pengaturan Profil
           </Text>
           {/* USER PROFILE */}
@@ -56,52 +72,91 @@ export default function ProfileTabs() {
               text="Pesanan Saya"
               iconLeft={<Octicons name="checklist" size={20} color="white" />}
               textClassName="ml-2 text-white"
-              onPress={() => router.push("/screens/orderScreen")}
+              onPress={() => router.push('/screens/orderScreen')}
             />
           </View>
 
-          <View className="w-[90%] mt-0">
-            <View className="bg-white px-4 py-6 rounded-lg">
+          <View className="mt-0 w-[90%]">
+            <View className="rounded-lg bg-white px-4 py-6">
               {/* TOMBOL SUNTING PROFIL */}
               <ButtonCustom
                 classNameContainer="px-4 py-2 rounded-lg"
                 textClassName="text-black text-lg pl-4"
-                iconLeft={<Octicons name="checklist" size={24} color="white" className="rounded-full p-3 bg-[#399385]" />}
+                iconLeft={
+                  <Octicons
+                    name="checklist"
+                    size={24}
+                    color="white"
+                    className="rounded-full bg-[#399385] p-3"
+                  />
+                }
                 text="Sunting Profil"
-                iconRight={<MaterialIcons name="keyboard-arrow-right" size={24} color="black" />}
-                onPress={() => handleShowPopup("editProfile")}
-                textStyle={{ fontFamily: "LexRegular" }}
+                iconRight={
+                  <MaterialIcons
+                    name="keyboard-arrow-right"
+                    size={24}
+                    color="black"
+                  />
+                }
+                onPress={() => handleShowPopup('editProfile')}
+                textStyle={{ fontFamily: 'LexRegular' }}
               />
               {/* TOMBOL NOTIFIKASI */}
               <ButtonCustom
                 classNameContainer="px-4 py-2 rounded-lg"
                 textClassName="text-black text-lg pl-4"
-                iconLeft={<Feather name="bell" size={24} color="white" className="rounded-full p-3 bg-[#399385]" />}
+                iconLeft={
+                  <Feather
+                    name="bell"
+                    size={24}
+                    color="white"
+                    className="rounded-full bg-[#399385] p-3"
+                  />
+                }
                 text="Notifikasi"
-                iconRight={<MaterialIcons name="keyboard-arrow-right" size={24} color="black" />}
-                onPress={() => handleShowPopup("notificationProfile")}
-                textStyle={{ fontFamily: "LexRegular" }}
+                iconRight={
+                  <MaterialIcons
+                    name="keyboard-arrow-right"
+                    size={24}
+                    color="black"
+                  />
+                }
+                onPress={() => handleShowPopup('notificationProfile')}
+                textStyle={{ fontFamily: 'LexRegular' }}
               />
               {/* TOMBOL KEAMANAN */}
               <ButtonCustom
                 classNameContainer="px-4 py-2 rounded-lg"
                 textClassName="text-black text-lg pl-4"
-                iconLeft={<Feather name="lock" size={24} color="white" className="rounded-full p-3 bg-[#399385]" />}
+                iconLeft={
+                  <Feather
+                    name="lock"
+                    size={24}
+                    color="white"
+                    className="rounded-full bg-[#399385] p-3"
+                  />
+                }
                 text="Keamanan"
-                iconRight={<MaterialIcons name="keyboard-arrow-right" size={24} color="black" />}
-                onPress={() => handleShowPopup("securityProfile")}
-                textStyle={{ fontFamily: "LexRegular" }}
+                iconRight={
+                  <MaterialIcons
+                    name="keyboard-arrow-right"
+                    size={24}
+                    color="black"
+                  />
+                }
+                onPress={() => handleShowPopup('securityProfile')}
+                textStyle={{ fontFamily: 'LexRegular' }}
               />
             </View>
           </View>
 
-          <View className="w-[65%] mt-10">
+          <View className="mt-10 w-[65%]">
             {/* TOMBOL KELUAR */}
             <ButtonCustom
               classNameContainer="bg-[#73BF40] py-[6px] rounded-lg" //
               text="Keluar"
               textClassName="text-[20px] text-center text-white"
-              onPress={() => alert("Keluar")}
+              onPress={() => alert('Keluar')}
             />
           </View>
         </Animated.View>
@@ -110,18 +165,24 @@ export default function ProfileTabs() {
       {activePopup && (
         <Animated.View
           style={{
-            position: "absolute",
+            position: 'absolute',
             bottom: 100,
             width: animatedWidth,
-            height: "80%",
+            height: '80%',
             borderRadius: 20,
             transform: [{ scaleY: animatedScaleY }],
-            overflow: "hidden",
+            overflow: 'hidden',
           }}
         >
-          {activePopup === "editProfile" && <EditProfile onClose={handleClosePopup} />}
-          {activePopup === "notificationProfile" && <NotificationProfile onClose={handleClosePopup} />}
-          {activePopup === "securityProfile" && <SecurityProfile onClose={handleClosePopup} />}
+          {activePopup === 'editProfile' && (
+            <EditProfile onClose={handleClosePopup} />
+          )}
+          {activePopup === 'notificationProfile' && (
+            <NotificationProfile onClose={handleClosePopup} />
+          )}
+          {activePopup === 'securityProfile' && (
+            <SecurityProfile onClose={handleClosePopup} />
+          )}
         </Animated.View>
       )}
     </LinearGradient>
