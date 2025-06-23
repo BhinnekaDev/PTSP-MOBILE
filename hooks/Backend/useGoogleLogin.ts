@@ -1,9 +1,12 @@
 import { useRouter } from 'expo-router';
-import { db, firebaseAuth, GoogleAuthProvider } from '@/lib/firebase';
 import {
+  db,
+  firebaseAuth,
+  GoogleAuthProvider,
   GoogleSignin,
   statusCodes,
-} from '@react-native-google-signin/google-signin';
+} from '@/lib/firebase';
+
 import '@/lib/auth/googleConfig';
 
 export const useGoogleLogin = () => {
