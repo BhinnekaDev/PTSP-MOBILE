@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 
 // LIB
-import { firebaseAuth, db } from '@/lib/firebase';
+import {
+  firebaseAuth,
+  db,
+  GoogleAuthProvider,
+  GoogleSignin,
+} from '@/lib/firebase';
 
 // HOOKS
 import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
@@ -29,28 +34,49 @@ export const useEditSecurityProfile = (onClose: () => void) => {
 
   const handleSave = async () => {
     try {
-      // VALIDASI SEMUA INPUT
+      // VALIDASI INPUT
       if (!numberPhone.trim() || !email.trim()) {
         alert('❌ Semua kolom wajib diisi.');
         return;
       }
 
-      // VALIDASI FORMAL NOMOR HP
       if (numberPhone.length < 10 || numberPhone.length > 13) {
         alert('❌ Nomor HP harus terdiri dari 10–13 digit angka.');
         return;
       }
 
-      // VALIDASI FORMAL EMAIL
       if (!isValidEmail(email)) {
         alert('❌ Format email tidak valid.');
         return;
       }
 
-      //   BERDASARKAN USER LOGIN
       const user = firebaseAuth.currentUser;
       if (!user) throw new Error('User tidak ditemukan.');
 
+      const isEmailChanged = email.trim() !== user.email;
+
+      if (isEmailChanged) {
+        const { idToken } = await GoogleSignin.getTokens();
+        const credential = GoogleAuthProvider.credential(idToken);
+        await user.reauthenticateWithCredential(credential);
+
+        await user.verifyBeforeUpdateEmail(email.trim(), {
+          url: 'https://ptspbmkgmobile.page.link',
+          handleCodeInApp: true,
+          android: {
+            packageName: 'com.ptsp.mobile',
+            installApp: true,
+            minimumVersion: '1',
+          },
+        });
+
+        alert(
+          '📧 Email verifikasi telah dikirim ke email baru kamu. Silakan cek dan klik link verifikasi untuk menyelesaikan perubahan email.'
+        );
+        console.log('✅ Perintah verifyBeforeUpdateEmail berhasil dijalankan');
+      }
+
+      // UPDATE FIRESTORE jika email tidak berubah
       const uid = user.uid;
       const collectionName =
         profile?.tipe === 'perorangan' ? 'perorangan' : 'perusahaan';
@@ -64,9 +90,16 @@ export const useEditSecurityProfile = (onClose: () => void) => {
 
       alert('✅ Data keamanan berhasil disimpan.');
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error('❌ Gagal menyimpan data keamanan:', err);
-      alert('Terjadi kesalahan saat menyimpan data keamanan.');
+
+      if (err.code === 'auth/requires-recent-login') {
+        alert('⚠️ Demi keamanan, silakan login ulang untuk ubah email.');
+      } else if (err.code === 'auth/email-already-in-use') {
+        alert('⚠️ Email ini sudah digunakan oleh akun lain.');
+      } else {
+        alert(err.message || 'Terjadi kesalahan saat menyimpan data keamanan.');
+      }
     }
   };
 
