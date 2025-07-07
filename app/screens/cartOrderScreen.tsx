@@ -3,14 +3,22 @@ import { View, ScrollView, Text, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 
+// OUR COMPONENTS
 import ButtonCustom from '@/components/buttonCustom';
 import NavCartOrder from '@/components/navCartOrder';
+
+// OUR HOOKS
 import { useGetCartOrderScreen } from '@/hooks/Backend/useGetCartOrderScreen';
+import { useDeleteCartOrderScreen } from '@/hooks/Backend/useDeleteCartOrderScreen';
+import { useUpdateCartQuantityScreen } from '@/hooks/Backend/useUpdateCartQuantityScreen';
+// OUR ICONS
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function CartOrderScreen() {
   const router = useRouter();
   const { cartItems, totalHarga, loading } = useGetCartOrderScreen();
-
+  const { removeFromCart } = useDeleteCartOrderScreen();
+  const { updateQuantity } = useUpdateCartQuantityScreen();
   return (
     <View className="flex-1 gap-4 bg-white">
       <NavCartOrder
@@ -56,16 +64,62 @@ export default function CartOrderScreen() {
                       </Text>
                     </View>
 
+                    {/* Tombol Hapus */}
+                    <MaterialIcons
+                      name="delete"
+                      size={20}
+                      color="red"
+                      onPress={() => {
+                        const type = item.ID_Informasi ? 'Informasi' : 'Jasa';
+                        removeFromCart(
+                          item.ID_Informasi || item.ID_Jasa || '',
+                          type
+                        );
+                      }}
+                    />
                     {/* Kuantitas dan Harga */}
                     <View className="flex-row items-center justify-between">
+                      {/* Tombol - */}
+                      <MaterialIcons
+                        name="remove-circle-outline"
+                        size={24}
+                        color="#1475BA"
+                        onPress={() => {
+                          const type = item.ID_Informasi ? 'Informasi' : 'Jasa';
+                          updateQuantity(
+                            item.ID_Informasi || item.ID_Jasa || '',
+                            type,
+                            'decrement'
+                          );
+                        }}
+                      />
+
+                      {/* Kuantitas */}
                       <Text
                         className="text-[12px]"
                         style={{ fontFamily: 'LexSemiBold', color: 'black' }}
                       >
                         x{item.Kuantitas}
                       </Text>
+
+                      {/* Tombol + */}
+                      <MaterialIcons
+                        name="add-circle-outline"
+                        size={24}
+                        color="#1475BA"
+                        onPress={() => {
+                          const type = item.ID_Informasi ? 'Informasi' : 'Jasa';
+                          updateQuantity(
+                            item.ID_Informasi || item.ID_Jasa || '',
+                            type,
+                            'increment'
+                          );
+                        }}
+                      />
+
+                      {/* Harga */}
                       <Text
-                        className="text-[12px] font-bold"
+                        className="ml-2 text-[12px] font-bold"
                         style={{ color: 'black' }}
                       >
                         Rp {item.Total_Harga.toLocaleString('id-ID')}
