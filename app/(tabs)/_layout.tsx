@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Tabs } from 'expo-router';
-import { Platform } from 'react-native';
 
 // OUR ICONS
 import Ionicons from '@expo/vector-icons/Ionicons';
