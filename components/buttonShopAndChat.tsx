@@ -1,8 +1,13 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+
+// OUR ICON
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
+
+// OUT HOOKS
+import { useCartItemCount } from '@/hooks/Backend/useCartItemCount';
 
 type ButtonShopAndChatProps = {
   showButtonShop?: boolean;
@@ -14,11 +19,10 @@ type ButtonShopAndChatProps = {
 export default function ButtonShopAndChat({
   showButtonShop = true, //
   showButtonChat = true,
-  showShopCount = 1,
   showhatCount = 2,
 }: ButtonShopAndChatProps) {
   const router = useRouter();
-
+  const { cartCount } = useCartItemCount();
   return (
     <View className="flex-row items-center gap-4">
       {/* Icon Shop */}
@@ -29,10 +33,10 @@ export default function ButtonShopAndChat({
           onPress={() => router.push('/screens/cartOrderScreen')}
         >
           <MaterialIcons name="shopping-cart" size={24} color="white" />
-          {showShopCount > 0 && (
+          {cartCount > 0 && (
             <View className="absolute -right-1.5 -top-1.5 h-5 w-5 items-center justify-center rounded-full bg-red-500">
               <Text className="text-[11px] font-bold text-white">
-                {showShopCount}
+                {cartCount}
               </Text>
             </View>
           )}

@@ -11,8 +11,6 @@ import {
 import { useRouter } from 'expo-router';
 
 // OUR ICONS
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import Feather from '@expo/vector-icons/Feather';
 import Octicons from '@expo/vector-icons/Octicons';
 
 // OUR COMPONENTS
@@ -22,65 +20,17 @@ import ButtonShopAndChat from '@/components/buttonShopAndChat';
 // OUR UTILS
 import { getHeaderPaddingVertical } from '@/utils/platformStyleAndroidIos';
 
-// IMPORT THE SHARED TYPES
+// OUR PROPS
 import { ProductType } from '@/interfaces/productDataProps';
+
+// OUR PRODUCTS
+import { allProducts } from '@/lib/data/productList';
 
 export default function Product() {
   const headerPaddingVertical = getHeaderPaddingVertical();
 
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState('Semua');
-
-  const allProducts = [
-    {
-      category: 'Informasi',
-      icon: <FontAwesome6 name="mountain" size={60} color="#3498DB" />,
-      title: 'Stasiun Meteorologi',
-      desc: 'Pemantauan dan pengamatan kondisi\ncuaca dan atmosfer, termasuk suhu,\nkelembapan, dan tekanan udara.',
-      pathname: '/screens/productDetailScreen' as const,
-      paramCategory: 'Informasi_Meteorologi',
-    },
-    {
-      category: 'Informasi',
-      icon: <FontAwesome6 name="cloud-bolt" size={60} color="#3498DB" />,
-      title: 'Stasiun Klimatologi',
-      desc: 'Penelitian dan analisis perubahan\niklim jangka panjang, pola cuaca, dan dampak lingkungan.',
-      pathname: '/screens/productDetailScreen' as const,
-      paramCategory: 'Informasi_Klimatologi',
-    },
-    {
-      category: 'Informasi',
-      icon: <Feather name="wind" size={60} color="#3498DB" />,
-      title: 'Stasiun Geofisika',
-      desc: 'Pemantauan dan pengamatan kondisi\ncuaca dan atmosfer, termasuk suhu,\nkelembapan, dan tekanan udara.',
-      pathname: '/screens/productDetailScreen' as const,
-      paramCategory: 'Informasi_Geofisika',
-    },
-    {
-      category: 'Jasa',
-      icon: <FontAwesome6 name="mountain" size={60} color="#3498DB" />,
-      title: 'Stasiun Meteorologi',
-      desc: 'Pemantauan dan pengamatan kondisi\ncuaca dan atmosfer, termasuk suhu,\nkelembapan, dan tekanan udara.',
-      pathname: '/screens/productDetailScreen' as const,
-      paramCategory: 'Jasa_Meteorologi',
-    },
-    {
-      category: 'Jasa',
-      icon: <FontAwesome6 name="cloud-bolt" size={60} color="#3498DB" />,
-      title: 'Stasiun Klimatologi',
-      desc: 'Penelitian dan analisis perubahan\niklim jangka panjang, pola cuaca, dan dampak lingkungan.',
-      pathname: '/screens/productDetailScreen' as const,
-      paramCategory: 'Jasa_Klimatologi',
-    },
-    {
-      category: 'Jasa',
-      icon: <Feather name="wind" size={60} color="#3498DB" />,
-      title: 'Stasiun Geofisika',
-      desc: 'Pemantauan dan pengamatan kondisi\ncuaca dan atmosfer, termasuk suhu,\nkelembapan, dan tekanan udara.',
-      pathname: '/screens/productDetailScreen' as const,
-      paramCategory: 'Jasa_Geofisika',
-    },
-  ];
 
   const filteredProducts =
     activeCategory === 'Semua'
