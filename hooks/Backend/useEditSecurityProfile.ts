@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-
+import { useRouter } from 'expo-router';
 // LIB
 import {
   firebaseAuth,
@@ -20,8 +20,8 @@ type UpdateSecurityData = {
 };
 
 export const useEditSecurityProfile = (onClose: () => void) => {
+  const router = useRouter();
   const { profile, loading } = useGetUserProfile();
-
   const [numberPhone, setNumberPhone] = useState('');
   const [email, setEmail] = useState('');
 
@@ -55,6 +55,7 @@ export const useEditSecurityProfile = (onClose: () => void) => {
 
       const isEmailChanged = email.trim() !== user.email;
 
+      // Jika email berubah, lakukan re-auth dan kirim verifikasi
       if (isEmailChanged) {
         const { idToken } = await GoogleSignin.getTokens();
         const credential = GoogleAuthProvider.credential(idToken);
@@ -73,10 +74,10 @@ export const useEditSecurityProfile = (onClose: () => void) => {
         alert(
           '📧 Email verifikasi telah dikirim ke email baru kamu. Silakan cek dan klik link verifikasi untuk menyelesaikan perubahan email.'
         );
-        console.log('✅ Perintah verifyBeforeUpdateEmail berhasil dijalankan');
+        console.log('✅ verifyBeforeUpdateEmail dijalankan');
       }
 
-      // UPDATE FIRESTORE jika email tidak berubah
+      // Update Firestore TANPA kondisi khusus
       const uid = user.uid;
       const collectionName =
         profile?.tipe === 'perorangan' ? 'perorangan' : 'perusahaan';
@@ -86,12 +87,18 @@ export const useEditSecurityProfile = (onClose: () => void) => {
         Email: email.trim(),
       };
 
+      console.log('📝 Mengupdate Firestore dengan data:', data);
       await db.collection(collectionName).doc(uid).update(data);
+      console.log('✅ Firestore berhasil diupdate');
 
       alert('✅ Data keamanan berhasil disimpan.');
       onClose();
+
+      // Kembali hanya jika email berubah (untuk menghindari bug routing)
+      if (isEmailChanged) router.back();
     } catch (err: any) {
-      console.error('❌ Gagal menyimpan data keamanan:', err);
+      console.log('❌ Masuk ke blok catch error');
+      console.error('Gagal menyimpan data keamanan:', err);
 
       if (err.code === 'auth/requires-recent-login') {
         alert('⚠️ Demi keamanan, silakan login ulang untuk ubah email.');
