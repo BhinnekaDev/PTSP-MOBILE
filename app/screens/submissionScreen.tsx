@@ -3,6 +3,9 @@ import { View, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 
+// OUR CONSTANS
+import { submissionOptions } from '@/constants/submissionOptions';
+
 // COMPONENTS
 import ButtonCustom from '@/components/buttonCustom';
 import NavCartOrder from '@/components/navCartOrder';
@@ -15,48 +18,6 @@ import { useSelectDocumentMulti } from '@/hooks/Frontend/filePreviewModalScreen/
 import { useSubmitSubmission } from '@/hooks/Backend/useSubmitSubmission';
 
 // DATA
-const submissionOptions = [
-  {
-    label: 'Penanggulangan Bencana',
-    jenisAjukan: 'Gratis',
-    files: ['Surat Pengantar Permintaan Data'],
-  },
-  {
-    label: 'Kegiatan Keagamaan',
-    jenisAjukan: 'Gratis',
-    files: ['Surat Permintaan Ditandatangani Camat'],
-  },
-  {
-    label: 'Kegiatan Sosial',
-    jenisAjukan: 'Gratis',
-    files: ['Surat Permintaan Ditandatangani Camat'],
-  },
-  {
-    label: 'Kegiatan Pertahanan dan Keamanan',
-    jenisAjukan: 'Gratis',
-    files: ['Surat Permintaan Ditandatangani Camat'],
-  },
-  {
-    label: 'Kegiatan Pemerintahan Pusat atau Daerah',
-    jenisAjukan: 'Gratis',
-    files: ['Perjanjian Kerjasama dengan BMKG', 'Surat Pengantar'],
-  },
-  {
-    label: 'Kegiatan Pendidikan dan Penelitian Non Komersil',
-    jenisAjukan: 'Gratis',
-    files: [
-      'Identitas Diri',
-      'Surat Pengantar dari Sekolah',
-      'Surat Pernyataan',
-      'Proposal Penelitian',
-    ],
-  },
-  {
-    label: 'Pelayanan Informasi dengan Tarif PNBP',
-    jenisAjukan: 'Berbayar',
-    files: ['Identitas KTP', 'Surat Pengantar'],
-  },
-];
 
 export default function SubmissionScreen() {
   const router = useRouter();
@@ -72,6 +33,7 @@ export default function SubmissionScreen() {
     openFileExternal,
   } = useFilePreview();
   const { submit } = useSubmitSubmission();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const selectedData = submissionOptions.find(
     (item) => `${item.label} (${item.jenisAjukan})` === selectedJenisKegiatan
@@ -84,7 +46,6 @@ export default function SubmissionScreen() {
       setFileMap((prev) => ({
         ...prev,
         [field]: result.file,
-        preview: result.file, // untuk modal preview
       }));
     }
   };
@@ -228,6 +189,7 @@ export default function SubmissionScreen() {
                 text="AJUKAN SEKARANG"
                 textClassName="text-[14px] text-center text-white"
                 onPress={async () => {
+                  if (isSubmitting) return; // ❗ Proteksi dobel klik
                   if (!selectedJenisKegiatan || !selectedData) return;
 
                   const isAllFilesUploaded = selectedData.files.every(
@@ -239,8 +201,9 @@ export default function SubmissionScreen() {
                     return;
                   }
 
+                  setIsSubmitting(true); // ✅ Aktifkan loading
                   try {
-                    submit({
+                    await submit({
                       selectedJenis: selectedJenisKegiatan,
                       jenisAjukan: selectedData.jenisAjukan as
                         | 'Gratis'
@@ -253,10 +216,12 @@ export default function SubmissionScreen() {
                   } catch (err) {
                     console.error('❌ Gagal mengajukan:', err);
                     alert('Terjadi kesalahan saat mengirim pengajuan.');
+                  } finally {
+                    setIsSubmitting(false); // ✅ Matikan loading
                   }
                 }}
+                isTouchable={!isSubmitting && !!selectedJenisKegiatan}
                 textStyle={{ fontFamily: 'LexSemiBold' }}
-                isTouchable={!!selectedJenisKegiatan}
                 containerStyle={{
                   shadowColor: '#000',
                   shadowOffset: { width: 0, height: 4 },
