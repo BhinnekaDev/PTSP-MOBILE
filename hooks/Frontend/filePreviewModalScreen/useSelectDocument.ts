@@ -1,29 +1,33 @@
-import { useState } from "react";
-import * as DocumentPicker from "expo-document-picker";
-import * as FileSystem from "expo-file-system";
-import { Alert } from "react-native";
-import { Audio } from "expo-av";
+import { useState } from 'react';
+import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system';
+import { Alert } from 'react-native';
+import { Audio } from 'expo-av';
+import { UploadFileProps } from '@/interfaces/uploadFileProps';
 
-// OUR INTERFACES
-import { UploadFileProps } from "@/interfaces/uploadFileProps";
-
-export function useSelectDocument() {
-  const [file, setFile] = useState<UploadFileProps | null>(null);
-  const [uploadSuccess, setUploadSuccess] = useState(false);
+export function useSelectDocumentMulti() {
+  const [uploadedFiles, setUploadedFiles] = useState<
+    Record<string, UploadFileProps | null>
+  >({});
 
   const allowedTypes = [
-    "image/", //
-    "application/pdf",
-    "application/msword",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    'image/jpeg',
+    'image/jpg',
+    'image/png',
+    'application/pdf',
+    'application/msword', // .doc
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
   ];
 
   const isAllowedType = (mimeType: string | undefined) => {
     if (!mimeType) return false;
-    return allowedTypes.includes(mimeType) || allowedTypes.some((type) => mimeType.startsWith(type));
+    return (
+      allowedTypes.includes(mimeType) ||
+      allowedTypes.some((type) => mimeType.startsWith(type))
+    );
   };
 
-  const pickDocument = async () => {
+  const pickDocument = async (fieldName: string) => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
         copyToCacheDirectory: true,
@@ -35,47 +39,52 @@ export function useSelectDocument() {
         const pickedFile = result.assets[0];
 
         if (!isAllowedType(pickedFile.mimeType)) {
-          Alert.alert("Format file tidak didukung.");
-          return;
+          Alert.alert('Format file tidak didukung.');
+          return { success: false, file: null };
         }
 
         const base64Data = await FileSystem.readAsStringAsync(pickedFile.uri, {
           encoding: FileSystem.EncodingType.Base64,
         });
 
-        setFile({
+        const fileData: UploadFileProps = {
           uri: pickedFile.uri,
-          mimeType: pickedFile.mimeType || "application/octet-stream",
+          mimeType: pickedFile.mimeType || 'application/octet-stream',
           base64: base64Data,
           size: pickedFile.size || 0,
-          name: pickedFile.name || "file",
-        });
+          name: pickedFile.name || 'file',
+        };
 
-        setUploadSuccess(true);
+        setUploadedFiles((prev) => ({
+          ...prev,
+          [fieldName]: fileData,
+        }));
 
-        // ✅ Bunyi dan Alert
+        // 🔊 Play sound
         try {
           const { sound } = await Audio.Sound.createAsync(
-            require("@/assets/audios/alert-audio.mp3") // ganti sesuai lokasi file kamu
+            require('@/assets/audios/alert-audio.mp3')
           );
           await sound.playAsync();
-
-          Alert.alert("Berhasil", "File berhasil diupload!");
-        } catch (soundErr) {
-          console.warn("Gagal memainkan suara:", soundErr);
+        } catch (err) {
+          console.warn('Gagal memainkan suara:', err);
         }
+
+        Alert.alert('Berhasil', `File untuk "${fieldName}" berhasil diupload!`);
+
+        return { success: true, file: fileData };
       }
+
+      return { success: false, file: null };
     } catch (err) {
-      console.error("Gagal mengambil dokumen:", err);
-      Alert.alert("Gagal", "Tidak bisa mengambil file.");
+      console.error('Gagal mengambil dokumen:', err);
+      Alert.alert('Gagal', 'Tidak bisa mengambil file.');
+      return { success: false, file: null };
     }
   };
 
   return {
-    file,
-    uploadSuccess,
+    uploadedFiles,
     pickDocument,
-    setFile,
-    setUploadSuccess,
   };
 }

@@ -1,7 +1,15 @@
 // components/FilePreviewModal.tsx
-import React from "react";
-import { Modal, Pressable, Text, View, Image, TouchableOpacity, Alert } from "react-native";
-import { WebView } from "react-native-webview";
+import React from 'react';
+import {
+  Modal,
+  Pressable,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import { WebView } from 'react-native-webview';
 
 interface FileWithBase64 {
   uri: string;
@@ -19,27 +27,67 @@ interface Props {
   onOpenExternal: () => void;
 }
 
-const FilePreviewModal = ({ visible, onClose, file, pdfViewerHtml, onOpenExternal }: Props) => {
+const FilePreviewModal = ({
+  visible,
+  onClose,
+  file,
+  pdfViewerHtml,
+  onOpenExternal,
+}: Props) => {
   return (
-    <Modal visible={visible} animationType="slide" transparent={true} onRequestClose={onClose}>
-      <Pressable onPress={onClose} className="flex-1 justify-center items-center bg-black/60 px-4">
-        <Pressable onPress={(e) => e.stopPropagation()} className="w-full max-h-[85%] bg-white rounded-xl p-3 shadow-md relative">
-          {file?.mimeType?.startsWith("image/") ? (
-            <Image source={{ uri: file.uri }} className="w-full h-[80%] rounded-[12px]" resizeMode="contain" />
-          ) : file?.mimeType === "application/pdf" && pdfViewerHtml ? (
-            <View className="w-full h-[500px]">
-              <WebView originWhitelist={["*"]} source={{ html: pdfViewerHtml }} className="flex-1" onError={() => Alert.alert("Error", "Gagal memuat PDF")} javaScriptEnabled />
+    <Modal
+      visible={visible}
+      animationType="slide"
+      transparent={true}
+      onRequestClose={onClose}
+    >
+      <Pressable
+        onPress={onClose}
+        className="flex-1 items-center justify-center bg-black/60 px-4"
+      >
+        <Pressable
+          onPress={(e) => e.stopPropagation()}
+          className="relative max-h-[85%] w-full rounded-xl bg-white p-3 shadow-md"
+        >
+          {file?.mimeType?.startsWith('image/') ? (
+            <Image
+              source={{ uri: file.uri }}
+              className="h-[80%] w-full rounded-[12px]"
+              resizeMode="contain"
+            />
+          ) : file?.mimeType === 'application/pdf' && pdfViewerHtml ? (
+            <View className="h-[500px] w-full bg-red-500">
+              <WebView
+                originWhitelist={['*']} //
+                source={{ html: pdfViewerHtml }}
+                javaScriptEnabled={true}
+                scrollEnabled={true} // ✅ scroll iOS
+                nestedScrollEnabled={true} // ✅ scroll Android
+                startInLoadingState={true}
+                style={{ flex: 1 }}
+                onError={() => Alert.alert('Error', 'Gagal memuat PDF')}
+              />
             </View>
           ) : (
-            <View className="flex-1 justify-center items-center p-5">
-              <Text className="mb-2 font-bold">Preview tidak tersedia untuk jenis file ini.</Text>
-              <TouchableOpacity onPress={onOpenExternal} className="px-3 py-3 bg-[#1475BA] rounded-lg">
-                <Text className="text-white">Buka File dengan Aplikasi Lain</Text>
+            <View className="flex-1 items-center justify-center p-5">
+              <Text className="mb-2 font-bold">
+                Preview tidak tersedia untuk jenis file ini.
+              </Text>
+              <TouchableOpacity
+                onPress={onOpenExternal}
+                className="rounded-lg bg-[#1475BA] px-3 py-3"
+              >
+                <Text className="text-white">
+                  Buka File dengan Aplikasi Lain
+                </Text>
               </TouchableOpacity>
             </View>
           )}
 
-          <Text className="text-center text-black absolute bottom-[-50] left-0 right-0" style={{ fontFamily: "LexRegular" }}>
+          <Text
+            className="absolute bottom-[-50] left-0 right-0 text-center text-black"
+            style={{ fontFamily: 'LexRegular' }}
+          >
             Tap manapun untuk tutup
           </Text>
         </Pressable>
