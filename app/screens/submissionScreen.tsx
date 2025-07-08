@@ -12,6 +12,7 @@ import FilePreviewModal from '@/components/filePreviewModal';
 // HOOK
 import { useFilePreview } from '@/hooks/Frontend/filePreviewModalScreen/useFilePreview';
 import { useSelectDocumentMulti } from '@/hooks/Frontend/filePreviewModalScreen/useSelectDocument';
+import { useSubmitSubmission } from '@/hooks/Backend/useSubmitSubmission';
 
 // DATA
 const submissionOptions = [
@@ -70,6 +71,7 @@ export default function SubmissionScreen() {
     pdfViewerHtml,
     openFileExternal,
   } = useFilePreview();
+  const { submit } = useSubmitSubmission();
 
   const selectedData = submissionOptions.find(
     (item) => `${item.label} (${item.jenisAjukan})` === selectedJenisKegiatan
@@ -225,12 +227,34 @@ export default function SubmissionScreen() {
                 classNameContainer="bg-[#1475BA] py-3 rounded-[10px]"
                 text="AJUKAN SEKARANG"
                 textClassName="text-[14px] text-center text-white"
-                onPress={() =>
-                  router.push({
-                    pathname: '/screens/orderScreen',
-                    params: { triggerSubmission: 'true' },
-                  })
-                }
+                onPress={async () => {
+                  if (!selectedJenisKegiatan || !selectedData) return;
+
+                  const isAllFilesUploaded = selectedData.files.every(
+                    (fileName) => !!fileMap[fileName]
+                  );
+
+                  if (!isAllFilesUploaded) {
+                    alert('Harap unggah semua file persyaratan.');
+                    return;
+                  }
+
+                  try {
+                    submit({
+                      selectedJenis: selectedJenisKegiatan,
+                      jenisAjukan: selectedData.jenisAjukan as
+                        | 'Gratis'
+                        | 'Berbayar',
+                      uploadedFiles: fileMap,
+                    });
+
+                    alert('Pengajuan berhasil dikirim.');
+                    router.replace('/screens/orderScreen');
+                  } catch (err) {
+                    console.error('❌ Gagal mengajukan:', err);
+                    alert('Terjadi kesalahan saat mengirim pengajuan.');
+                  }
+                }}
                 textStyle={{ fontFamily: 'LexSemiBold' }}
                 isTouchable={!!selectedJenisKegiatan}
                 containerStyle={{
