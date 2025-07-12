@@ -43,7 +43,7 @@ export const useSubmitSubmission = () => {
     }
 
     try {
-      // Ambil label kegiatan dari submissionOptions
+      // 🔽 Ambil label kegiatan dari submissionOptions
       const selectedData = submissionOptions.find(
         (item) => `${item.label} (${item.jenisAjukan})` === selectedJenis
       );
@@ -78,7 +78,7 @@ export const useSubmitSubmission = () => {
         Jenis_Ajukan: jenisAjukan,
         Nama_Ajukan: selectedData.label,
         File_Ajukan: fileUrls,
-        Status_Ajuan: 'Menunggu',
+        Status_Ajuan: 'Sedang Ditinjau',
         Tanggal_Pembuatan_Ajukan: serverTimestamp(),
       });
 

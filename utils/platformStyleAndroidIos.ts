@@ -4,7 +4,7 @@ export const getHeaderPaddingVertical = (): string => {
   return (
     Platform.select({
       android: 'py-20 pb-4',
-      ios: 'py-0 pb-4',
+      ios: 'py-20 pb-4',
     }) ?? 'py-0 pb-4'
   );
 };
