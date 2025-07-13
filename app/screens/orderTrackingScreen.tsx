@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, ScrollView, Text, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 
 // OUR ICONS
 import Entypo from '@expo/vector-icons/Entypo';
@@ -17,12 +17,11 @@ import dataPesanan from '@/constants/dataPesanan';
 
 // OUR HOOKS
 import useAjukanTransition from '@/hooks/Frontend/orderScreen/useAnimationButtonPlus';
-
 export default function OrderScreen() {
   const router = useRouter();
   const { showButtonPlus, animatedValue } = useAjukanTransition();
   const item = dataPesanan;
-
+  const { id } = useLocalSearchParams();
   return (
     <View className="flex-1 gap-4 bg-white">
       <NavCartOrder
@@ -40,6 +39,7 @@ export default function OrderScreen() {
           end={{ x: 1, y: 1 }}
         >
           <View className="w-full flex-1 py-6">
+            <Text>Detail untuk ID Pesanan: {id}</Text>
             <Text
               className="self-center text-[20px]"
               style={{ fontFamily: 'LexBold' }}
