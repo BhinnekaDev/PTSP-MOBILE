@@ -1,37 +1,42 @@
-// hooks/useFilePreview.ts
-import { useState, useMemo } from "react";
-import * as Linking from "expo-linking";
+import { useState, useMemo } from 'react';
+import * as Linking from 'expo-linking';
+import { UploadFileProps } from '@/interfaces/uploadFileProps';
+import { generatePdfViewerHtmlAllPages } from '@/utils/generatePdfViewerHtmlAllPages';
 
-// OUR INTERFACES
-import { UploadFileProps } from "@/interfaces/uploadFileProps";
-
-// OUR UTILS
-import { generatePdfViewerHtmlAllPages } from "@/utils/generatePdfViewerHtmlAllPages";
-
-export function useFilePreview(file: UploadFileProps | null) {
+export function useFilePreview() {
   const [modalVisible, setModalVisible] = useState(false);
+  const [currentFile, setCurrentFile] = useState<UploadFileProps | null>(null);
 
   const openFileExternal = async () => {
-    if (file?.uri) {
-      const supported = await Linking.canOpenURL(file.uri);
+    if (currentFile?.uri) {
+      const supported = await Linking.canOpenURL(currentFile.uri);
       if (supported) {
-        await Linking.openURL(file.uri);
+        await Linking.openURL(currentFile.uri);
       } else {
-        alert("Tidak dapat membuka file ini.");
+        alert('Tidak dapat membuka file ini.');
       }
     }
   };
 
+  const openPreview = (file: UploadFileProps) => {
+    setCurrentFile(file);
+    setModalVisible(true);
+  };
+
   const pdfViewerHtml = useMemo(() => {
-    if (file?.mimeType === "application/pdf" && file.base64) {
-      return generatePdfViewerHtmlAllPages(file.base64.replace(/\n/g, ""));
+    if (currentFile?.mimeType === 'application/pdf' && currentFile.base64) {
+      return generatePdfViewerHtmlAllPages(
+        currentFile.base64.replace(/\n/g, '')
+      );
     }
     return null;
-  }, [file]);
+  }, [currentFile]);
 
   return {
     modalVisible,
     setModalVisible,
+    openPreview,
+    currentFile,
     pdfViewerHtml,
     openFileExternal,
   };
