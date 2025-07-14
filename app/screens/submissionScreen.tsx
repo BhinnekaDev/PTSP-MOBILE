@@ -17,8 +17,6 @@ import { useFilePreview } from '@/hooks/Frontend/filePreviewModalScreen/useFileP
 import { useSelectDocumentMulti } from '@/hooks/Frontend/filePreviewModalScreen/useSelectDocument';
 import { useSubmitSubmission } from '@/hooks/Backend/useSubmitSubmission';
 
-// DATA
-
 export default function SubmissionScreen() {
   const router = useRouter();
   const [selectedJenisKegiatan, setSelectedJenisKegiatan] = useState('');

@@ -26,6 +26,17 @@ interface SubmitSubmissionOptions {
   >;
 }
 
+// 🔽 Generate ID_Transaksi unik maksimal 16 digit
+const generateIdTransaksi = (length = 16) => {
+  const chars =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  while (result.length < length) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+};
+
 export const useSubmitSubmission = () => {
   const submit = async ({
     selectedJenis,
@@ -110,26 +121,45 @@ export const useSubmitSubmission = () => {
         return total + (item.Total_Harga || 0);
       }, 0);
 
-      const sanitizedCartData = cartData.map((item) => ({
-        Nama: item.Nama,
-        Harga: item.Harga,
-        Kuantitas: item.Kuantitas,
-        Total_Harga: item.Total_Harga,
-        Pemilik: item.Pemilik,
-        Jenis_Produk: item.ID_Informasi ? 'Informasi' : 'Jasa',
-      }));
+      const sanitizedCartData = cartData.map((item) => {
+        const baseItem = {
+          Nama: item.Nama,
+          Harga: item.Harga,
+          Kuantitas: item.Kuantitas,
+          Total_Harga: item.Total_Harga,
+          Pemilik: item.Pemilik,
+          Jenis_Produk: item.ID_Informasi ? 'Informasi' : 'Jasa',
+        };
 
-      // 🔽 Buat dokumen di koleksi "pemesanan"
-      await db.collection('pemesanan').add({
+        if (jenisAjukan === 'Berbayar') {
+          return {
+            ...baseItem,
+            Nomor_VA: '', // hanya kalau berbayar
+          };
+        }
+
+        return baseItem; // kalau gratis, tidak ada Nomor_VA
+      });
+
+      // 🔽 Siapkan data pemesanan
+      const pemesananData: any = {
         ID_Ajukan: ajukanDoc.id,
         ID_Pengguna: user.uid,
-        Data_Keranjang: sanitizedCartData, // ✅ sudah tanpa ID_Informasi atau ID_Jasa
+        Data_Keranjang: sanitizedCartData,
         Status_Pembuatan: 'Menunggu Pembuatan',
         Status_Pesanan: 'Belum Selesai',
         Status_Pembayaran: 'Menunggu Pembayaran',
         Tanggal_Pemesanan: serverTimestamp(),
         Total_Harga_Pesanan: totalHarga,
-      });
+      };
+
+      // 🔽 Tambahkan ID_Transaksi jika jenisAjukan adalah 'Berbayar'
+      if (jenisAjukan === 'Berbayar') {
+        pemesananData.ID_Transaksi = generateIdTransaksi();
+      }
+
+      // 🔽 Buat dokumen di koleksi "pemesanan"
+      await db.collection('pemesanan').add(pemesananData);
 
       // 🔽 Hapus data keranjang setelah submit
       await db.collection('keranjang').doc(user.uid).update({

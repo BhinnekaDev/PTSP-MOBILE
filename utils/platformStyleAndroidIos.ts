@@ -5,7 +5,7 @@ export const getHeaderPaddingVertical = (): string => {
     Platform.select({
       android: 'py-20 pb-4',
       ios: 'py-20 pb-4',
-    }) ?? 'py-0 pb-4'
+    }) ?? ''
   );
 };
 export const getHeightLayoutTabs = (): number => {
