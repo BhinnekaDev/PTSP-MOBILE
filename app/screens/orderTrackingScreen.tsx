@@ -17,11 +17,16 @@ import dataPesanan from '@/constants/dataPesanan';
 
 // OUR HOOKS
 import useAjukanTransition from '@/hooks/Frontend/orderScreen/useAnimationButtonPlus';
-export default function OrderScreen() {
+import { useGetUserDetailOrderInfo } from '@/hooks/Backend/useGetUserDetailOrderInfo';
+export default function OrderTrackingScreen() {
   const router = useRouter();
   const { showButtonPlus, animatedValue } = useAjukanTransition();
   const item = dataPesanan;
   const { id } = useLocalSearchParams();
+  const { detail, loading } = useGetUserDetailOrderInfo(String(id));
+
+  if (loading) return <Text>Loading...</Text>;
+  if (!detail) return <Text>Data tidak ditemukan</Text>;
   return (
     <View className="flex-1 gap-4 bg-white">
       <NavCartOrder
@@ -40,12 +45,16 @@ export default function OrderScreen() {
         >
           <View className="w-full flex-1 py-6">
             <Text>Detail untuk ID Pesanan: {id}</Text>
+
+            {/* TITLE TRACKING PESANAN ANDA */}
             <Text
               className="self-center text-[20px]"
               style={{ fontFamily: 'LexBold' }}
             >
               Tracking Pesanan Anda
             </Text>
+
+            {/* TANGGAL PEMESANAN */}
             <View className="flex-row items-center gap-2 self-center">
               <Text
                 className="text-[13px]"
@@ -57,7 +66,7 @@ export default function OrderScreen() {
                 className="text-[13px]"
                 style={{ fontFamily: 'LexRegular' }}
               >
-                30/04/2025, 7:30 PM
+                {detail.Tanggal_Pemesanan.toDate().toLocaleString()}
               </Text>
             </View>
 
@@ -80,7 +89,7 @@ export default function OrderScreen() {
 
                   {/* PEMBUNGKUS SEMUA ITEM */}
                   <View className="flex-col">
-                    {/* item 1 */}
+                    {/* ITEM 1 */}
                     <View className="z-10 mb-10 flex flex-row items-start">
                       <View
                         className="mr-5 rounded-full bg-[#72C02C] p-3"
@@ -94,14 +103,18 @@ export default function OrderScreen() {
                       >
                         <AntDesign name="filetext1" size={24} color="black" />
                       </View>
+
+                      {/* STATUS PENGAJUAN */}
                       <View className="flex-1">
                         <Text
                           className="mb-2 text-base font-bold text-black"
                           numberOfLines={1}
                           ellipsizeMode="tail"
                         >
-                          Pesanan Dibuat
+                          Status Pengajuan
                         </Text>
+
+                        {/* ISI STATUS PENGAJUAN - JENIS KEGIATAN */}
                         <View
                           className="mb-1 flex-row items-center gap-2"
                           style={{ flexWrap: 'wrap' }}
@@ -114,9 +127,11 @@ export default function OrderScreen() {
                           <Text
                             style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
                           >
-                            {item.jenisKegiatan}
+                            {detail.ajukan.Nama_Ajukan}
                           </Text>
                         </View>
+
+                        {/* ISI STATUS PENGAJUAN - STATUS PENGAJUAN */}
                         <View
                           className="mb-1 flex-row items-center gap-2"
                           style={{ flexWrap: 'wrap' }}
@@ -129,9 +144,10 @@ export default function OrderScreen() {
                           <Text
                             style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
                           >
-                            {item.statusPengajuan}
+                            {detail.ajukan.Status_Ajuan}
                           </Text>
                         </View>
+
                         <View
                           className="flex-row items-center gap-2"
                           style={{ flexWrap: 'wrap' }}
@@ -143,12 +159,14 @@ export default function OrderScreen() {
                           </Text>
                           <Text
                             style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
-                          ></Text>
+                          >
+                            {detail.ajukan.Tanggal_Pembuatan_Ajukan.toDate().toLocaleString()}
+                          </Text>
                         </View>
                       </View>
                     </View>
 
-                    {/* item 2 */}
+                    {/* ITEM 2 */}
                     <View className="z-10 mb-10 flex flex-row items-start">
                       <View
                         className="mr-5 rounded-full bg-[#72C02C] p-3"
@@ -162,6 +180,8 @@ export default function OrderScreen() {
                       >
                         <FontAwesome name="dollar" size={24} color="black" />
                       </View>
+
+                      {/* STATUS PEMBAYARAN */}
                       <View className="flex-1">
                         <Text
                           className="mb-2 text-base font-bold text-black"
@@ -170,6 +190,8 @@ export default function OrderScreen() {
                         >
                           Status Pembayaran
                         </Text>
+
+                        {/* ISI STATUS PEMBAYARAN - STATUS PEMBAYARAN */}
                         <View
                           className="mb-1 flex-row items-center gap-2"
                           style={{ flexWrap: 'wrap' }}
@@ -177,33 +199,110 @@ export default function OrderScreen() {
                           <Text
                             style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
                           >
-                            Status Pembayaran :{' '}
+                            Status Pembayaran :
                           </Text>
                           <Text
                             style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
                           >
-                            {item.statusPembayaran}
+                            {detail.Status_Pembayaran}
                           </Text>
+                          {detail.ajukan?.Jenis_Ajukan === 'Gratis' && (
+                            <>
+                              <Text
+                                style={{
+                                  fontFamily: 'LexRegular',
+                                  flexShrink: 1,
+                                }}
+                              >
+                                Tanggal Pembayaran :
+                              </Text>
+                              <Text
+                                style={{
+                                  fontFamily: 'LexRegular',
+                                  flexShrink: 1,
+                                }}
+                              >
+                                {detail.ajukan?.Jenis_Ajukan === 'Gratis'
+                                  ? 'Gratis'
+                                  : 'Null'}
+                              </Text>
+                            </>
+                          )}
                         </View>
-                        <View
-                          className="flex-row items-center gap-2"
-                          style={{ flexWrap: 'wrap' }}
-                        >
-                          <Text
-                            style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
-                          >
-                            Tanggal Pembayaran :
-                          </Text>
-                          <Text
-                            style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
-                          >
-                            {item.tanggalPembayaran}
-                          </Text>
-                        </View>
+
+                        {/* TANGGAL MASUK & KADALUWARSA */}
+                        {detail.ajukan?.Status_Ajuan === 'Diterima' && (
+                          <View>
+                            {/* TANGGAL MASUK */}
+                            {detail.ajukan?.Tanggal_Masuk && (
+                              <View className="mb-1 flex-row items-center gap-2">
+                                <Text
+                                  style={{
+                                    fontFamily: 'LexRegular',
+                                    flexShrink: 1,
+                                  }}
+                                >
+                                  Tanggal Masuk:
+                                </Text>
+                                <Text
+                                  style={{
+                                    fontFamily: 'LexRegular',
+                                    flexShrink: 1,
+                                  }}
+                                >
+                                  {new Date(
+                                    detail.ajukan.Tanggal_Masuk
+                                  ).toLocaleString('id-ID')}
+                                </Text>
+                              </View>
+                            )}
+
+                            {/* TANGGAL KADALUWARSA */}
+                            {detail.ajukan?.Tanggal_Kadaluwarsa && (
+                              <View className="mb-1 flex-row items-center gap-2">
+                                <Text
+                                  style={{
+                                    fontFamily: 'LexRegular',
+                                    flexShrink: 1,
+                                  }}
+                                >
+                                  Tanggal Kadaluwarsa:
+                                </Text>
+                                <Text
+                                  style={{
+                                    fontFamily: 'LexRegular',
+                                    flexShrink: 1,
+                                  }}
+                                >
+                                  {new Date(
+                                    detail.ajukan.Tanggal_Kadaluwarsa
+                                  ).toLocaleString('id-ID')}
+                                </Text>
+                              </View>
+                            )}
+
+                            {/* TOMBOL UPLOAD BUKTI PEMBAYARAN (Hanya jika bukan Gratis) */}
+                            {detail.ajukan?.Jenis_Ajukan !== 'Gratis' && (
+                              <View className="mt-3">
+                                <ButtonCustom
+                                  text="Upload Bukti Pembayaran"
+                                  classNameContainer="bg-[#72C02C] py-2 rounded-[10px]"
+                                  textClassName="text-white text-center text-[14px]"
+                                  textStyle={{ fontFamily: 'LexSemiBold' }}
+                                  isTouchable
+                                  onPress={() => {
+                                    // 👇 Nanti pasang logic upload bukti pembayaran di sini
+                                    alert('Upload Bukti Pembayaran');
+                                  }}
+                                />
+                              </View>
+                            )}
+                          </View>
+                        )}
                       </View>
                     </View>
 
-                    {/* item 3 */}
+                    {/* ITEM 3 */}
                     <View className="z-10 mb-10 flex flex-row items-start">
                       <View
                         className="mr-5 rounded-full bg-[#72C02C] p-3"
@@ -217,6 +316,8 @@ export default function OrderScreen() {
                       >
                         <AntDesign name="inbox" size={24} color="black" />
                       </View>
+
+                      {/* ISI STATUS PEMBUATAN - STATUS PEMBUATAN */}
                       <View className="flex-1">
                         <Text
                           className="mb-2 text-base font-bold text-black"
@@ -237,14 +338,15 @@ export default function OrderScreen() {
                           <Text
                             style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
                           >
-                            {item.statusPembuatan}
+                            {detail.Status_Pembuatan}
                           </Text>
                         </View>
                       </View>
                     </View>
 
-                    {/* item 4 */}
+                    {/* ITEM 4 */}
                     <View className="z-10 flex flex-row items-start">
+                      {/* PESANAN SELESAI */}
                       <View
                         className="mr-5 rounded-full bg-[#72C02C] p-3"
                         style={{
@@ -257,7 +359,9 @@ export default function OrderScreen() {
                       >
                         <FontAwesome name="send" size={24} color="black" />
                       </View>
+
                       <View className="flex-1">
+                        {/* ISI PESANAN SELESAI - STATUS PENGISIAN IKM */}
                         <Text
                           className="mb-2 text-base font-bold text-black"
                           numberOfLines={1}
@@ -280,6 +384,8 @@ export default function OrderScreen() {
                             {item.statusIKM}
                           </Text>
                         </View>
+
+                        {/* ISI PESANAN SELESAI - STATUS PESANAN */}
                         <View
                           className="flex-row items-center gap-2"
                           style={{ flexWrap: 'wrap' }}
@@ -292,7 +398,7 @@ export default function OrderScreen() {
                           <Text
                             style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
                           >
-                            {item.statusPesanan}
+                            {detail.Status_Pesanan}
                           </Text>
                         </View>
                       </View>
