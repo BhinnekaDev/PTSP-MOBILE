@@ -89,7 +89,7 @@ export const useSubmitSubmission = () => {
         Jenis_Ajukan: jenisAjukan,
         Nama_Ajukan: selectedData.label,
         File_Ajukan: fileUrls,
-        Status_Ajuan: 'Sedang Ditinjau',
+        Status_Ajukan: 'Sedang Ditinjau',
         Tanggal_Pembuatan_Ajukan: serverTimestamp(),
       });
 
