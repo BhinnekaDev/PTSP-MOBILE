@@ -1,23 +1,35 @@
 import React from 'react';
-import { View, Text, ScrollView, Alert } from 'react-native';
+import { View, Text, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { useLocalSearchParams, router } from 'expo-router';
 
-// OUR CONSTANS
+// Constants
 import { submissionOptions } from '@/constants/submissionOptions';
 
-// CUSTOM COMPONENTS
+// Components
 import ButtonCustom from '@/components/buttonCustom';
 import NavCartOrder from '@/components/navCartOrder';
+import FilePreviewModal from '@/components/filePreviewModal';
 
-// HOOKS
+// Hooks
 import { useFixSubmissionScreen } from '@/hooks/Backend/useFixSubmitSubmissionScreen';
 import { useSelectDocumentMulti } from '@/hooks/Frontend/filePreviewModalScreen/useSelectDocument';
+import { useFilePreview } from '@/hooks/Frontend/filePreviewModalScreen/useFilePreview';
+
+// Interfaces
 import { UploadFileProps } from '@/interfaces/uploadFileProps';
 
 export default function FixSubmissionScreen() {
   const { handleFixSubmission } = useFixSubmissionScreen();
   const { pickDocument, uploadedFiles } = useSelectDocumentMulti();
+  const {
+    modalVisible,
+    setModalVisible,
+    openPreview,
+    currentFile,
+    pdfViewerHtml,
+    openFileExternal,
+  } = useFilePreview();
 
   const { namaAjukan, ajukanID } = useLocalSearchParams<{
     namaAjukan: string;
@@ -26,7 +38,6 @@ export default function FixSubmissionScreen() {
 
   const selectedJenisKegiatan = decodeURIComponent(namaAjukan || '').trim();
 
-  // Sesuaikan dengan submissionOptions kalau perlu import submissionOptions juga
   const selectedOption = submissionOptions.find(
     (opt) =>
       opt.label.trim().toLowerCase() === selectedJenisKegiatan.toLowerCase()
@@ -37,7 +48,9 @@ export default function FixSubmissionScreen() {
   const handlePickFile = async (fieldName: string) => {
     const result = await pickDocument(fieldName);
 
-    if (!result.success) {
+    if (result.success && result.file) {
+      openPreview(result.file); // tampilkan modal preview
+    } else {
       Alert.alert('Gagal', 'Gagal memilih file.');
     }
   };
@@ -45,17 +58,20 @@ export default function FixSubmissionScreen() {
   const handleFixSubmit = async () => {
     const filteredUploadedFiles: Record<string, UploadFileProps> =
       Object.entries(uploadedFiles)
-        .filter(([_, file]) => file !== null && file.base64 !== null)
+        .filter(([_, file]) => file?.base64)
         .reduce(
           (acc, [key, file]) => {
+            if (!file) return acc;
+
             acc[key] = {
-              uri: file!.uri,
-              name: file!.name,
-              type: file!.type,
-              base64: file!.base64 as string,
-              mimeType: file!.mimeType, // tambahkan sesuai struktur UploadFileProps
-              size: file!.size, // tambahkan sesuai struktur UploadFileProps
+              uri: file.uri,
+              name: file.name,
+              type: file.type,
+              base64: file.base64 as string,
+              mimeType: file.mimeType,
+              size: file.size,
             };
+
             return acc;
           },
           {} as Record<string, UploadFileProps>
@@ -67,7 +83,7 @@ export default function FixSubmissionScreen() {
     }
 
     const isAllRequiredFilesUploaded = selectedOption?.files?.every(
-      (label) => uploadedFiles[label]
+      (label) => uploadedFiles[label]?.base64
     );
 
     if (!isAllRequiredFilesUploaded) {
@@ -86,8 +102,8 @@ export default function FixSubmissionScreen() {
       Alert.alert('Sukses', 'Dokumen berhasil diperbaiki.');
       router.back();
     } catch (error) {
-      Alert.alert('Gagal', 'Terjadi kesalahan saat memperbaiki dokumen.');
       console.error(error);
+      Alert.alert('Gagal', 'Terjadi kesalahan saat memperbaiki dokumen.');
     }
   };
 
@@ -101,6 +117,7 @@ export default function FixSubmissionScreen() {
       />
 
       <ScrollView contentContainerStyle={{ padding: 16 }}>
+        {/* Warning Box */}
         <View
           className="mb-6 flex-row items-start rounded-lg border border-red-600 bg-red-300 p-4"
           style={{ gap: 10 }}
@@ -122,6 +139,7 @@ export default function FixSubmissionScreen() {
           </View>
         </View>
 
+        {/* Upload Fields */}
         {selectedOption?.files?.map((fileLabel) => (
           <View key={fileLabel} className="mb-4">
             <Text
@@ -139,9 +157,28 @@ export default function FixSubmissionScreen() {
               isTouchable
               onPress={() => handlePickFile(fileLabel)}
             />
+
+            {/* 👇 PREVIEW FILE */}
+            {uploadedFiles[fileLabel]?.uri && (
+              <TouchableOpacity
+                className="mt-2"
+                onPress={() => {
+                  const file = uploadedFiles[fileLabel];
+                  if (file) openPreview(file);
+                }}
+              >
+                <Text
+                  className="text-blue-600 underline"
+                  style={{ fontFamily: 'LexRegular' }}
+                >
+                  Lihat File
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
         ))}
 
+        {/* Submit Button */}
         <ButtonCustom
           text="Upload Dokumen Perbaikan"
           classNameContainer="bg-[#72C02C] py-3 mt-6 rounded-[10px]"
@@ -149,6 +186,14 @@ export default function FixSubmissionScreen() {
           textStyle={{ fontFamily: 'LexSemiBold' }}
           isTouchable
           onPress={handleFixSubmit}
+        />
+
+        <FilePreviewModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          file={currentFile}
+          pdfViewerHtml={pdfViewerHtml}
+          onOpenExternal={openFileExternal}
         />
       </ScrollView>
     </View>
