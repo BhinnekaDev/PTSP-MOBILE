@@ -1,31 +1,31 @@
 export const submissionOptions = [
   {
-    label: ' Kegiatan Penanggulangan Bencana',
+    label: 'Kegiatan Penanggulangan Bencana',
     jenisAjukan: 'Gratis',
     files: ['Surat Pengantar Permintaan Data'],
   },
   {
-    label: ' Kegiatan Kegiatan Keagamaan',
+    label: 'Kegiatan Keagamaan',
     jenisAjukan: 'Gratis',
     files: ['Surat Permintaan Ditandatangani Camat'],
   },
   {
-    label: ' Kegiatan Kegiatan Sosial',
+    label: 'Kegiatan Sosial',
     jenisAjukan: 'Gratis',
     files: ['Surat Permintaan Ditandatangani Camat'],
   },
   {
-    label: ' Kegiatan Kegiatan Pertahanan dan Keamanan',
+    label: 'Kegiatan Pertahanan dan Keamanan',
     jenisAjukan: 'Gratis',
     files: ['Surat Permintaan Ditandatangani Camat'],
   },
   {
-    label: ' Kegiatan Kegiatan Pemerintahan Pusat atau Daerah',
+    label: 'Kegiatan Pemerintahan Pusat atau Daerah',
     jenisAjukan: 'Gratis',
     files: ['Perjanjian Kerjasama dengan BMKG', 'Surat Pengantar'],
   },
   {
-    label: ' Kegiatan Kegiatan Pendidikan dan Penelitian Non Komersil',
+    label: 'Kegiatan Pendidikan dan Penelitian Non Komersil',
     jenisAjukan: 'Gratis',
     files: [
       'Identitas Diri',
@@ -35,7 +35,7 @@ export const submissionOptions = [
     ],
   },
   {
-    label: ' Kegiatan Pelayanan Informasi dengan Tarif PNBP',
+    label: 'Kegiatan Pelayanan Informasi dengan Tarif PNBP',
     jenisAjukan: 'Berbayar',
     files: ['Identitas KTP', 'Surat Pengantar'],
   },

@@ -148,7 +148,7 @@ export default function SubmissionScreen() {
                             </Text>
                             <Text style={{ fontFamily: 'LexRegular' }}>
                               <Text style={{ fontWeight: 'bold' }}>
-                                Nama File:
+                                Nama File:w
                               </Text>{' '}
                               {fileMap[field].name}
                             </Text>

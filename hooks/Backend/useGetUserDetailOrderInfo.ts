@@ -30,7 +30,11 @@ export const useGetUserDetailOrderInfo = (idPemesanan: string) => {
             .doc(pemesananData.ID_Ajukan)
             .get();
           if (ajukanSnap.exists()) {
-            ajukanData = ajukanSnap.data() as AjukanDetail;
+            const data = ajukanSnap.data() as AjukanDetail;
+            ajukanData = {
+              ...data,
+              id: ajukanSnap.id, // ✅ Tambahkan ID dokumen ajukan di sini!
+            };
           }
         }
 
@@ -41,7 +45,7 @@ export const useGetUserDetailOrderInfo = (idPemesanan: string) => {
             Status_Pesanan: pemesananData.Status_Pesanan,
             Status_Pengisian_IKM: pemesananData.Status_Pengisian_IKM,
             Tanggal_Pemesanan: pemesananData.Tanggal_Pemesanan,
-            ajukan: ajukanData as AjukanDetail,
+            ajukan: ajukanData, // sudah termasuk id
           });
         }
       } catch (err) {

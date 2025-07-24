@@ -23,13 +23,14 @@ import { useGetUserDetailOrderInfo } from '@/hooks/Backend/useGetUserDetailOrder
 
 export default function OrderTrackingScreen() {
   const router = useRouter();
+  const { id } = useLocalSearchParams();
   const { showButtonPlus, animatedValue } = useAjukanTransition();
   const item = dataPesanan;
-  const { id } = useLocalSearchParams();
   const { detail, loading } = useGetUserDetailOrderInfo(String(id));
 
   if (loading) return <Text>Loading...</Text>;
   if (!detail) return <Text>Data tidak ditemukan</Text>;
+  
   return (
     <View className="flex-1 gap-4 bg-white">
       <NavCartOrder

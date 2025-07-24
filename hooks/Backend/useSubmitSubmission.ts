@@ -24,6 +24,8 @@ interface SubmitSubmissionOptions {
       size: number;
     }
   >;
+  isFixing?: boolean;
+  ajukanID?: string;
 }
 
 // 🔽 Generate ID_Transaksi unik maksimal 16 digit

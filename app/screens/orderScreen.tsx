@@ -192,6 +192,7 @@ export default function OrderScreen() {
                       textStyle={{ fontFamily: 'LexSemiBold' }}
                       isTouchable={true}
                       onPress={() => {
+                        console.log('ID : ====>', item.id);
                         router.push({
                           pathname: '/screens/orderTrackingScreen',
                           params: { id: item.id }, // ← Kirim ID ke screen detail

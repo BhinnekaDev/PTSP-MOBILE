@@ -9,6 +9,7 @@ export interface AjukanDetail {
   Tanggal_Masuk?: Timestamp;
   Tanggal_Kadaluwarsa?: Timestamp;
   Keterangan?: string;
+  id?: string;
 }
 
 export interface OrderDetail {
