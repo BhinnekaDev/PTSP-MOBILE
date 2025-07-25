@@ -1,62 +1,81 @@
 import { useEffect, useState } from 'react';
 import { db } from '@/lib/firebase';
 
-// OUR PROPS
+import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 import type {
   OrderDetail,
   AjukanDetail,
+  ItemKeranjang,
 } from '@/interfaces/statusOrderDetailProps';
 
 export const useGetUserDetailOrderInfo = (idPemesanan: string) => {
   const [detail, setDetail] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const { profile: userProfile, loading: loadingProfile } = useGetUserProfile();
+
   useEffect(() => {
-    if (!idPemesanan) return;
+    if (!idPemesanan || loadingProfile) return;
 
-    const fetchDetail = async () => {
-      try {
-        const docSnap = await db.collection('pemesanan').doc(idPemesanan).get();
+    let unsubscribeAjukan: (() => void) | null = null;
+
+    const unsubscribePemesanan = db
+      .collection('pemesanan')
+      .doc(idPemesanan)
+      .onSnapshot(async (docSnap) => {
         if (!docSnap.exists || !docSnap.data()) {
-          throw new Error('Pemesanan tidak ditemukan atau kosong');
+          console.warn('❌ Dokumen pemesanan tidak ditemukan');
+          setDetail(null);
+          setLoading(false);
+          return;
         }
 
-        const pemesananData = docSnap.data()!;
+        const pemesananData = docSnap.data();
+        const idAjukan = pemesananData?.ID_Ajukan;
 
-        let ajukanData: AjukanDetail | null = null;
-        if (pemesananData?.ID_Ajukan) {
-          const ajukanSnap = await db
-            .collection('ajukan')
-            .doc(pemesananData.ID_Ajukan)
-            .get();
-          if (ajukanSnap.exists()) {
-            const data = ajukanSnap.data() as AjukanDetail;
-            ajukanData = {
-              ...data,
-              id: ajukanSnap.id, // ✅ Tambahkan ID dokumen ajukan di sini!
-            };
-          }
-        }
+        const buildDetail = (ajukanData: AjukanDetail | null) => {
+          const keranjangData: ItemKeranjang[] =
+            pemesananData?.Data_Keranjang || [];
 
-        if (pemesananData && ajukanData) {
           setDetail({
-            Status_Pembayaran: pemesananData.Status_Pembayaran,
-            Status_Pembuatan: pemesananData.Status_Pembuatan,
-            Status_Pesanan: pemesananData.Status_Pesanan,
-            Status_Pengisian_IKM: pemesananData.Status_Pengisian_IKM,
-            Tanggal_Pemesanan: pemesananData.Tanggal_Pemesanan,
-            ajukan: ajukanData, // sudah termasuk id
+            Status_Pembayaran: pemesananData?.Status_Pembayaran,
+            Status_Pembuatan: pemesananData?.Status_Pembuatan,
+            Status_Pesanan: pemesananData?.Status_Pesanan,
+            Status_Pengisian_IKM: pemesananData?.Status_Pengisian_IKM,
+            Tanggal_Pemesanan: pemesananData?.Tanggal_Pemesanan,
+            ajukan: ajukanData,
+            keranjang: keranjangData,
+            user: userProfile,
           });
-        }
-      } catch (err) {
-        console.error('❌ Gagal fetch detail pemesanan:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+          setLoading(false);
+        };
 
-    fetchDetail();
-  }, [idPemesanan]);
+        if (idAjukan) {
+          if (unsubscribeAjukan) unsubscribeAjukan();
+
+          unsubscribeAjukan = db
+            .collection('ajukan')
+            .doc(idAjukan)
+            .onSnapshot((ajukanSnap) => {
+              if (ajukanSnap.exists()) {
+                const ajukanData = ajukanSnap.data() as AjukanDetail;
+                ajukanData.id = ajukanSnap.id;
+                buildDetail(ajukanData);
+              } else {
+                buildDetail(null);
+              }
+            });
+        } else {
+          if (unsubscribeAjukan) unsubscribeAjukan();
+          buildDetail(null);
+        }
+      });
+
+    return () => {
+      unsubscribePemesanan();
+      if (unsubscribeAjukan) unsubscribeAjukan();
+    };
+  }, [idPemesanan, loadingProfile, userProfile]);
 
   return { detail, loading };
 };

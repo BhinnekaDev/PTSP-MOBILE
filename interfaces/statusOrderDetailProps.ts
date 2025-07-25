@@ -1,4 +1,12 @@
 import { Timestamp } from '@react-native-firebase/firestore';
+import type { UserProfile } from '@/hooks/Backend/useGetUserProfile';
+
+export interface ItemKeranjang {
+  Nama: string;
+  Kuantitas: number;
+  Pemilik: string;
+  Total_Harga: number;
+}
 
 export interface AjukanDetail {
   Nama_Ajukan: string;
@@ -18,7 +26,10 @@ export interface OrderDetail {
   Status_Pesanan: string;
   Status_Pengisian_IKM: string;
   Tanggal_Pemesanan: Timestamp;
-  ajukan: AjukanDetail;
+  ajukan: AjukanDetail | null; 
+  keranjang: ItemKeranjang[];
+  user: UserProfile | null; 
+  
 }
 
 export interface StatusOrderDetail {

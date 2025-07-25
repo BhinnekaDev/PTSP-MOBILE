@@ -45,43 +45,29 @@ export default function FixSubmissionScreen() {
 
   const jenisAjukan = selectedOption?.jenisAjukan ?? '';
 
+  // PREVIEW FILE
   const handlePickFile = async (fieldName: string) => {
     const result = await pickDocument(fieldName);
 
     if (result.success && result.file) {
-      openPreview(result.file); // tampilkan modal preview
+      openPreview(result.file);
     } else {
       Alert.alert('Gagal', 'Gagal memilih file.');
     }
   };
 
+  // HANDLE FIX SUBMIT
   const handleFixSubmit = async () => {
-    const filteredUploadedFiles: Record<string, UploadFileProps> =
-      Object.entries(uploadedFiles)
-        .filter(([_, file]) => file?.base64)
-        .reduce(
-          (acc, [key, file]) => {
-            if (!file) return acc;
-
-            acc[key] = {
-              uri: file.uri,
-              name: file.name,
-              type: file.type,
-              base64: file.base64 as string,
-              mimeType: file.mimeType,
-              size: file.size,
-            };
-
-            return acc;
-          },
-          {} as Record<string, UploadFileProps>
-        );
-
+    // 1. Validasi data dasar
     if (!ajukanID || !jenisAjukan || !selectedJenisKegiatan) {
-      Alert.alert('Data tidak lengkap', 'Silakan periksa data pengajuan Anda.');
+      Alert.alert(
+        'Data tidak lengkap',
+        'Silakan periksa kembali data pengajuan Anda.'
+      );
       return;
     }
 
+    // 2. Validasi file wajib
     const isAllRequiredFilesUploaded = selectedOption?.files?.every(
       (label) => uploadedFiles[label]?.base64
     );
@@ -91,6 +77,26 @@ export default function FixSubmissionScreen() {
       return;
     }
 
+    // 3. Filter file yang valid (ada base64)
+    const filteredUploadedFiles: Record<string, UploadFileProps> =
+      Object.entries(uploadedFiles).reduce(
+        (acc, [key, file]) => {
+          if (file?.base64) {
+            acc[key] = {
+              uri: file.uri,
+              name: file.name,
+              type: file.type,
+              base64: file.base64,
+              mimeType: file.mimeType,
+              size: file.size,
+            };
+          }
+          return acc;
+        },
+        {} as Record<string, UploadFileProps>
+      );
+
+    // 4. Proses submit perbaikan
     try {
       await handleFixSubmission({
         ajukanID,
@@ -102,7 +108,7 @@ export default function FixSubmissionScreen() {
       Alert.alert('Sukses', 'Dokumen berhasil diperbaiki.');
       router.back();
     } catch (error) {
-      console.error(error);
+      console.error('❌ Gagal memperbaiki dokumen:', error);
       Alert.alert('Gagal', 'Terjadi kesalahan saat memperbaiki dokumen.');
     }
   };

@@ -14,9 +14,6 @@ import PaymentStatusSection from '@/components/paymentStatusSection';
 import CreationStatusSection from '@/components/creationStatusSection';
 import OrderStatusSection from '@/components/orderStatusCompletionSection';
 
-// OUR CONSTANTS
-import dataPesanan from '@/constants/dataPesanan';
-
 // OUR HOOKS
 import useAjukanTransition from '@/hooks/Frontend/orderScreen/useAnimationButtonPlus';
 import { useGetUserDetailOrderInfo } from '@/hooks/Backend/useGetUserDetailOrderInfo';
@@ -25,12 +22,11 @@ export default function OrderTrackingScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const { showButtonPlus, animatedValue } = useAjukanTransition();
-  const item = dataPesanan;
   const { detail, loading } = useGetUserDetailOrderInfo(String(id));
 
   if (loading) return <Text>Loading...</Text>;
   if (!detail) return <Text>Data tidak ditemukan</Text>;
-  
+
   return (
     <View className="flex-1 gap-4 bg-white">
       <NavCartOrder
@@ -116,9 +112,22 @@ export default function OrderTrackingScreen() {
                       style={{ flex: 2 }}
                     >
                       <Text className="mb-2 font-bold">Alamat Pengiriman</Text>
-                      <Text>{item.alamatPengiriman.nama}</Text>
-                      <Text>{item.alamatPengiriman.telepon}</Text>
-                      <Text>{item.alamatPengiriman.email}</Text>
+                      {detail.user?.tipe === 'perorangan' && (
+                        <>
+                          <Text>{detail.user.Nama_Lengkap}</Text>
+                          <Text>{detail.user.No_Hp}</Text>
+                          <Text>{detail.user.Email}</Text>
+                        </>
+                      )}
+
+                      {detail.user?.tipe === 'perusahaan' && (
+                        <>
+                          <Text>{detail.user.Nama_Perusahaan}</Text>
+                          <Text>{detail.user.No_Hp_Perusahaan}</Text>
+                          <Text>{detail.user.Email_Perusahaan}</Text>
+                          <Text>{detail.user.Alamat_Perusahaan}</Text>
+                        </>
+                      )}
                     </View>
 
                     {/* Ringkasan Pesanan - lebar lebih kecil */}
@@ -129,7 +138,15 @@ export default function OrderTrackingScreen() {
                       <Text className="mb-2 font-bold">Ringkasan Pesanan</Text>
                       <View className="flex-row flex-wrap justify-between">
                         <Text>Total Pesanan:</Text>
-                        <Text>{item.totalPesanan}</Text>
+                        <Text className="font-bold">
+                          Rp
+                          {detail?.keranjang
+                            ?.reduce(
+                              (acc, item) => acc + (item.Total_Harga || 0),
+                              0
+                            )
+                            .toLocaleString('id-ID')}
+                        </Text>
                       </View>
                     </View>
                   </View>
@@ -148,26 +165,30 @@ export default function OrderTrackingScreen() {
                       </Text>
                     </View>
 
-                    {/* Informasi dengan jarak antar item (space-between) */}
-                    <View className="mb-4 mt-4 flex-row justify-between">
-                      <Text>Informasi</Text>
-                      <Text>{item.informasi}</Text>
-                    </View>
-
-                    {/* Virtual account produk */}
+                    {/* DATA PEMESANAN DARI DETAIL KERAN*/}
                     <View>
-                      <Text className="mb-2 font-bold">
-                        Virtual Account Produk:
-                      </Text>
-                      <View className="flex-row items-center justify-between">
-                        <Text>{item.totalPesanan}</Text>
-                        <Text>x1</Text>
-                        <Text>{item.totalPesanan}</Text>
+                      <View>
+                        {detail.keranjang.map((item, index) => (
+                          <View
+                            key={index}
+                            className="mb-2 flex-row items-center justify-between border-b border-gray-200 pb-2"
+                          >
+                            <View style={{ flex: 2 }}>
+                              <Text className="font-semibold">{item.Nama}</Text>
+                              <Text className="text-xs text-gray-600">
+                                Pemilik: {item.Pemilik}
+                              </Text>
+                            </View>
+                            <Text style={{ flex: 1, textAlign: 'center' }}>
+                              x{item.Kuantitas}
+                            </Text>
+                            <Text style={{ flex: 1, textAlign: 'right' }}>
+                              Rp{item.Total_Harga.toLocaleString('id-ID')}
+                            </Text>
+                          </View>
+                        ))}
                       </View>
                     </View>
-
-                    {/* Garis horizontal */}
-                    <View className="my-4 border-t border-gray-300" />
 
                     <ButtonCustom
                       classNameContainer="bg-[#1475BA] rounded-[10px] py-1 w-[160px] self-end"

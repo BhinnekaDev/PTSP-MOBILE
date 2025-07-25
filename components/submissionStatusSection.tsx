@@ -72,15 +72,6 @@ export default function SubmissionStatusSection({ detail }: StatusOrderDetail) {
                 textStyle={{ fontFamily: 'LexSemiBold' }}
                 isTouchable
                 onPress={() => {
-                  console.log('🔥 ID yang dikirim:', detail.ajukan.id);
-                  console.log('📦 Semua params:', {
-                    ajukanID: detail.ajukan.id,
-                    namaAjukan: detail.ajukan.Nama_Ajukan,
-                    jenisAjukan: detail.ajukan.Jenis_Ajukan,
-                    keterangan: detail.ajukan.Keterangan || '',
-                    files: JSON.stringify(getFileFields()),
-                  });
-
                   router.push({
                     pathname: '/screens/fixSubmissionScreen',
                     params: {
@@ -88,6 +79,7 @@ export default function SubmissionStatusSection({ detail }: StatusOrderDetail) {
                       namaAjukan: detail.ajukan.Nama_Ajukan,
                       jenisAjukan: detail.ajukan.Jenis_Ajukan,
                       keterangan: detail.ajukan.Keterangan || '',
+                      statusPesanan: detail.ajukan.Status_Ajukan,
                       files: JSON.stringify(getFileFields()),
                     },
                   });
