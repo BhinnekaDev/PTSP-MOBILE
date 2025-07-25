@@ -80,6 +80,14 @@ export default function OrderScreen() {
                   >
                     Pesanan #{index + 1}
                   </Text>
+                  <Text>
+                    <Text
+                      className="py-4 text-[18px] text-black"
+                      style={{ fontFamily: 'LexBold' }}
+                    >
+                      {item.statusPesanan}
+                    </Text>
+                  </Text>
                 </View>
 
                 <View className="gap-4 px-4 py-4 pb-4">
@@ -90,7 +98,7 @@ export default function OrderScreen() {
                       color="black"
                     />
                     <Text style={{ fontFamily: 'LexSemiBold' }}>
-                      ID Pesanan:
+                      Nomor Pesanan:
                     </Text>
                     <Text style={{ fontFamily: 'LexRegular' }}>{item.id}</Text>
                   </View>
@@ -184,8 +192,11 @@ export default function OrderScreen() {
                       textStyle={{ fontFamily: 'LexSemiBold' }}
                       isTouchable={true}
                       onPress={() => {
-                        // nanti pasang logic navigate ke detail
-                        alert(`Detail pesanan ${item.id}`);
+                        console.log('ID : ====>', item.id);
+                        router.push({
+                          pathname: '/screens/orderTrackingScreen',
+                          params: { id: item.id }, // ← Kirim ID ke screen detail
+                        });
                       }}
                       containerStyle={{
                         shadowColor: '#000',

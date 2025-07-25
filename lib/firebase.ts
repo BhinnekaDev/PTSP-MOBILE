@@ -6,12 +6,16 @@ import {
   statusCodes as _statusCodes,
 } from '@react-native-google-signin/google-signin';
 
-// Firebase
+// Firestore
 export const db = firestore();
-export const firebaseAuth = auth();
-export const firebaseStorage = storage();
-export const GoogleAuthProvider = auth.GoogleAuthProvider;
 export const serverTimestamp = firestore.FieldValue.serverTimestamp;
+
+// Auth
+export const firebaseAuth = auth();
+export const GoogleAuthProvider = auth.GoogleAuthProvider;
+
+// Storage
+export const firebaseStorage = storage();
 
 // Google Sign-In
 export const GoogleSignin = _GoogleSignin;

@@ -12,11 +12,11 @@ type OrderInfo = {
 };
 
 type PemesananData = {
-  id: string;
-  tanggalPemesanan: Date;
   idAjukan: string;
+  id: string;
   statusPembayaran: string;
-  statusPemesanan: string;
+  tanggalPemesanan: Date;
+  statusPesanan: string;
   tanggalPengajuan?: Date;
 };
 
@@ -95,7 +95,7 @@ export const useGetUserOrderInfo = () => {
               tanggalPemesanan: data.Tanggal_Pemesanan.toDate(),
               idAjukan: data.ID_Ajukan || '',
               statusPembayaran: data.Status_Pembayaran || '',
-              statusPemesanan: data.Status_Pesanan || '',
+              statusPesanan: data.Status_Pesanan || '',
               tanggalPengajuan,
             };
           })
