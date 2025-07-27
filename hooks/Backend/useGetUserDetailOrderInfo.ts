@@ -43,6 +43,7 @@ export const useGetUserDetailOrderInfo = (idPemesanan: string) => {
             Status_Pesanan: pemesananData?.Status_Pesanan,
             Status_Pengisian_IKM: pemesananData?.Status_Pengisian_IKM,
             Tanggal_Pemesanan: pemesananData?.Tanggal_Pemesanan,
+            Nomor_VA: pemesananData?.Nomor_VA,
             ajukan: ajukanData,
             keranjang: keranjangData,
             user: userProfile,

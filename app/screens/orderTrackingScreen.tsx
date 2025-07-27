@@ -174,6 +174,7 @@ export default function OrderTrackingScreen() {
                             className="mb-2 flex-row items-center justify-between border-b border-gray-200 pb-2"
                           >
                             <View style={{ flex: 2 }}>
+                              <Text>Nomor VA : {item.Nomor_VA}</Text>
                               <Text className="font-semibold">{item.Nama}</Text>
                               <Text className="text-xs text-gray-600">
                                 Pemilik: {item.Pemilik}
