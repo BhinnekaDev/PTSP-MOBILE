@@ -1,9 +1,13 @@
-export interface UploadFileProps {
+export type UploadFileProps = {
   uri: string;
+  name: string;
+  type: string;
+  base64: string;
   mimeType: string;
-  base64: string | null;
   size: number;
+
   name: string;
   loading: boolean;
   progress: number;
 }
+

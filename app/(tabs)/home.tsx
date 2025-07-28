@@ -34,7 +34,9 @@ export default function ProfileTabs() {
       style={{ flex: 1 }}
     >
       <View
+
         className={`w-full flex-row items-center justify-between rounded-xl bg-[#1475BA] px-6 pt-12 shadow-md ${headerPaddingVertical}`}
+
       >
         <View>
           <Image
@@ -144,6 +146,23 @@ export default function ProfileTabs() {
               className="text-center text-white"
             >
               Saran &{'\n'}Pengaduan
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.4}
+            className="flex-col items-center justify-center gap-1"
+            onPress={() => router.push('/screens/fixSubmissionScreen')}
+          >
+            <MaterialCommunityIcons
+              name="email-fast-outline"
+              size={30}
+              color="white"
+            />
+            <Text
+              style={{ fontFamily: 'LexRegular' }}
+              className="text-center text-white"
+            >
+              TEST KEAMANAN
             </Text>
           </TouchableOpacity>
         </View>

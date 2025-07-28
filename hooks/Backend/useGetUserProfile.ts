@@ -30,7 +30,7 @@ type GetPerusahaanProfile = {
   Tanggal_Pembuatan_Akun?: string | Date;
 };
 
-type UserProfile =
+export type UserProfile =
   | (GetPeroranganProfile & { tipe: 'perorangan' })
   | (GetPerusahaanProfile & { tipe: 'perusahaan' })
   | null;

@@ -23,6 +23,7 @@ import { useFilePreview } from '@/hooks/Frontend/filePreviewModalScreen/useFileP
 import { useSelectDocumentMulti } from '@/hooks/Frontend/filePreviewModalScreen/useSelectDocument';
 import { useSubmitSubmission } from '@/hooks/Backend/useSubmitSubmission';
 
+
 // OUR ICON
 import { AntDesign, FontAwesome5, Ionicons } from '@expo/vector-icons';
 
@@ -53,6 +54,7 @@ const getFileIcon = (fileName: string) => {
   }
 };
 
+
 export default function SubmissionScreen() {
   const router = useRouter();
   const [selectedJenisKegiatan, setSelectedJenisKegiatan] = useState('');
@@ -73,9 +75,13 @@ export default function SubmissionScreen() {
     (item) => `${item.label} (${item.jenisAjukan})` === selectedJenisKegiatan
   );
 
+
   const isAllUploadComplete = selectedData?.files.every(
     (fileName) => fileMap[fileName]?.progress === 100
   );
+
+
+  // HANDLE UPLOAD
 
   const handleUpload = async (field: string) => {
     const result = await pickDocument(field);
@@ -283,10 +289,27 @@ export default function SubmissionScreen() {
                                   : 'bg-red-500'
                               }`}
                             >
+
                               <Ionicons name="trash" size={18} color="white" />
                             </TouchableOpacity>
 
                             {/* Tombol Preview */}
+
+                              ✅ Upload berhasil!
+                            </Text>
+                            <Text style={{ fontFamily: 'LexRegular' }}>
+                              <Text style={{ fontWeight: 'bold' }}>
+                                Nama File:w
+                              </Text>{' '}
+                              {fileMap[field].name}
+                            </Text>
+                            <Text style={{ fontFamily: 'LexRegular' }}>
+                              <Text style={{ fontWeight: 'bold' }}>
+                                Ukuran:
+                              </Text>{' '}
+                              {(fileMap[field].size / 1024).toFixed(2)} KB
+                            </Text>
+
                             <TouchableOpacity
                               onPress={() => {
                                 if (fileMap[field].progress >= 100) {

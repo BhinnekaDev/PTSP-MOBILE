@@ -1,27 +1,31 @@
 import React from 'react';
 import { View, ScrollView, Text, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 
 // OUR ICONS
 import Entypo from '@expo/vector-icons/Entypo';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 // COMPONENTS
 import ButtonCustom from '@/components/buttonCustom';
 import NavCartOrder from '@/components/navCartOrder';
-
-// OUR CONSTANTS
-import dataPesanan from '@/constants/dataPesanan';
+import SubmissionStatusSection from '@/components/submissionStatusSection';
+import PaymentStatusSection from '@/components/paymentStatusSection';
+import CreationStatusSection from '@/components/creationStatusSection';
+import OrderStatusSection from '@/components/orderStatusCompletionSection';
 
 // OUR HOOKS
 import useAjukanTransition from '@/hooks/Frontend/orderScreen/useAnimationButtonPlus';
+import { useGetUserDetailOrderInfo } from '@/hooks/Backend/useGetUserDetailOrderInfo';
 
-export default function OrderScreen() {
+export default function OrderTrackingScreen() {
   const router = useRouter();
+  const { id } = useLocalSearchParams();
   const { showButtonPlus, animatedValue } = useAjukanTransition();
-  const item = dataPesanan;
+  const { detail, loading } = useGetUserDetailOrderInfo(String(id));
+
+  if (loading) return <Text>Loading...</Text>;
+  if (!detail) return <Text>Data tidak ditemukan</Text>;
 
   return (
     <View className="flex-1 gap-4 bg-white">
@@ -40,12 +44,17 @@ export default function OrderScreen() {
           end={{ x: 1, y: 1 }}
         >
           <View className="w-full flex-1 py-6">
+            <Text>Detail untuk ID Pesanan: {id}</Text>
+
+            {/* TITLE TRACKING PESANAN ANDA */}
             <Text
               className="self-center text-[20px]"
               style={{ fontFamily: 'LexBold' }}
             >
               Tracking Pesanan Anda
             </Text>
+
+            {/* TANGGAL PEMESANAN */}
             <View className="flex-row items-center gap-2 self-center">
               <Text
                 className="text-[13px]"
@@ -57,7 +66,7 @@ export default function OrderScreen() {
                 className="text-[13px]"
                 style={{ fontFamily: 'LexRegular' }}
               >
-                30/04/2025, 7:30 PM
+                {detail.Tanggal_Pemesanan.toDate().toLocaleString()}
               </Text>
             </View>
 
@@ -80,223 +89,17 @@ export default function OrderScreen() {
 
                   {/* PEMBUNGKUS SEMUA ITEM */}
                   <View className="flex-col">
-                    {/* item 1 */}
-                    <View className="z-10 mb-10 flex flex-row items-start">
-                      <View
-                        className="mr-5 rounded-full bg-[#72C02C] p-3"
-                        style={{
-                          width: 48,
-                          height: 48,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          flexShrink: 0,
-                        }}
-                      >
-                        <AntDesign name="filetext1" size={24} color="black" />
-                      </View>
-                      <View className="flex-1">
-                        <Text
-                          className="mb-2 text-base font-bold text-black"
-                          numberOfLines={1}
-                          ellipsizeMode="tail"
-                        >
-                          Pesanan Dibuat
-                        </Text>
-                        <View
-                          className="mb-1 flex-row items-center gap-2"
-                          style={{ flexWrap: 'wrap' }}
-                        >
-                          <Text
-                            style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
-                          >
-                            Jenis Kegiatan :
-                          </Text>
-                          <Text
-                            style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
-                          >
-                            {item.jenisKegiatan}
-                          </Text>
-                        </View>
-                        <View
-                          className="mb-1 flex-row items-center gap-2"
-                          style={{ flexWrap: 'wrap' }}
-                        >
-                          <Text
-                            style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
-                          >
-                            Status Pengajuan :
-                          </Text>
-                          <Text
-                            style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
-                          >
-                            {item.statusPengajuan}
-                          </Text>
-                        </View>
-                        <View
-                          className="flex-row items-center gap-2"
-                          style={{ flexWrap: 'wrap' }}
-                        >
-                          <Text
-                            style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
-                          >
-                            Tanggal Pengajuan :
-                          </Text>
-                          <Text
-                            style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
-                          ></Text>
-                        </View>
-                      </View>
-                    </View>
+                    {/* STATUS PENGAJUAN */}
+                    <SubmissionStatusSection detail={detail} />
 
-                    {/* item 2 */}
-                    <View className="z-10 mb-10 flex flex-row items-start">
-                      <View
-                        className="mr-5 rounded-full bg-[#72C02C] p-3"
-                        style={{
-                          width: 48,
-                          height: 48,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          flexShrink: 0,
-                        }}
-                      >
-                        <FontAwesome name="dollar" size={24} color="black" />
-                      </View>
-                      <View className="flex-1">
-                        <Text
-                          className="mb-2 text-base font-bold text-black"
-                          numberOfLines={1}
-                          ellipsizeMode="tail"
-                        >
-                          Status Pembayaran
-                        </Text>
-                        <View
-                          className="mb-1 flex-row items-center gap-2"
-                          style={{ flexWrap: 'wrap' }}
-                        >
-                          <Text
-                            style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
-                          >
-                            Status Pembayaran :{' '}
-                          </Text>
-                          <Text
-                            style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
-                          >
-                            {item.statusPembayaran}
-                          </Text>
-                        </View>
-                        <View
-                          className="flex-row items-center gap-2"
-                          style={{ flexWrap: 'wrap' }}
-                        >
-                          <Text
-                            style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
-                          >
-                            Tanggal Pembayaran :
-                          </Text>
-                          <Text
-                            style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
-                          >
-                            {item.tanggalPembayaran}
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
+                    {/* STATUS PEMBAYARAN */}
+                    <PaymentStatusSection detail={detail} />
 
-                    {/* item 3 */}
-                    <View className="z-10 mb-10 flex flex-row items-start">
-                      <View
-                        className="mr-5 rounded-full bg-[#72C02C] p-3"
-                        style={{
-                          width: 48,
-                          height: 48,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          flexShrink: 0,
-                        }}
-                      >
-                        <AntDesign name="inbox" size={24} color="black" />
-                      </View>
-                      <View className="flex-1">
-                        <Text
-                          className="mb-2 text-base font-bold text-black"
-                          numberOfLines={1}
-                          ellipsizeMode="tail"
-                        >
-                          Status Pembuatan
-                        </Text>
-                        <View
-                          className="flex-row items-center gap-2"
-                          style={{ flexWrap: 'wrap' }}
-                        >
-                          <Text
-                            style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
-                          >
-                            Status Pembuatan :
-                          </Text>
-                          <Text
-                            style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
-                          >
-                            {item.statusPembuatan}
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
+                    {/* STATUS PEMBUATAN */}
+                    <CreationStatusSection detail={detail} />
 
-                    {/* item 4 */}
-                    <View className="z-10 flex flex-row items-start">
-                      <View
-                        className="mr-5 rounded-full bg-[#72C02C] p-3"
-                        style={{
-                          width: 48,
-                          height: 48,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          flexShrink: 0,
-                        }}
-                      >
-                        <FontAwesome name="send" size={24} color="black" />
-                      </View>
-                      <View className="flex-1">
-                        <Text
-                          className="mb-2 text-base font-bold text-black"
-                          numberOfLines={1}
-                          ellipsizeMode="tail"
-                        >
-                          Pesanan Selesai
-                        </Text>
-                        <View
-                          className="mb-1 flex-row items-center gap-2"
-                          style={{ flexWrap: 'wrap' }}
-                        >
-                          <Text
-                            style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
-                          >
-                            Status Pengisian IKM :
-                          </Text>
-                          <Text
-                            style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
-                          >
-                            {item.statusIKM}
-                          </Text>
-                        </View>
-                        <View
-                          className="flex-row items-center gap-2"
-                          style={{ flexWrap: 'wrap' }}
-                        >
-                          <Text
-                            style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
-                          >
-                            Status Pesanan :
-                          </Text>
-                          <Text
-                            style={{ fontFamily: 'LexRegular', flexShrink: 1 }}
-                          >
-                            {item.statusPesanan}
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
+                    {/* STATUS PESANAN SELESAI */}
+                    <OrderStatusSection detail={detail} />
                   </View>
                 </View>
 
@@ -309,9 +112,22 @@ export default function OrderScreen() {
                       style={{ flex: 2 }}
                     >
                       <Text className="mb-2 font-bold">Alamat Pengiriman</Text>
-                      <Text>{item.alamatPengiriman.nama}</Text>
-                      <Text>{item.alamatPengiriman.telepon}</Text>
-                      <Text>{item.alamatPengiriman.email}</Text>
+                      {detail.user?.tipe === 'perorangan' && (
+                        <>
+                          <Text>{detail.user.Nama_Lengkap}</Text>
+                          <Text>{detail.user.No_Hp}</Text>
+                          <Text>{detail.user.Email}</Text>
+                        </>
+                      )}
+
+                      {detail.user?.tipe === 'perusahaan' && (
+                        <>
+                          <Text>{detail.user.Nama_Perusahaan}</Text>
+                          <Text>{detail.user.No_Hp_Perusahaan}</Text>
+                          <Text>{detail.user.Email_Perusahaan}</Text>
+                          <Text>{detail.user.Alamat_Perusahaan}</Text>
+                        </>
+                      )}
                     </View>
 
                     {/* Ringkasan Pesanan - lebar lebih kecil */}
@@ -322,7 +138,15 @@ export default function OrderScreen() {
                       <Text className="mb-2 font-bold">Ringkasan Pesanan</Text>
                       <View className="flex-row flex-wrap justify-between">
                         <Text>Total Pesanan:</Text>
-                        <Text>{item.totalPesanan}</Text>
+                        <Text className="font-bold">
+                          Rp
+                          {detail?.keranjang
+                            ?.reduce(
+                              (acc, item) => acc + (item.Total_Harga || 0),
+                              0
+                            )
+                            .toLocaleString('id-ID')}
+                        </Text>
                       </View>
                     </View>
                   </View>
@@ -337,30 +161,35 @@ export default function OrderScreen() {
                         Nomor Pesanan :
                       </Text>
                       <Text style={{ fontFamily: 'LexRegular', flexShrink: 1 }}>
-                        {item.nomorPesanan}
+                        {id}
                       </Text>
                     </View>
 
-                    {/* Informasi dengan jarak antar item (space-between) */}
-                    <View className="mb-4 mt-4 flex-row justify-between">
-                      <Text>Informasi</Text>
-                      <Text>{item.informasi}</Text>
-                    </View>
-
-                    {/* Virtual account produk */}
+                    {/* DATA PEMESANAN DARI DETAIL KERAN*/}
                     <View>
-                      <Text className="mb-2 font-bold">
-                        Virtual Account Produk:
-                      </Text>
-                      <View className="flex-row items-center justify-between">
-                        <Text>{item.totalPesanan}</Text>
-                        <Text>x1</Text>
-                        <Text>{item.totalPesanan}</Text>
+                      <View>
+                        {detail.keranjang.map((item, index) => (
+                          <View
+                            key={index}
+                            className="mb-2 flex-row items-center justify-between border-b border-gray-200 pb-2"
+                          >
+                            <View style={{ flex: 2 }}>
+                              <Text>Nomor VA : {item.Nomor_VA}</Text>
+                              <Text className="font-semibold">{item.Nama}</Text>
+                              <Text className="text-xs text-gray-600">
+                                Pemilik: {item.Pemilik}
+                              </Text>
+                            </View>
+                            <Text style={{ flex: 1, textAlign: 'center' }}>
+                              x{item.Kuantitas}
+                            </Text>
+                            <Text style={{ flex: 1, textAlign: 'right' }}>
+                              Rp{item.Total_Harga.toLocaleString('id-ID')}
+                            </Text>
+                          </View>
+                        ))}
                       </View>
                     </View>
-
-                    {/* Garis horizontal */}
-                    <View className="my-4 border-t border-gray-300" />
 
                     <ButtonCustom
                       classNameContainer="bg-[#1475BA] rounded-[10px] py-1 w-[160px] self-end"
