@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
-import { Alert } from 'react-native';
 import { Audio } from 'expo-av';
 import { UploadFileProps } from '@/interfaces/uploadFileProps';
 
@@ -27,6 +26,46 @@ export function useSelectDocumentMulti() {
     );
   };
 
+  const simulateProgress = async (
+    fieldName: string,
+    base64Data: string,
+    fileInfo: DocumentPicker.DocumentPickerAsset
+  ) => {
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 10;
+
+      if (progress >= 100) {
+        clearInterval(interval);
+        setUploadedFiles((prev) => ({
+          ...prev,
+          [fieldName]: {
+            uri: fileInfo.uri,
+            mimeType: fileInfo.mimeType || 'application/octet-stream',
+            base64: base64Data,
+            size: fileInfo.size || 0,
+            name: fileInfo.name || 'file',
+            loading: false,
+            progress: 100,
+          },
+        }));
+
+        // ✅ Play sound ONCE after finish
+        Audio.Sound.createAsync(
+          require('@/assets/audios/alert-audio.mp3')
+        ).then(({ sound }) => sound.playAsync());
+      } else {
+        setUploadedFiles((prev) => ({
+          ...prev,
+          [fieldName]: {
+            ...(prev[fieldName] as UploadFileProps),
+            progress,
+          },
+        }));
+      }
+    }, 100);
+  };
+
   const pickDocument = async (fieldName: string) => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
@@ -39,46 +78,45 @@ export function useSelectDocumentMulti() {
         const pickedFile = result.assets[0];
 
         if (!isAllowedType(pickedFile.mimeType)) {
-          Alert.alert('Format file tidak didukung.');
           return { success: false, file: null };
         }
+
+        setUploadedFiles((prev) => ({
+          ...prev,
+          [fieldName]: {
+            uri: pickedFile.uri,
+            mimeType: pickedFile.mimeType || 'application/octet-stream',
+            base64: null,
+            size: pickedFile.size || 0,
+            name: pickedFile.name || 'file',
+            loading: true,
+            progress: 0,
+          },
+        }));
 
         const base64Data = await FileSystem.readAsStringAsync(pickedFile.uri, {
           encoding: FileSystem.EncodingType.Base64,
         });
 
-        const fileData: UploadFileProps = {
-          uri: pickedFile.uri,
-          mimeType: pickedFile.mimeType || 'application/octet-stream',
-          base64: base64Data,
-          size: pickedFile.size || 0,
-          name: pickedFile.name || 'file',
+        await simulateProgress(fieldName, base64Data, pickedFile);
+
+        return {
+          success: true,
+          file: {
+            uri: pickedFile.uri,
+            mimeType: pickedFile.mimeType || 'application/octet-stream',
+            base64: base64Data,
+            size: pickedFile.size || 0,
+            name: pickedFile.name || 'file',
+            loading: false,
+            progress: 100,
+          },
         };
-
-        setUploadedFiles((prev) => ({
-          ...prev,
-          [fieldName]: fileData,
-        }));
-
-        // 🔊 Play sound
-        try {
-          const { sound } = await Audio.Sound.createAsync(
-            require('@/assets/audios/alert-audio.mp3')
-          );
-          await sound.playAsync();
-        } catch (err) {
-          console.warn('Gagal memainkan suara:', err);
-        }
-
-        Alert.alert('Berhasil', `File untuk "${fieldName}" berhasil diupload!`);
-
-        return { success: true, file: fileData };
       }
 
       return { success: false, file: null };
     } catch (err) {
       console.error('Gagal mengambil dokumen:', err);
-      Alert.alert('Gagal', 'Tidak bisa mengambil file.');
       return { success: false, file: null };
     }
   };

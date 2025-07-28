@@ -23,7 +23,7 @@ export const useAddToCart = () => {
         message: 'Login Diperlukan',
         description: 'Anda harus login untuk menambahkan produk ke keranjang.',
         type: 'warning',
-        position: 'top',
+        position: 'bottom',
         icon: 'auto',
         autoHide: true,
         duration: 3000,

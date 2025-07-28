@@ -8,6 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import Foundation from '@expo/vector-icons/Foundation';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 interface ProductCardInfoButtonProps {
   productIndex: number; // Ubah nama prop dari 'index' menjadi 'productIndex' agar lebih jelas
@@ -31,9 +32,9 @@ export const ProductCardInfoButton: React.FC<ProductCardInfoButtonProps> = ({
       {/* Info Icon with Pop-up functionality */}
       <TouchableOpacity
         onPress={() => togglePopup(productIndex)}
-        className="absolute right-3 top-3 z-10 p-1"
+        className="absolute right-4 top-4 z-10 p-1"
       >
-        <Foundation name="info" size={28} color="black" />
+        <Ionicons name="information-circle" size={28} color="white" />
       </TouchableOpacity>
 
       {/* Pop-up message with animation and tail */}

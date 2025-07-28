@@ -1,12 +1,14 @@
 import '@/global.css';
 import { useLoadFont } from '@/hooks/Frontend/useLoadFonts';
+import 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Stack } from 'expo-router';
 import {
   ActivityIndicator,
   Platform,
   StatusBar,
-  View,
   Animated,
+  View,
   Dimensions,
 } from 'react-native';
 import FlashMessage from 'react-native-flash-message';
@@ -24,43 +26,26 @@ export default function RootLayout() {
     );
   }
 
-  const customTransition = {
-    in: (animValue: Animated.Value) => {
-      Animated.timing(animValue, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    },
-    out: (animValue: Animated.Value) => {
-      Animated.timing(animValue, {
-        toValue: 0,
-        duration: 400,
-        useNativeDriver: true,
-      }).start();
-    },
-    get: (animationValue: Animated.Value, isEntering: boolean) => {
-      const translateX = animationValue.interpolate({
-        inputRange: [0, 1],
-        outputRange: [width, 0],
-      });
+  const slideInUp = (
+    animValue: Animated.Value,
+    position: 'top' | 'bottom' | 'center'
+  ) => {
+    const translateY = animValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [80, 0],
+    });
 
-      return {
-        transform: [
-          {
-            translateX: translateX,
-          },
-        ],
-        opacity: animationValue.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, 1],
-        }),
-      };
-    },
+    return {
+      transform: [{ translateY }],
+      opacity: animValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 1],
+      }),
+    };
   };
 
   return (
-    <>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       {Platform.OS === 'ios' && (
         <View style={{ height: 44, backgroundColor: '#1475BA' }} />
       )}
@@ -73,10 +58,34 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false, animation: 'fade' }} />
 
       <FlashMessage
-        position="top"
-        transitionConfig={() => customTransition}
-        style={{ zIndex: 9999, overflow: 'hidden' }}
+        position="bottom"
+        floating
+        transitionConfig={slideInUp}
+        style={{
+          zIndex: 9999,
+          borderRadius: 12,
+          margin: 16,
+          paddingVertical: 10,
+          paddingHorizontal: 16,
+          backgroundColor: '#72C02C',
+          elevation: 4,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.2,
+          shadowRadius: 4,
+          overflow: 'hidden',
+        }}
+        titleStyle={{
+          fontFamily: 'LexBold',
+          fontSize: 16,
+          color: '#fff',
+        }}
+        textStyle={{
+          fontFamily: 'LexRegular',
+          fontSize: 14,
+          color: '#fff',
+        }}
       />
-    </>
+    </GestureHandlerRootView>
   );
 }

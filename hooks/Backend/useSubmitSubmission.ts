@@ -78,7 +78,7 @@ export const useSubmitSubmission = () => {
         Jenis_Ajukan: jenisAjukan,
         Nama_Ajukan: selectedData.label,
         File_Ajukan: fileUrls,
-        Status_Ajuan: 'Sedang Ditinjau',
+        Status_Ajukan: 'Sedang Ditinjau',
         Tanggal_Pembuatan_Ajukan: serverTimestamp(),
       });
 
@@ -137,12 +137,6 @@ export const useSubmitSubmission = () => {
         Jasa: [],
       });
 
-      // ✅ Sukses
-      showMessage({
-        message: 'Pengajuan Berhasil',
-        description: 'Data berhasil dikirim dan keranjang telah dikosongkan.',
-        type: 'success',
-      });
     } catch (error: any) {
       console.error('❌ Error saat submit pengajuan:', error);
       showMessage({

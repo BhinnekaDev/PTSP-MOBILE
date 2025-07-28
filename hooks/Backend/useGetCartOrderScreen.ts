@@ -25,31 +25,30 @@ export const useGetCartOrderScreen = () => {
       return;
     }
 
+    const startTime = Date.now();
+
     const unsubscribe = db
       .collection('keranjang')
       .doc(user.uid)
       .onSnapshot((docSnap) => {
         const data = docSnap.data();
-        if (!data) {
-          setCartItems([]);
-          setTotalHarga(0);
-          setLoading(false);
-          return;
-        }
-
-        const informasi = data.Informasi || [];
-        const jasa = data.Jasa || [];
+        const informasi = data?.Informasi || [];
+        const jasa = data?.Jasa || [];
         const allItems = [...informasi, ...jasa];
-
-        setCartItems(allItems);
 
         const total = allItems.reduce(
           (sum: number, item: CartItem) => sum + (item.Total_Harga || 0),
           0
         );
 
-        setTotalHarga(total);
-        setLoading(false);
+        const elapsed = Date.now() - startTime;
+        const delay = Math.max(800 - elapsed, 0);
+
+        setTimeout(() => {
+          setCartItems(allItems);
+          setTotalHarga(total);
+          setLoading(false);
+        }, delay);
       });
 
     return () => unsubscribe();

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 // OUR ICONS
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { AntDesign } from '@expo/vector-icons';
 
 // OUR COMPONENTS
 import ButtonShopAndChat from '@/components/buttonShopAndChat';
@@ -29,12 +29,16 @@ import { getHeaderPaddingVertical } from '@/utils/platformStyleAndroidIos';
 export default function FAQ({ count = 1 }: ButtonCustomProps) {
   const headerPaddingVertical = getHeaderPaddingVertical();
 
-  const { openIndex, animatedValues, toggleDropdown } = useDropdownAnimation(
-    dataFaq.length
-  );
+  const {
+    openIndex,
+    animatedValues,
+    toggleDropdown,
+    onContentLayout,
+    measuredHeights,
+  } = useDropdownAnimation(dataFaq.length);
 
   return (
-    <View className="flex-1 gap-4 bg-white">
+    <View className="flex-1 gap-4 bg-[#A7CBE5]">
       {/* HEADER */}
       <View
         className={`w-full flex-row items-center justify-between rounded-b-[10px] bg-[#1475BA] px-6 shadow-md ${headerPaddingVertical}`}
@@ -51,10 +55,7 @@ export default function FAQ({ count = 1 }: ButtonCustomProps) {
       {/* BODY */}
       <View className="flex-1 px-4">
         <View className="w-full flex-1 py-6">
-          <Text
-            className="text-[20px] font-bold"
-            style={{ fontFamily: 'LexBold' }}
-          >
+          <Text className="text-[20px]" style={{ fontFamily: 'LexBold' }}>
             Frequently Asked Questions
           </Text>
 
@@ -63,7 +64,7 @@ export default function FAQ({ count = 1 }: ButtonCustomProps) {
             showsVerticalScrollIndicator={false}
           >
             {dataFaq.map((item, index) => (
-              <View key={index} className="mb-4 rounded-[10px] bg-white">
+              <View key={index} className="mb-4 rounded-[10px]">
                 {/* Header Pertanyaan */}
                 <TouchableOpacity
                   onPress={() => toggleDropdown(index)}
@@ -72,24 +73,47 @@ export default function FAQ({ count = 1 }: ButtonCustomProps) {
                 >
                   <View className="flex-1 pr-2">
                     <Text
-                      className="text-[16px] text-black"
+                      className="text-[16px] text-white"
                       style={{ fontFamily: 'LexMedium' }}
                     >
                       {item.question}
                     </Text>
                   </View>
-                  <MaterialIcons
-                    name={
-                      openIndex === index
-                        ? 'keyboard-arrow-up'
-                        : 'keyboard-arrow-down'
-                    }
-                    size={24}
-                    color="black"
+                  <AntDesign
+                    name={openIndex === index ? 'upcircleo' : 'downcircleo'}
+                    size={20}
+                    color="white"
                   />
                 </TouchableOpacity>
 
-                {/* Jawaban */}
+                <View
+                  style={{ position: 'absolute', opacity: 0, left: -9999 }}
+                  onLayout={(e) =>
+                    onContentLayout(index, e.nativeEvent.layout.height)
+                  }
+                >
+                  {typeof item.answer === 'string' ? (
+                    <Text
+                      style={{ fontFamily: 'LexRegular' }}
+                      className="text-[14px] text-gray-800"
+                    >
+                      {item.answer}
+                    </Text>
+                  ) : (
+                    Array.isArray(item.answer) &&
+                    item.answer.map((ans: string, i: number) => (
+                      <Text
+                        key={i}
+                        className="mb-2 text-[14px] text-gray-800"
+                        style={{ fontFamily: 'LexRegular' }}
+                      >
+                        • {ans}
+                      </Text>
+                    ))
+                  )}
+                </View>
+
+                {/* Jawaban Animasi */}
                 {openIndex === index && (
                   <Animated.View
                     style={{
@@ -99,20 +123,22 @@ export default function FAQ({ count = 1 }: ButtonCustomProps) {
                       paddingHorizontal: 16,
                       paddingVertical: 10,
                     }}
+                    className="bg-[#A7CBE5]"
                   >
                     <ScrollView
                       showsVerticalScrollIndicator
                       nestedScrollEnabled
+                      scrollEnabled={measuredHeights[index] > 150}
                     >
-                      {item.answerType === 'text' ||
-                      typeof item.answer === 'string' ? (
+                      {typeof item.answer === 'string' ? (
                         <Text
                           className="text-[14px] text-gray-800"
                           style={{ fontFamily: 'LexRegular' }}
                         >
                           {item.answer}
                         </Text>
-                      ) : Array.isArray(item.answer) ? (
+                      ) : (
+                        Array.isArray(item.answer) &&
                         item.answer.map((ans: string, i: number) => (
                           <Text
                             key={i}
@@ -122,7 +148,7 @@ export default function FAQ({ count = 1 }: ButtonCustomProps) {
                             • {ans}
                           </Text>
                         ))
-                      ) : null}
+                      )}
                     </ScrollView>
                   </Animated.View>
                 )}

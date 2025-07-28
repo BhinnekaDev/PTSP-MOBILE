@@ -46,44 +46,126 @@ export default function OrderScreen() {
         isTouchable={false}
       />
 
-      <View className="flex-1 px-4">
-        <View className="w-full flex-1 py-6">
-          <Text
-            className="self-center text-[20px] font-bold"
-            style={{ fontFamily: 'LexBold' }}
-          >
-            Pesanan Anda
-          </Text>
+      <View className="flex-1">
+        <ScrollView
+          contentContainerStyle={{ padding: 14 }}
+          showsVerticalScrollIndicator={false}
+        >
+          {listPemesanan.length === 0 && (
+            <Text
+              className="text-center text-[16px] text-gray-500"
+              style={{ fontFamily: 'LexRegular' }}
+            >
+              Belum ada pesanan.
+            </Text>
+          )}
 
-          <ScrollView
-            contentContainerStyle={{ padding: 14 }}
-            showsVerticalScrollIndicator={false}
-          >
-            {listPemesanan.length === 0 && (
-              <Text
-                className="text-center text-[16px] text-gray-500"
-                style={{ fontFamily: 'LexRegular' }}
-              >
-                Belum ada pesanan.
-              </Text>
-            )}
-
-            {listPemesanan.map((item, index) => (
-              <View
-                key={item.id}
-                className="mb-6 rounded-[10px] border-2 border-[#D9D9D9] bg-white"
-              >
-                <View className="flex w-full items-center justify-center rounded-b-[10px] rounded-t-[4px] bg-[#D9D9D9] py-2">
+          {listPemesanan.map((item, index) => (
+            <View
+              key={item.id}
+              className="mb-6 rounded-[10px] border-2 border-[#D9D9D9] bg-white"
+            >
+              <View className="w-full items-center justify-center">
+                <Text
+                  className="py-4 text-[18px] text-black"
+                  style={{ fontFamily: 'LexMedium' }}
+                >
+                  Pesanan #{index + 1}
+                </Text>
+              </View>
+              <View className="gap-4 px-4 pb-6">
+                <View className="flex-row items-center justify-between">
+                  <Text style={{ fontFamily: 'LexSemiBold' }}>
+                    Status Pesanan
+                  </Text>
                   <Text
-                    className="py-4 text-[18px] text-black"
-                    style={{ fontFamily: 'LexMedium' }}
+                    style={{ fontFamily: 'LexRegular' }}
+                    className={`rounded-md px-2 ${
+                      item.statusPemesanan === 'Selesai'
+                        ? 'bg-green-500/20 text-green-500'
+                        : 'bg-red-500/20 text-red-500'
+                    }`}
                   >
-                    Pesanan #{index + 1}
+                    {item.statusPemesanan}
                   </Text>
                 </View>
-
-                <View className="gap-4 px-4 py-4 pb-4">
-                  <View className="flex-row items-center gap-2">
+                <View className="flex-row items-center justify-between">
+                  <Text style={{ fontFamily: 'LexSemiBold' }}>
+                    Status Pembayaran
+                  </Text>
+                  <Text
+                    style={{ fontFamily: 'LexRegular' }}
+                    className={`rounded-md px-2 ${
+                      item.statusPembayaran === 'Selesai'
+                        ? 'bg-green-500/20 text-green-500'
+                        : 'bg-red-500/20 text-red-500'
+                    }`}
+                  >
+                    {item.statusPembayaran}
+                  </Text>
+                </View>
+                <View className="flex-row items-center justify-between">
+                  <View className="flex-row items-center gap-1">
+                    <MaterialIcons name="date-range" size={20} color="black" />
+                    <Text style={{ fontFamily: 'LexSemiBold' }}>
+                      Tanggal Pemesanan:
+                    </Text>
+                  </View>
+                  <Text style={{ fontFamily: 'LexRegular' }}>
+                    {item.tanggalPemesanan.toLocaleString('en-US', {
+                      day: 'numeric',
+                      month: 'numeric',
+                      year: 'numeric',
+                      hour: 'numeric',
+                      minute: 'numeric',
+                      second: 'numeric',
+                      hour12: true,
+                      timeZone: 'Asia/Jakarta',
+                    })}
+                  </Text>
+                </View>
+                <View className="flex-row items-center justify-between">
+                  <View className="flex-row items-center gap-1">
+                    <MaterialIcons name="date-range" size={20} color="black" />
+                    <Text style={{ fontFamily: 'LexSemiBold' }}>
+                      Tanggal Pemesanan:
+                    </Text>
+                  </View>
+                  <Text style={{ fontFamily: 'LexRegular' }}>
+                    {item.tanggalPemesanan.toLocaleString('en-US', {
+                      day: 'numeric',
+                      month: 'numeric',
+                      year: 'numeric',
+                      hour: 'numeric',
+                      minute: 'numeric',
+                      second: 'numeric',
+                      hour12: true,
+                      timeZone: 'Asia/Jakarta',
+                    })}
+                  </Text>
+                </View>
+                <View className="flex-row items-center justify-between">
+                  <View className="flex-row items-center gap-1">
+                    <MaterialIcons name="date-range" size={20} color="black" />
+                    <Text style={{ fontFamily: 'LexSemiBold' }}>
+                      Tanggal Pengajuan:
+                    </Text>
+                  </View>
+                  <Text style={{ fontFamily: 'LexRegular' }}>
+                    {item.tanggalPengajuan?.toLocaleString('en-US', {
+                      day: 'numeric',
+                      month: 'numeric',
+                      year: 'numeric',
+                      hour: 'numeric',
+                      minute: 'numeric',
+                      second: 'numeric',
+                      hour12: true,
+                      timeZone: 'Asia/Jakarta',
+                    })}
+                  </Text>
+                </View>
+                <View className="flex-row items-center justify-between">
+                  <View className="flex-row items-center gap-1">
                     <MaterialIcons
                       name="confirmation-number"
                       size={20}
@@ -92,144 +174,115 @@ export default function OrderScreen() {
                     <Text style={{ fontFamily: 'LexSemiBold' }}>
                       ID Pesanan:
                     </Text>
-                    <Text style={{ fontFamily: 'LexRegular' }}>{item.id}</Text>
                   </View>
+                  <Text style={{ fontFamily: 'LexRegular' }}>{item.id}</Text>
+                </View>
 
-                  <View className="flex-row items-center gap-2">
-                    <MaterialIcons name="date-range" size={20} color="black" />
-                    <Text style={{ fontFamily: 'LexSemiBold' }}>
-                      Tanggal Pemesanan:
-                    </Text>
-                    <Text style={{ fontFamily: 'LexRegular' }}>
-                      {item.tanggalPemesanan.toLocaleString('en-US', {
-                        day: 'numeric',
-                        month: 'numeric',
-                        year: 'numeric',
-                        hour: 'numeric',
-                        minute: 'numeric',
-                        second: 'numeric',
-                        hour12: true,
-                        timeZone: 'Asia/Jakarta',
-                      })}
-                    </Text>
-                  </View>
-                  <View className="flex-row items-center gap-2">
-                    <MaterialIcons name="date-range" size={20} color="black" />
-                    <Text style={{ fontFamily: 'LexSemiBold' }}>
-                      Tanggal Pengajuan:
-                    </Text>
-                    <Text style={{ fontFamily: 'LexRegular' }}>
-                      {item.tanggalPengajuan?.toLocaleString('en-US', {
-                        day: 'numeric',
-                        month: 'numeric',
-                        year: 'numeric',
-                        hour: 'numeric',
-                        minute: 'numeric',
-                        second: 'numeric',
-                        hour12: true,
-                        timeZone: 'Asia/Jakarta',
-                      })}
-                    </Text>
-                  </View>
-
-                  <View className="flex-row items-center gap-2">
+                <View className="flex-row items-center justify-between">
+                  <View className="flex-row items-center gap-1">
                     <Ionicons name="person-sharp" size={20} color="black" />
                     <Text style={{ fontFamily: 'LexSemiBold' }}>
                       Nama Lengkap:
                     </Text>
-                    <Text style={{ fontFamily: 'LexRegular' }}>
-                      {orderInfo?.namaLengkap}
-                    </Text>
                   </View>
+                  <Text style={{ fontFamily: 'LexRegular' }}>
+                    {orderInfo?.namaLengkap}
+                  </Text>
+                </View>
 
-                  {orderInfo?.tipe === 'perusahaan' && (
-                    <>
-                      <View className="flex-row items-center gap-2">
+                {orderInfo?.tipe === 'perusahaan' && (
+                  <>
+                    <View className="flex-row items-center justify-between">
+                      <View className="flex-row items-center gap-1">
                         <Entypo name="home" size={20} color="black" />
                         <Text style={{ fontFamily: 'LexSemiBold' }}>
                           Nama Perusahaan:
                         </Text>
-                        <Text style={{ fontFamily: 'LexRegular' }}>
-                          {orderInfo.namaPerusahaan}
-                        </Text>
                       </View>
-                    </>
-                  )}
+                      <Text style={{ fontFamily: 'LexRegular' }}>
+                        {orderInfo.namaPerusahaan}
+                      </Text>
+                    </View>
+                  </>
+                )}
 
-                  <View className="flex-row items-center gap-2">
+                <View className="flex-row items-center justify-between">
+                  <View className="flex-row items-center gap-1">
                     <MaterialIcons name="email" size={20} color="black" />
                     <Text style={{ fontFamily: 'LexSemiBold' }}>Email:</Text>
-                    <Text style={{ fontFamily: 'LexRegular' }}>
-                      {orderInfo?.tipe === 'perusahaan'
-                        ? `${orderInfo.email} / ${orderInfo.emailPerusahaan}`
-                        : orderInfo?.email}
-                    </Text>
                   </View>
+                  <Text style={{ fontFamily: 'LexRegular' }}>
+                    {orderInfo?.tipe === 'perusahaan'
+                      ? `${orderInfo.email} / ${orderInfo.emailPerusahaan}`
+                      : orderInfo?.email}
+                  </Text>
+                </View>
 
-                  <View className="flex-row items-center gap-2">
+                <View className="flex-row items-center justify-between">
+                  <View className="flex-row items-center gap-1">
                     <MaterialIcons name="call" size={20} color="black" />
                     <Text style={{ fontFamily: 'LexSemiBold' }}>No HP:</Text>
-                    <Text style={{ fontFamily: 'LexRegular' }}>
-                      {orderInfo?.tipe === 'perusahaan'
-                        ? `${orderInfo.noHp} / ${orderInfo.noHpPerusahaan}`
-                        : orderInfo?.noHp}
-                    </Text>
                   </View>
-                  {/* Tombol lihat detail (nanti aktifin sesuai instruksi kamu berikutnya) */}
-                  <View className="mt-2">
-                    <ButtonCustom
-                      classNameContainer="bg-[#1475BA] py-2 rounded-[10px]"
-                      text="Lihat Detail"
-                      textClassName="text-[14px] text-center text-white"
-                      textStyle={{ fontFamily: 'LexSemiBold' }}
-                      isTouchable={true}
-                      onPress={() => {
-                        // nanti pasang logic navigate ke detail
-                        alert(`Detail pesanan ${item.id}`);
-                      }}
-                      containerStyle={{
-                        shadowColor: '#000',
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.2,
-                        shadowRadius: 2,
-                        elevation: 3,
-                      }}
-                    />
-                  </View>
+                  <Text style={{ fontFamily: 'LexRegular' }}>
+                    {orderInfo?.tipe === 'perusahaan'
+                      ? `${orderInfo.noHp} / ${orderInfo.noHpPerusahaan}`
+                      : orderInfo?.noHp}
+                  </Text>
+                </View>
+                {/* Tombol lihat detail (nanti aktifin sesuai instruksi kamu berikutnya) */}
+                <View className="mt-2">
+                  <ButtonCustom
+                    classNameContainer="bg-[#1475BA] rounded-[10px] w-72 self-center"
+                    text="Lihat Detail"
+                    textClassName="text-[14px] text-center text-white"
+                    textStyle={{ fontFamily: 'LexSemiBold' }}
+                    isTouchable={true}
+                    onPress={() => {
+                      // nanti pasang logic navigate ke detail
+                      alert(`Detail pesanan ${item.id}`);
+                    }}
+                    containerStyle={{
+                      shadowColor: '#000',
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.2,
+                      shadowRadius: 2,
+                      elevation: 3,
+                    }}
+                  />
                 </View>
               </View>
-            ))}
-          </ScrollView>
+            </View>
+          ))}
+        </ScrollView>
 
-          {/* TOMBOL TAMBAH */}
-          {showButtonPlus && (
-            <Animated.View
-              style={{
-                transform: [{ translateX: animatedValue }],
-                alignSelf: 'flex-end',
-                marginHorizontal: 16,
-                opacity: animatedOpacity,
+        {/* TOMBOL TAMBAH */}
+        {showButtonPlus && (
+          <Animated.View
+            style={{
+              transform: [{ translateX: animatedValue }],
+              alignSelf: 'flex-end',
+              marginHorizontal: 16,
+              opacity: animatedOpacity,
+            }}
+          >
+            <ButtonCustom
+              classNameContainer="bg-[#1475BA] rounded-[10px] py-1 w-[160px]"
+              iconLeft={<Entypo name="plus" size={32} color="white" />}
+              text="Tambah"
+              textClassName="text-[20px] text-center text-white"
+              textStyle={{ fontFamily: 'LexSemiBold' }}
+              onPress={() => alert('Tambah')}
+              isTouchable={true}
+              containerStyle={{
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.3,
+                shadowRadius: 3,
+                elevation: 4,
               }}
-            >
-              <ButtonCustom
-                classNameContainer="bg-[#1475BA] rounded-[10px] py-1 w-[160px]"
-                iconLeft={<Entypo name="plus" size={32} color="white" />}
-                text="Tambah"
-                textClassName="text-[20px] text-center text-white"
-                textStyle={{ fontFamily: 'LexSemiBold' }}
-                onPress={() => alert('Tambah')}
-                isTouchable={true}
-                containerStyle={{
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.3,
-                  shadowRadius: 3,
-                  elevation: 4,
-                }}
-              />
-            </Animated.View>
-          )}
-        </View>
+            />
+          </Animated.View>
+        )}
       </View>
 
       <View className="h-[4%] w-full bg-[#1475BA]" />

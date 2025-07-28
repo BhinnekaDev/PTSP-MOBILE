@@ -4,4 +4,6 @@ export interface UploadFileProps {
   base64: string | null;
   size: number;
   name: string;
+  loading: boolean;
+  progress: number;
 }
