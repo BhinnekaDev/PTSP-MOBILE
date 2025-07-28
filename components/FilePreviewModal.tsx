@@ -11,18 +11,12 @@ import {
 } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-interface FileWithBase64 {
-  uri: string;
-  mimeType: string;
-  base64: string | null;
-  size: number;
-  name: string;
-}
+import { UploadFileProps } from '@/interfaces/uploadFileProps';
 
-interface Props {
+interface FilePreviewModalProps {
   visible: boolean;
   onClose: () => void;
-  file: FileWithBase64 | null;
+  file: UploadFileProps | null;
   pdfViewerHtml: string | null;
   onOpenExternal: () => void;
 }
@@ -33,7 +27,7 @@ const FilePreviewModal = ({
   file,
   pdfViewerHtml,
   onOpenExternal,
-}: Props) => {
+}: FilePreviewModalProps) => {
   return (
     <Modal
       visible={visible}

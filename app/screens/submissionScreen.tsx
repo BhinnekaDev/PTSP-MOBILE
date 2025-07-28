@@ -17,8 +17,6 @@ import { useFilePreview } from '@/hooks/Frontend/filePreviewModalScreen/useFileP
 import { useSelectDocumentMulti } from '@/hooks/Frontend/filePreviewModalScreen/useSelectDocument';
 import { useSubmitSubmission } from '@/hooks/Backend/useSubmitSubmission';
 
-// DATA
-
 export default function SubmissionScreen() {
   const router = useRouter();
   const [selectedJenisKegiatan, setSelectedJenisKegiatan] = useState('');
@@ -39,6 +37,7 @@ export default function SubmissionScreen() {
     (item) => `${item.label} (${item.jenisAjukan})` === selectedJenisKegiatan
   );
 
+  // HANDLE UPLOAD
   const handleUpload = async (field: string) => {
     const result = await pickDocument(field);
 
@@ -150,7 +149,7 @@ export default function SubmissionScreen() {
                             </Text>
                             <Text style={{ fontFamily: 'LexRegular' }}>
                               <Text style={{ fontWeight: 'bold' }}>
-                                Nama File:
+                                Nama File:w
                               </Text>{' '}
                               {fileMap[field].name}
                             </Text>

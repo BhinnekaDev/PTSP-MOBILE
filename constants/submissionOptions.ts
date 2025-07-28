@@ -1,6 +1,6 @@
 export const submissionOptions = [
   {
-    label: 'Penanggulangan Bencana',
+    label: 'Kegiatan Penanggulangan Bencana',
     jenisAjukan: 'Gratis',
     files: ['Surat Pengantar Permintaan Data'],
   },
@@ -35,7 +35,7 @@ export const submissionOptions = [
     ],
   },
   {
-    label: 'Pelayanan Informasi dengan Tarif PNBP',
+    label: 'Kegiatan Pelayanan Informasi dengan Tarif PNBP',
     jenisAjukan: 'Berbayar',
     files: ['Identitas KTP', 'Surat Pengantar'],
   },
