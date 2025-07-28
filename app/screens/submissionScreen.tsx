@@ -23,37 +23,11 @@ import { useFilePreview } from '@/hooks/Frontend/filePreviewModalScreen/useFileP
 import { useSelectDocumentMulti } from '@/hooks/Frontend/filePreviewModalScreen/useSelectDocument';
 import { useSubmitSubmission } from '@/hooks/Backend/useSubmitSubmission';
 
-
 // OUR ICON
-import { AntDesign, FontAwesome5, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
-const getFileIcon = (fileName: string) => {
-  const extension = fileName.split('.').pop()?.toLowerCase();
-
-  switch (extension) {
-    case 'pdf':
-      return <AntDesign name="pdffile1" size={40} color="#1475BA" />;
-    case 'doc':
-    case 'docx':
-      return <FontAwesome5 name="file-word" size={40} color="black" />;
-    case 'xls':
-    case 'xlsx':
-      return <FontAwesome5 name="file-excel" size={40} color="black" />;
-    case 'jpg':
-    case 'jpeg':
-    case 'png':
-    case 'gif':
-      return <FontAwesome5 name="file-image" size={40} color="black" />;
-    case 'mp4':
-    case 'mov':
-    case 'avi':
-    case 'mkv':
-      return <FontAwesome5 name="file-video" size={24} color="black" />;
-    default:
-      return <Ionicons name="document" size={40} color="#1475BA" />;
-  }
-};
-
+// OUR UTILS
+import getFileIcon from '@/utils/getFileIcon';
 
 export default function SubmissionScreen() {
   const router = useRouter();
@@ -75,14 +49,11 @@ export default function SubmissionScreen() {
     (item) => `${item.label} (${item.jenisAjukan})` === selectedJenisKegiatan
   );
 
-
   const isAllUploadComplete = selectedData?.files.every(
     (fileName) => fileMap[fileName]?.progress === 100
   );
 
-
   // HANDLE UPLOAD
-
   const handleUpload = async (field: string) => {
     const result = await pickDocument(field);
 
@@ -289,27 +260,10 @@ export default function SubmissionScreen() {
                                   : 'bg-red-500'
                               }`}
                             >
-
                               <Ionicons name="trash" size={18} color="white" />
                             </TouchableOpacity>
 
                             {/* Tombol Preview */}
-
-                              ✅ Upload berhasil!
-                            </Text>
-                            <Text style={{ fontFamily: 'LexRegular' }}>
-                              <Text style={{ fontWeight: 'bold' }}>
-                                Nama File:w
-                              </Text>{' '}
-                              {fileMap[field].name}
-                            </Text>
-                            <Text style={{ fontFamily: 'LexRegular' }}>
-                              <Text style={{ fontWeight: 'bold' }}>
-                                Ukuran:
-                              </Text>{' '}
-                              {(fileMap[field].size / 1024).toFixed(2)} KB
-                            </Text>
-
                             <TouchableOpacity
                               onPress={() => {
                                 if (fileMap[field].progress >= 100) {
@@ -336,7 +290,6 @@ export default function SubmissionScreen() {
           </View>
         )}
       </ScrollView>
-
       {/* Tombol Ajukan */}
       <View className="w-[80%] self-center py-6">
         <ButtonCustom

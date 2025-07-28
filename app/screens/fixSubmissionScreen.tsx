@@ -1,23 +1,26 @@
 import React from 'react';
 import { View, Text, ScrollView, Alert, TouchableOpacity } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
 import { useLocalSearchParams, router } from 'expo-router';
 
-// Constants
-import { submissionOptions } from '@/constants/submissionOptions';
+// OUR ICON
+import { AntDesign, FontAwesome5, Ionicons } from '@expo/vector-icons';
 
-// Components
+// OUR COMPONENT
+import { submissionOptions } from '@/constants/submissionOptions';
 import ButtonCustom from '@/components/buttonCustom';
 import NavCartOrder from '@/components/navCartOrder';
 import FilePreviewModal from '@/components/filePreviewModal';
 
-// Hooks
+// OUR HOOK
 import { useFixSubmissionScreen } from '@/hooks/Backend/useFixSubmitSubmissionScreen';
 import { useSelectDocumentMulti } from '@/hooks/Frontend/filePreviewModalScreen/useSelectDocument';
 import { useFilePreview } from '@/hooks/Frontend/filePreviewModalScreen/useFilePreview';
 
-// Interfaces
+// OUR INTERFACE
 import { UploadFileProps } from '@/interfaces/uploadFileProps';
+
+// OUR UTILS
+import getFileIcon from '@/utils/getFileIcon';
 
 export default function FixSubmissionScreen() {
   const { handleFixSubmission } = useFixSubmissionScreen();
@@ -37,18 +40,14 @@ export default function FixSubmissionScreen() {
   }>();
 
   const selectedJenisKegiatan = decodeURIComponent(namaAjukan || '').trim();
-
   const selectedOption = submissionOptions.find(
     (opt) =>
       opt.label.trim().toLowerCase() === selectedJenisKegiatan.toLowerCase()
   );
-
   const jenisAjukan = selectedOption?.jenisAjukan ?? '';
 
-  // PREVIEW FILE
   const handlePickFile = async (fieldName: string) => {
     const result = await pickDocument(fieldName);
-
     if (result.success && result.file) {
       openPreview(result.file);
     } else {
@@ -56,9 +55,7 @@ export default function FixSubmissionScreen() {
     }
   };
 
-  // HANDLE FIX SUBMIT
   const handleFixSubmit = async () => {
-    // 1. Validasi data dasar
     if (!ajukanID || !jenisAjukan || !selectedJenisKegiatan) {
       Alert.alert(
         'Data tidak lengkap',
@@ -67,7 +64,6 @@ export default function FixSubmissionScreen() {
       return;
     }
 
-    // 2. Validasi file wajib
     const isAllRequiredFilesUploaded = selectedOption?.files?.every(
       (label) => uploadedFiles[label]?.base64
     );
@@ -77,7 +73,6 @@ export default function FixSubmissionScreen() {
       return;
     }
 
-    // 3. Filter file yang valid (ada base64)
     const filteredUploadedFiles: Record<string, UploadFileProps> =
       Object.entries(uploadedFiles).reduce(
         (acc, [key, file]) => {
@@ -96,7 +91,6 @@ export default function FixSubmissionScreen() {
         {} as Record<string, UploadFileProps>
       );
 
-    // 4. Proses submit perbaikan
     try {
       await handleFixSubmission({
         ajukanID,
@@ -122,32 +116,33 @@ export default function FixSubmissionScreen() {
         isTouchable={false}
       />
 
-      <ScrollView contentContainerStyle={{ padding: 16 }}>
-        {/* Warning Box */}
-        <View
-          className="mb-6 flex-row items-start rounded-lg border border-red-600 bg-red-300 p-4"
-          style={{ gap: 10 }}
-        >
-          <AntDesign name="warning" size={24} color="darkred" />
-          <View className="flex-1">
-            <Text
-              className="mb-1 text-red-900"
-              style={{ fontFamily: 'LexSemiBold', fontSize: 14 }}
-            >
-              Upload Dokumen Hasil Perbaikan
-            </Text>
-            <View
-              style={{ height: 1, backgroundColor: '#b71c1c', marginBottom: 4 }}
-            />
-            <Text style={{ fontFamily: 'LexSemiBold', color: 'black' }}>
-              Dokumen Anda ditolak. Silakan unggah ulang dokumen yang diminta.
-            </Text>
+      <ScrollView
+        contentContainerStyle={{ paddingVertical: 24, paddingHorizontal: 15 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* ALERT PERBAIKAN DOKUMEN */}
+        <View className="mb-6 rounded-xl border border-red-600 bg-red-100 p-4">
+          <View className="flex-row items-start gap-3">
+            <AntDesign name="warning" size={22} color="darkred" />
+            <View className="flex-1">
+              <Text
+                className="mb-1 font-semibold text-red-700"
+                style={{ fontFamily: 'LexSemiBold' }}
+              >
+                Upload Dokumen Hasil Perbaikan
+              </Text>
+              <Text
+                className="text-sm text-black"
+                style={{ fontFamily: 'LexRegular' }}
+              >
+                Dokumen Anda ditolak. Silakan unggah ulang dokumen yang diminta.
+              </Text>
+            </View>
           </View>
         </View>
 
-        {/* Upload Fields */}
         {selectedOption?.files?.map((fileLabel) => (
-          <View key={fileLabel} className="mb-4">
+          <View key={fileLabel} className="mb-6">
             <Text
               className="mb-2 text-black"
               style={{ fontFamily: 'LexSemiBold' }}
@@ -156,22 +151,18 @@ export default function FixSubmissionScreen() {
             </Text>
 
             <ButtonCustom
-              text={uploadedFiles[fileLabel]?.name || 'Pilih File'}
-              classNameContainer="border border-gray-300 py-3 rounded-[10px]"
+              text={'Pilih File'}
+              classNameContainer="border border-gray-300 py-3 rounded-xl"
               textClassName="text-black text-[14px]"
               textStyle={{ fontFamily: 'LexRegular' }}
               isTouchable
               onPress={() => handlePickFile(fileLabel)}
             />
-
-            {/* 👇 PREVIEW FILE */}
+            <Text>{uploadedFiles[fileLabel]?.name}</Text>
             {uploadedFiles[fileLabel]?.uri && (
               <TouchableOpacity
                 className="mt-2"
-                onPress={() => {
-                  const file = uploadedFiles[fileLabel];
-                  if (file) openPreview(file);
-                }}
+                onPress={() => openPreview(uploadedFiles[fileLabel])}
               >
                 <Text
                   className="text-blue-600 underline"
@@ -184,24 +175,25 @@ export default function FixSubmissionScreen() {
           </View>
         ))}
 
-        {/* Submit Button */}
-        <ButtonCustom
-          text="Upload Dokumen Perbaikan"
-          classNameContainer="bg-[#72C02C] py-3 mt-6 rounded-[10px]"
-          textClassName="text-white text-[14px]"
-          textStyle={{ fontFamily: 'LexSemiBold' }}
-          isTouchable
-          onPress={handleFixSubmit}
-        />
-
-        <FilePreviewModal
-          visible={modalVisible}
-          onClose={() => setModalVisible(false)}
-          file={currentFile}
-          pdfViewerHtml={pdfViewerHtml}
-          onOpenExternal={openFileExternal}
-        />
+        <View className="w-[80%] self-center py-6">
+          <ButtonCustom
+            text="Upload Dokumen Perbaikan"
+            classNameContainer="bg-[#72C02C] py-3 rounded-xl"
+            textClassName="text-white text-[15px]"
+            textStyle={{ fontFamily: 'LexSemiBold' }}
+            isTouchable
+            onPress={handleFixSubmit}
+          />
+        </View>
       </ScrollView>
+
+      <FilePreviewModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        file={currentFile}
+        pdfViewerHtml={pdfViewerHtml}
+        onOpenExternal={openFileExternal}
+      />
     </View>
   );
 }
