@@ -10,7 +10,6 @@ import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Feather from '@expo/vector-icons/Feather';
 
@@ -35,7 +34,9 @@ export default function ProfileTabs() {
       style={{ flex: 1 }}
     >
       <View
-        className={`w-full flex-row items-center justify-between rounded-xl bg-[#1475BA] px-6 shadow-md ${headerPaddingVertical} py-20`}
+
+        className={`w-full flex-row items-center justify-between rounded-xl bg-[#1475BA] px-6 pt-12 shadow-md ${headerPaddingVertical}`}
+
       >
         <View>
           <Image
@@ -48,7 +49,7 @@ export default function ProfileTabs() {
         </View>
       </View>
       <ScrollView
-        contentContainerStyle={{ paddingHorizontal: 15, paddingBottom: 10 }}
+        contentContainerStyle={{ paddingHorizontal: 15, paddingBottom: 30 }}
         showsVerticalScrollIndicator={false}
       >
         <View className="gap-1 py-4">
@@ -73,7 +74,10 @@ export default function ProfileTabs() {
             activeOpacity={0.4}
             className="flex-col items-center justify-center gap-1"
           >
-            <Ionicons name="grid" size={30} color="white" />
+            <Image
+              source={require('@/assets/images/HomeScreen/catalog-icon.png')}
+              className="h-10 w-10 object-cover"
+            />
             <Text
               style={{ fontFamily: 'LexRegular' }}
               className="text-center text-white"
@@ -85,10 +89,9 @@ export default function ProfileTabs() {
             activeOpacity={0.4}
             className="flex-col items-center justify-center gap-1"
           >
-            <MaterialCommunityIcons
-              name="google-analytics"
-              size={30}
-              color="white"
+            <Image
+              source={require('@/assets/images/HomeScreen/monitoring-icon.png')}
+              className="h-10 w-10 object-cover"
             />
             <Text
               style={{ fontFamily: 'LexRegular' }}
@@ -101,7 +104,10 @@ export default function ProfileTabs() {
             activeOpacity={0.4}
             className="flex-col items-center justify-center gap-1"
           >
-            <MaterialIcons name="corporate-fare" size={30} color="white" />
+            <Image
+              source={require('@/assets/images/HomeScreen/rates-icon.png')}
+              className="h-10 w-10 object-cover"
+            />
             <Text
               style={{ fontFamily: 'LexRegular' }}
               className="text-center text-white"
@@ -115,7 +121,10 @@ export default function ProfileTabs() {
             activeOpacity={0.4}
             className="flex-col items-center justify-center gap-1"
           >
-            <FontAwesome name="map-signs" size={30} color="white" />
+            <Image
+              source={require('@/assets/images/HomeScreen/guide-icon.png')}
+              className="h-10 w-10 object-cover"
+            />
             <Text
               style={{ fontFamily: 'LexRegular' }}
               className="text-center text-white"
@@ -128,10 +137,9 @@ export default function ProfileTabs() {
             className="flex-col items-center justify-center gap-1"
             onPress={() => router.push('/screens/suggestionsAndComplaints')}
           >
-            <MaterialCommunityIcons
-              name="email-fast-outline"
-              size={30}
-              color="white"
+            <Image
+              source={require('@/assets/images/HomeScreen/faq-icon.png')}
+              className="h-10 w-10 object-cover"
             />
             <Text
               style={{ fontFamily: 'LexRegular' }}

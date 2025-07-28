@@ -7,7 +7,7 @@ import { ProductType } from '@/interfaces/productDataProps';
 export const allProducts = [
   {
     category: 'Informasi',
-    icon: <FontAwesome6 name="mountain" size={60} color="#3498DB" />,
+    icon: <FontAwesome6 name="mountain" size={50} color="white" />,
     title: 'Stasiun Meteorologi',
     desc: 'Pemantauan dan pengamatan kondisi\ncuaca dan atmosfer, termasuk suhu,\nkelembapan, dan tekanan udara.',
     pathname: '/screens/productDetailScreen' as const,
@@ -15,7 +15,7 @@ export const allProducts = [
   },
   {
     category: 'Informasi',
-    icon: <FontAwesome6 name="cloud-bolt" size={60} color="#3498DB" />,
+    icon: <FontAwesome6 name="cloud-bolt" size={50} color="white" />,
     title: 'Stasiun Klimatologi',
     desc: 'Penelitian dan analisis perubahan\niklim jangka panjang, pola cuaca, dan dampak lingkungan.',
     pathname: '/screens/productDetailScreen' as const,
@@ -23,7 +23,7 @@ export const allProducts = [
   },
   {
     category: 'Informasi',
-    icon: <Feather name="wind" size={60} color="#3498DB" />,
+    icon: <Feather name="wind" size={50} color="white" />,
     title: 'Stasiun Geofisika',
     desc: 'Pemantauan dan pengamatan kondisi\ncuaca dan atmosfer, termasuk suhu,\nkelembapan, dan tekanan udara.',
     pathname: '/screens/productDetailScreen' as const,
@@ -31,7 +31,7 @@ export const allProducts = [
   },
   {
     category: 'Jasa',
-    icon: <FontAwesome6 name="mountain" size={60} color="#3498DB" />,
+    icon: <FontAwesome6 name="mountain" size={50} color="white" />,
     title: 'Stasiun Meteorologi',
     desc: 'Pemantauan dan pengamatan kondisi\ncuaca dan atmosfer, termasuk suhu,\nkelembapan, dan tekanan udara.',
     pathname: '/screens/productDetailScreen' as const,
@@ -39,7 +39,7 @@ export const allProducts = [
   },
   {
     category: 'Jasa',
-    icon: <FontAwesome6 name="cloud-bolt" size={60} color="#3498DB" />,
+    icon: <FontAwesome6 name="cloud-bolt" size={50} color="white" />,
     title: 'Stasiun Klimatologi',
     desc: 'Penelitian dan analisis perubahan\niklim jangka panjang, pola cuaca, dan dampak lingkungan.',
     pathname: '/screens/productDetailScreen' as const,
@@ -47,7 +47,7 @@ export const allProducts = [
   },
   {
     category: 'Jasa',
-    icon: <Feather name="wind" size={60} color="#3498DB" />,
+    icon: <Feather name="wind" size={50} color="white" />,
     title: 'Stasiun Geofisika',
     desc: 'Pemantauan dan pengamatan kondisi\ncuaca dan atmosfer, termasuk suhu,\nkelembapan, dan tekanan udara.',
     pathname: '/screens/productDetailScreen' as const,

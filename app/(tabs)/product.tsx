@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 
@@ -40,12 +41,13 @@ export default function Product() {
   return (
     <View className="flex-1">
       <View
-        className={`w-full flex-row items-center justify-between rounded-b-[10px] bg-[#1475BA] px-6 shadow-md ${headerPaddingVertical}`}
+        className={`z-20 w-full flex-row items-center justify-between rounded-b-[10px] bg-[#1475BA] px-6 pt-12 ${headerPaddingVertical}`}
       >
         <View className="flex-1 flex-row items-center justify-between rounded-full bg-white pl-3">
           <TextInput
             className="flex-1 py-1"
             placeholder="Cari"
+            placeholderTextColor={'gray'}
             style={{ fontFamily: 'LexRegular' }}
           />
           <TouchableOpacity
@@ -60,7 +62,7 @@ export default function Product() {
         </View>
       </View>
 
-      <View className="flex-row items-center justify-center gap-4 py-2">
+      <View className="-mt-2 flex-row items-center justify-center gap-4 bg-[#A7CBE5] pb-2 pt-4">
         {['Semua', 'Informasi', 'Jasa'].map((buttonCategory) => (
           <TouchableOpacity
             key={buttonCategory}
@@ -73,6 +75,7 @@ export default function Product() {
             }`}
           >
             <Text
+              className="text-[16px]"
               style={{
                 fontFamily: 'LexBold',
                 color: activeCategory === buttonCategory ? 'white' : 'black',
@@ -87,14 +90,12 @@ export default function Product() {
       <ScrollView
         contentContainerStyle={{ paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
+        className="bg-[#A7CBE5]"
       >
         {activeCategory === 'Semua' ? (
           <>
-            <View className="self-center py-2 pt-5">
-              <Text
-                style={{ fontFamily: 'LexBold' }}
-                className="rounded-full bg-[#72C02C] px-6 py-1 text-lg"
-              >
+            <View className="self-center py-1 pt-3">
+              <Text style={{ fontFamily: 'LexBold' }} className="text-[20px]">
                 Produk Informasi
               </Text>
             </View>
@@ -104,23 +105,31 @@ export default function Product() {
                 .map((item, idx) => (
                   <View
                     key={`informasi-${idx}`}
-                    className="h-72 w-80 items-center justify-center gap-4 rounded-lg border-2 border-[#6BBC3F]"
+                    className="h-auto w-[74%] rounded-[15px] border-2 border-b-[4px] border-x-black/5 border-b-black/10 border-t-black/5 bg-white p-3.5"
                   >
-                    {item.icon}
+                    <View className="h-[125px] w-full shadow-xl">
+                      <Image
+                        source={require('@/assets/images/ProductScreen/bg-icon.png')}
+                        className="h-full w-full rounded-[20px] object-cover"
+                      />
+                      <View className="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center">
+                        {item.icon}
+                      </View>
+                    </View>
                     <Text
                       style={{ fontFamily: 'LexBold' }}
-                      className="text-center text-xl"
+                      className="py-2 text-[20px]"
                     >
                       {item.title}
                     </Text>
                     <Text
                       style={{ fontFamily: 'LexRegular' }}
-                      className="text-center text-sm"
+                      className="pb-4 text-[12px]"
                     >
                       {item.desc}
                     </Text>
                     <Button
-                      style="bg-[#1475BA] px-6 py-2 rounded-xl"
+                      style="bg-[#1475BA] px-6 py-2 rounded-lg"
                       textStyle="text-sm text-white"
                       onPress={() =>
                         router.push({
@@ -137,11 +146,8 @@ export default function Product() {
                 ))}
             </View>
 
-            <View className="self-center py-2 pt-5">
-              <Text
-                style={{ fontFamily: 'LexBold' }}
-                className="rounded-full bg-[#72C02C] px-6 py-1 text-lg"
-              >
+            <View className="self-center py-1 pt-5">
+              <Text style={{ fontFamily: 'LexBold' }} className="text-[20px]">
                 Produk Jasa
               </Text>
             </View>
@@ -151,23 +157,31 @@ export default function Product() {
                 .map((item, idx) => (
                   <View
                     key={`jasa-${idx}`}
-                    className="h-72 w-80 items-center justify-center gap-4 rounded-lg border-2 border-[#6BBC3F]"
+                    className="h-auto w-[74%] rounded-[15px] border-2 border-b-[4px] border-x-black/5 border-b-black/10 border-t-black/5 bg-white p-3.5"
                   >
-                    {item.icon}
+                    <View className="h-[125px] w-full shadow-xl">
+                      <Image
+                        source={require('@/assets/images/ProductScreen/bg-icon.png')}
+                        className="h-full w-full rounded-[20px] object-cover"
+                      />
+                      <View className="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center">
+                        {item.icon}
+                      </View>
+                    </View>
                     <Text
                       style={{ fontFamily: 'LexBold' }}
-                      className="text-center text-xl"
+                      className="py-2 text-[20px]"
                     >
                       {item.title}
                     </Text>
                     <Text
                       style={{ fontFamily: 'LexRegular' }}
-                      className="text-center text-sm"
+                      className="pb-4 text-[12px]"
                     >
                       {item.desc}
                     </Text>
                     <Button
-                      style="bg-[#1475BA] px-6 py-2 rounded-xl"
+                      style="bg-[#1475BA] px-6 py-2 rounded-lg"
                       textStyle="text-sm text-white"
                       onPress={() =>
                         router.push({
@@ -186,10 +200,10 @@ export default function Product() {
           </>
         ) : (
           <>
-            <View className="self-center py-2 pt-5">
+            <View className="self-center py-1 pt-3">
               <Text
                 style={{ fontFamily: 'LexBold' }}
-                className="rounded-full bg-[#72C02C] px-6 py-1 text-lg"
+                className="text-[20px]"
               >
                 Produk {activeCategory}
               </Text>
@@ -199,23 +213,31 @@ export default function Product() {
               {filteredProducts.map((item, idx) => (
                 <View
                   key={idx}
-                  className="h-72 w-80 items-center justify-center gap-4 rounded-lg border-2 border-[#6BBC3F]"
+                  className="h-auto w-[74%] rounded-[15px] border-2 border-b-[4px] border-x-black/5 border-b-black/10 border-t-black/5 bg-white p-3.5"
                 >
-                  {item.icon}
+                  <View className="h-[125px] w-full shadow-xl">
+                    <Image
+                      source={require('@/assets/images/ProductScreen/bg-icon.png')}
+                      className="h-full w-full rounded-[20px] object-cover"
+                    />
+                    <View className="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center">
+                      {item.icon}
+                    </View>
+                  </View>
                   <Text
                     style={{ fontFamily: 'LexBold' }}
-                    className="text-center text-xl"
+                    className="py-2 text-[20px]"
                   >
                     {item.title}
                   </Text>
                   <Text
                     style={{ fontFamily: 'LexRegular' }}
-                    className="text-center text-sm"
+                    className="pb-4 text-[12px]"
                   >
                     {item.desc}
                   </Text>
                   <Button
-                    style="bg-[#1475BA] px-6 py-2 rounded-xl"
+                    style="bg-[#1475BA] px-6 py-2 rounded-lg"
                     textStyle="text-sm text-white"
                     onPress={() =>
                       router.push({

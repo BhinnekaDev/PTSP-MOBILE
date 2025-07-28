@@ -13,7 +13,7 @@ import { validationFullString } from '@/utils/validationFullString';
 
 // OUR HOOKS
 import { useFilePreview } from '@/hooks/Frontend/filePreviewModalScreen/useFilePreview';
-import { useSelectDocument } from '@/hooks/Frontend/filePreviewModalScreen/useSelectDocument';
+import { useSelectDocumentMulti } from '@/hooks/Frontend/filePreviewModalScreen/useSelectDocument';
 
 export default function SuggestionsAndComplaints() {
   const router = useRouter();
@@ -27,9 +27,9 @@ export default function SuggestionsAndComplaints() {
   const [pengaduanEmail, setPengaduanEmail] = useState('');
   const [pengaduanText, setPengaduanText] = useState('');
 
-  const { file, pickDocument, uploadSuccess } = useSelectDocument();
+  const { pickDocument } = useSelectDocumentMulti();
   const { modalVisible, setModalVisible, pdfViewerHtml, openFileExternal } =
-    useFilePreview(file);
+    useFilePreview();
 
   return (
     <View className="flex-1 gap-4 bg-white">

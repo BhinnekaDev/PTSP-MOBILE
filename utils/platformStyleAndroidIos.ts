@@ -12,7 +12,7 @@ export const getHeightLayoutTabs = (): number => {
   return (
     Platform.select({
       ios: 70,
-      android: 105,
+      android: 80,
       default: 80,
     }) ?? 0
   );

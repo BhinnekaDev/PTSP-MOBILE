@@ -1,6 +1,13 @@
-import React, { useState, useRef } from "react";
-import { View, Text, TouchableOpacity, Animated, Easing, ScrollView } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import React, { useState, useRef } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Animated,
+  Easing,
+  ScrollView,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 type DropdownSelectProps = {
   label: string;
@@ -18,7 +25,7 @@ type DropdownSelectProps = {
 };
 
 export default function FormDropdownSelect({
-  FontLexSemiBold = { fontFamily: "LexSemiBold" }, //
+  FontLexSemiBold = { fontFamily: 'LexSemiBold' }, //
   toggleDropdownClassName,
   DropdownSelectClassName,
   labelClassName,
@@ -75,19 +82,33 @@ export default function FormDropdownSelect({
   return (
     <View>
       {showLabel && (
-        <Text className={`text-black ${labelClassName}`} style={[FontLexSemiBold, labelStyle]}>
+        <Text
+          className={`text-black ${labelClassName}`}
+          style={[FontLexSemiBold, labelStyle]}
+        >
           {label}
         </Text>
       )}
       <TouchableOpacity
         onPress={toggleDropdown} //
-        className={` self-center flex-row justify-between items-center border   p-3  ${toggleDropdownClassName}`}
+        className={`flex-row items-center justify-between self-center border p-3 ${toggleDropdownClassName}`}
         activeOpacity={0.8}
       >
-        <Text className="text-black" style={[FontLexSemiBold, selectedTextStyle]}>
+        <Text
+          className="text-black"
+          style={[FontLexSemiBold, selectedTextStyle]}
+        >
           {selected || `Pilih ${label.toLowerCase()}`}
         </Text>
-        <Ionicons name={open ? "chevron-up" : "chevron-down"} size={20} color={iconColor || "black"} />
+        <Ionicons
+          name="chevron-forward"
+          size={20}
+          color={iconColor || 'black'}
+          style={{
+            transform: [{ rotate: open ? '90deg' : '0deg' }],
+            transitionDuration: '800ms', 
+          }}
+        />
       </TouchableOpacity>
 
       {open && (
@@ -96,9 +117,13 @@ export default function FormDropdownSelect({
             height: animatedHeight,
             opacity: animatedOpacity,
           }}
-          className={` self-center overflow-hidden border border-t-0  bg-white  ${DropdownSelectClassName}`}
+          className={`self-center overflow-hidden border border-t-0 bg-white py-2 ${DropdownSelectClassName}`}
         >
-          <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={true} style={{ flexGrow: 0 }}>
+          <ScrollView
+            nestedScrollEnabled
+            showsVerticalScrollIndicator={true}
+            style={{ flexGrow: 0 }}
+          >
             {options.map((option, index) => (
               <TouchableOpacity
                 key={index}
@@ -111,7 +136,7 @@ export default function FormDropdownSelect({
                   toggleDropdown();
                 }}
               >
-                <Text>{option}</Text>
+                <Text style={{ fontFamily: 'LexMedium' }}>{option}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>

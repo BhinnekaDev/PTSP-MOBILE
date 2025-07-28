@@ -5,4 +5,9 @@ export type UploadFileProps = {
   base64: string;
   mimeType: string;
   size: number;
-};
+
+  name: string;
+  loading: boolean;
+  progress: number;
+}
+

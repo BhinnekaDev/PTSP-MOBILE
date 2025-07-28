@@ -55,7 +55,7 @@ export default function Regulation() {
   };
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-[#A7CBE5]">
       <View
         className={`w-full flex-row items-center justify-between rounded-b-[10px] bg-[#1475BA] px-6 shadow-md ${headerPaddingVertical}`}
       >
@@ -77,7 +77,7 @@ export default function Regulation() {
         <Text style={{ fontFamily: 'LexBold' }} className="my-4 text-2xl">
           Regulasi Pelayanan
         </Text>
-        <View className="rounded-lg border-2 border-black p-2">
+        <View className="rounded-lg border-2 border-black bg-white p-2">
           <Text style={{ fontFamily: 'LexBold' }} className="mb-3 text-xl">
             Regulasi Pelayanan
           </Text>
@@ -157,7 +157,7 @@ export default function Regulation() {
               openModal([require('@/assets/images/Regulation/AlurLayanan.jpg')])
             }
           >
-            <View className="w-48 items-center rounded-md border-2 border-[#1275BA] p-2">
+            <View className="w-48 items-center rounded-md border-2 border-black bg-white p-2">
               <Image
                 source={require('@/assets/images/Regulation/AlurLayanan.jpg')}
                 className="h-40 w-full rounded-lg border border-gray-300 object-cover"
@@ -177,7 +177,7 @@ export default function Regulation() {
               ])
             }
           >
-            <View className="items-center rounded-md border-2 border-[#1275BA] p-2">
+            <View className="items-center rounded-md border-2 border-black bg-white p-2">
               <Image
                 source={require('@/assets/images/Regulation/StandarLayanan1.jpg')}
                 className="h-40 w-full rounded-lg border border-gray-300 object-cover"
@@ -278,41 +278,43 @@ export default function Regulation() {
         <Text style={{ fontFamily: 'LexBold' }} className="mb-4 text-2xl">
           Tarif Pelayanan
         </Text>
-        <View className="px-2">
-          <View className="flex-row gap-1">
-            <Text style={{ fontFamily: 'LexBold' }} className="text-lg">
-              I.
-            </Text>
-            <Text style={{ fontFamily: 'LexBold' }} className="text-lg">
-              Informasi Meteorologi, Klimatologi, dan Geofisika
-            </Text>
-          </View>
-          <View className="mt-2 gap-4 px-5">
-            <TouchableOpacity
-              className="items-center rounded-lg bg-[#72C02C] p-2"
-              onPress={() => router.push('/screens/generalInformationRates')}
-              activeOpacity={0.7}
-            >
-              <Text
-                style={{ fontFamily: 'LexBold' }}
-                className="text-md text-white"
-              >
-                Informasi Umum
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => router.push('/screens/specialInformationRates')}
-              activeOpacity={0.7}
-              className="items-center rounded-lg bg-[#1275BA] p-2"
-            >
-              <Text
-                style={{ fontFamily: 'LexBold' }}
-                className="text-md text-white"
-              >
-                Informasi Khusus Sesuai Permintaan
-              </Text>
-            </TouchableOpacity>
+        <View className="gap-6 px-2">
+          <View className="rounded-lg border border-black bg-white p-3">
             <View className="flex-row gap-1">
+              <Text style={{ fontFamily: 'LexBold' }} className="text-lg">
+                I.
+              </Text>
+              <Text style={{ fontFamily: 'LexBold' }} className="text-lg">
+                Informasi Meteorologi, Klimatologi, dan Geofisika
+              </Text>
+            </View>
+            <View className="my-4 gap-4 px-5">
+              <TouchableOpacity
+                className="items-center rounded-lg bg-[#72C02C] p-2"
+                onPress={() => router.push('/screens/generalInformationRates')}
+                activeOpacity={0.7}
+              >
+                <Text
+                  style={{ fontFamily: 'LexBold' }}
+                  className="text-md text-white"
+                >
+                  Informasi Umum
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => router.push('/screens/specialInformationRates')}
+                activeOpacity={0.7}
+                className="items-center rounded-lg bg-[#1275BA] p-2"
+              >
+                <Text
+                  style={{ fontFamily: 'LexBold' }}
+                  className="text-md text-white"
+                >
+                  Informasi Khusus Sesuai Permintaan
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View className="mt-2 flex-row gap-1">
               <Text
                 style={{ fontFamily: 'LexRegular' }}
                 className="text-xs text-black"
@@ -328,27 +330,29 @@ export default function Regulation() {
               </Text>
             </View>
           </View>
-          <View className="mt-8 flex-row gap-1">
-            <Text style={{ fontFamily: 'LexBold' }} className="text-lg">
-              II.
-            </Text>
-            <Text style={{ fontFamily: 'LexBold' }} className="text-lg">
-              Jasa Konsultasi Meteorologi, Klimatologi, dan Geofisika
-            </Text>
-          </View>
-          <View className="mt-2 gap-4 px-5">
-            <TouchableOpacity
-              className="items-center rounded-lg bg-[#72C02C] p-2"
-              onPress={() => router.push('/screens/consultingServiceRates')}
-              activeOpacity={0.7}
-            >
-              <Text
-                style={{ fontFamily: 'LexBold' }}
-                className="text-md text-white"
-              >
-                Jasa Konsultasi
+          <View className="rounded-lg border border-black bg-white p-3">
+            <View className="flex-row gap-1">
+              <Text style={{ fontFamily: 'LexBold' }} className="text-lg">
+                II.
               </Text>
-            </TouchableOpacity>
+              <Text style={{ fontFamily: 'LexBold' }} className="text-lg">
+                Jasa Konsultasi Meteorologi, Klimatologi, dan Geofisika
+              </Text>
+            </View>
+            <View className="my-4 gap-4 px-5">
+              <TouchableOpacity
+                className="items-center rounded-lg bg-[#72C02C] p-2"
+                onPress={() => router.push('/screens/consultingServiceRates')}
+                activeOpacity={0.7}
+              >
+                <Text
+                  style={{ fontFamily: 'LexBold' }}
+                  className="text-md text-white"
+                >
+                  Jasa Konsultasi
+                </Text>
+              </TouchableOpacity>
+            </View>
             <View className="flex-row gap-1">
               <Text
                 style={{ fontFamily: 'LexRegular' }}

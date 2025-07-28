@@ -27,7 +27,7 @@ export default function NavCartOrder({
         text={text}
         iconLeft={<AntDesign name="arrowleft" size={24} color="white" />}
         onPressLeftIcon={onPressLeftIcon}
-        textClassName={`text-[23px] text-white ${textClassName}`}
+        textClassName={`text-[20px] text-white ${textClassName}`}
       />
       {/* ICON KANAN - Dibuat sejajar secara vertikal dengan parent flex-row */}
       <TouchableOpacity

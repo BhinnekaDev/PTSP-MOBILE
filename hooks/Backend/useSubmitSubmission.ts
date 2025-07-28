@@ -169,12 +169,6 @@ export const useSubmitSubmission = () => {
         Jasa: [],
       });
 
-      // ✅ Sukses
-      showMessage({
-        message: 'Pengajuan Berhasil',
-        description: 'Data berhasil dikirim dan keranjang telah dikosongkan.',
-        type: 'success',
-      });
     } catch (error: any) {
       console.error('❌ Error saat submit pengajuan:', error);
       showMessage({
