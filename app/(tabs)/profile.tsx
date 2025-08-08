@@ -14,6 +14,7 @@ import Feather from '@expo/vector-icons/Feather';
 
 // OUR HOOKS
 import { useProfilePopup } from '@/hooks/Frontend/profileScreen/usePopupAnimation';
+import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 
 // OUR COMPONENTS
 import ButtonCustom from '@/components/buttonCustom';
@@ -30,7 +31,8 @@ export default function ProfileTabs() {
     handleShowPopup,
     handleClosePopup,
   } = useProfilePopup();
-
+  const { profile, loading } = useGetUserProfile();
+  if (loading) return <Text>Loading...</Text>;
   return (
     <LinearGradient
       colors={['#1475BA', '#399385', '#6BBC3F']} //
@@ -62,7 +64,9 @@ export default function ProfileTabs() {
             containerImageClassName="w-44 h-44 rounded-full border-4 border-[#6BBC3F]"
             imageClassName="w-full h-full object-cover rounded-full"
             nameClassName="text-white text-xl mt-4"
+            name={profile?.Nama_Lengkap ?? 'Nama tidak tersedia'}
             emailClassName="text-white text-lg underline"
+            email={profile?.Email ?? 'Email tidak tersedia'}
           />
 
           <View className="items-center">

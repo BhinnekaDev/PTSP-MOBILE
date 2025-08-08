@@ -65,14 +65,6 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
           >
             <View className="mt-4 space-y-4">
               <InputField
-                label="No Identitas"
-                textClassName="border-[#6BBC3F]"
-                value={selected.identityNumber}
-                onChangeText={selected.setIdentityNumber}
-                keyboardType="numeric"
-              />
-
-              <InputField
                 label="Nama Lengkap"
                 textClassName="border-[#6BBC3F]"
                 value={selected.fullName}

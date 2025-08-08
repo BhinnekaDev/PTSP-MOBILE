@@ -24,12 +24,11 @@ export default function CompanyRegisterScreen() {
   const router = useRouter();
   const { register } = useCompanyRegister();
   const [step, setStep] = useState(1);
-  const [selectedGender, setSelectedGender] = useState('');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
 
-  const [identityNumber, setIdentityNumber] = useState('');
   const [fullName, setFullName] = useState('');
+  const [selectedGender, setSelectedGender] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [job, setJob] = useState('');
   const [lastEducation, setLastEducation] = useState('');
   const [numberPhone, setNumberPhone] = useState('');
@@ -43,7 +42,6 @@ export default function CompanyRegisterScreen() {
 
   const handleRegister = async () => {
     if (
-      !identityNumber ||
       !fullName ||
       !selectedGender ||
       !job ||
@@ -63,7 +61,6 @@ export default function CompanyRegisterScreen() {
 
     try {
       await register({
-        No_Identitas: identityNumber,
         Nama_Lengkap: fullName,
         Jenis_Kelamin: selectedGender,
         Pekerjaan: job,
@@ -132,18 +129,7 @@ export default function CompanyRegisterScreen() {
 
         {step === 1 && (
           <View className="mt-3 gap-6">
-            <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
-                No Identitas
-              </Text>
-              <TextInput
-                value={identityNumber}
-                onChangeText={setIdentityNumber}
-                keyboardType="phone-pad"
-                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
-                style={{ fontFamily: 'LexRegular' }}
-              />
-            </View>
+            {/* NAMA LENGKAP */}
             <View className="gap-1">
               <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
                 Nama Lengkap
@@ -155,6 +141,8 @@ export default function CompanyRegisterScreen() {
                 style={{ fontFamily: 'LexRegular' }}
               />
             </View>
+
+            {/* JENIS KELAMIN */}
             <View className="relative w-80 gap-1">
               <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
                 Jenis Kelamin
@@ -198,11 +186,8 @@ export default function CompanyRegisterScreen() {
                 </View>
               )}
             </View>
-          </View>
-        )}
 
-        {step === 2 && (
-          <View className="mt-2 gap-6 pb-5">
+            {/* PEKERJAAN */}
             <View className="gap-1">
               <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
                 Pekerjaan
@@ -214,6 +199,12 @@ export default function CompanyRegisterScreen() {
                 style={{ fontFamily: 'LexRegular' }}
               />
             </View>
+          </View>
+        )}
+
+        {step === 2 && (
+          <View className="mt-2 gap-6 pb-5">
+            {/* PENDIDIKAN TERAKHIR */}
             <View className="gap-1">
               <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
                 Pendidikan Terakhir
@@ -225,6 +216,8 @@ export default function CompanyRegisterScreen() {
                 style={{ fontFamily: 'LexRegular' }}
               />
             </View>
+
+            {/* NO HP / NO TELP */}
             <View className="gap-1">
               <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
                 No HP / No Telp

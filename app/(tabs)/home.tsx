@@ -7,9 +7,7 @@ import { useRouter } from 'expo-router';
 import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 
 // OUR ICONS
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Feather from '@expo/vector-icons/Feather';
 
@@ -34,9 +32,7 @@ export default function ProfileTabs() {
       style={{ flex: 1 }}
     >
       <View
-
         className={`w-full flex-row items-center justify-between rounded-xl bg-[#1475BA] px-6 pt-12 shadow-md ${headerPaddingVertical}`}
-
       >
         <View>
           <Image
