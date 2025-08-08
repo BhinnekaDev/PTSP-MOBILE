@@ -36,6 +36,7 @@ export default function SendProofOfPayment() {
     setFileMap({ 'Bukti Pembayaran': [] });
   }, []);
 
+  //
   const handleUploadFile = async (fieldName: string) => {
     const result = await pickDocument(fieldName);
 

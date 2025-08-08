@@ -75,25 +75,27 @@ export default function PaymentStatusSection({ detail }: { detail: any }) {
               )}
 
               {/* TOMBOL UPLOAD BUKTI PEMBAYARAN (Hanya jika bukan Gratis) */}
-              {detail.ajukan?.Jenis_Ajukan !== 'Gratis' && (
-                <View className="mt-3">
-                  <ButtonCustom
-                    text="Upload Bukti Pembayaran"
-                    classNameContainer="bg-[#3498db] py-2 rounded-[10px]"
-                    textClassName="text-white text-center text-[14px]"
-                    textStyle={{ fontFamily: 'LexSemiBold' }}
-                    isTouchable
-                    onPress={() => {
-                      router.push({
-                        pathname: '/screens/sendProofOfPayment',
-                        params: {
-                          paymentID: detail.idPemesanan,
-                        },
-                      });
-                    }}
-                  />
-                </View>
-              )}
+              {detail.ajukan?.Jenis_Ajukan !== 'Gratis' &&
+                detail.Status_Pembayaran !== 'Sedang Ditinjau' &&
+                detail.Status_Pembayaran !== 'Lunas' && (
+                  <View className="mt-3">
+                    <ButtonCustom
+                      text="Upload Bukti Pembayaran"
+                      classNameContainer="bg-[#3498db] py-2 rounded-[10px]"
+                      textClassName="text-white text-center text-[14px]"
+                      textStyle={{ fontFamily: 'LexSemiBold' }}
+                      isTouchable
+                      onPress={() => {
+                        router.push({
+                          pathname: '/screens/sendProofOfPayment',
+                          params: {
+                            paymentID: detail.idPemesanan,
+                          },
+                        });
+                      }}
+                    />
+                  </View>
+                )}
             </View>
           )}
         </>
