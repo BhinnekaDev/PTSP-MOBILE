@@ -28,7 +28,7 @@ export interface OrderDetail {
   Status_Pesanan: string;
   Status_Pengisian_IKM: string;
   Tanggal_Pemesanan: Timestamp;
-  ajukan: AjukanDetail | null;
+  ajukan: AjukanDetail;
   keranjang: ItemKeranjang[];
   user: UserProfile | null;
 }

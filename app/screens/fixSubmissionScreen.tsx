@@ -37,9 +37,10 @@ export default function FixSubmissionScreen() {
     openFileExternal,
   } = useFilePreview();
 
-  const { namaAjukan, ajukanID } = useLocalSearchParams<{
+  const { namaAjukan, ajukanID, keterangan } = useLocalSearchParams<{
     namaAjukan: string;
     ajukanID: string;
+    keterangan: string;
   }>();
 
   const selectedJenisKegiatan = decodeURIComponent(namaAjukan || '').trim();
@@ -49,6 +50,7 @@ export default function FixSubmissionScreen() {
   );
   const jenisAjukan = selectedOption?.jenisAjukan ?? '';
 
+  // handleUploadFile
   const handleUploadFile = async (fieldName: string) => {
     const result = await pickDocument(fieldName);
 
@@ -74,6 +76,7 @@ export default function FixSubmissionScreen() {
     }
   };
 
+  // Simulasi progres upload
   const simulateUploadProgress = (field: string) => {
     const steps = [0, 20, 35, 50, 70, 85, 100];
     let index = 0;
@@ -104,6 +107,7 @@ export default function FixSubmissionScreen() {
     nextStep();
   };
 
+  // handleFixSubmit
   const handleFixSubmit = async () => {
     if (!ajukanID || !jenisAjukan || !selectedJenisKegiatan) {
       Alert.alert(
@@ -158,6 +162,7 @@ export default function FixSubmissionScreen() {
     }
   };
 
+  // handleRemoveFile
   const handleRemoveFile = (field: string) => {
     console.log('Menghapus:', field);
 
@@ -194,10 +199,10 @@ export default function FixSubmissionScreen() {
                 Upload Dokumen Hasil Perbaikan
               </Text>
               <Text
-                className="text-sm text-black"
+                className="text-lg font-bold text-black"
                 style={{ fontFamily: 'LexRegular' }}
               >
-                Dokumen Anda ditolak. Silakan unggah ulang dokumen yang diminta.
+                {keterangan || 'Null'}
               </Text>
             </View>
           </View>

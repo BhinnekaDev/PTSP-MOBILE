@@ -30,7 +30,7 @@ export default function PaymentStatusSection({ detail }: { detail: any }) {
                       flexShrink: 1,
                     }}
                   >
-                    Tanggal Masuk:
+                    Tanggal Billing:
                   </Text>
                   <Text
                     style={{

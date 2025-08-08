@@ -14,8 +14,8 @@ export function useSelectDocumentMulti() {
     'image/jpg',
     'image/png',
     'application/pdf',
-    'application/msword', // .doc
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+    // 'application/msword', // .doc
+    // 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
   ];
 
   const isAllowedType = (mimeType: string | undefined) => {
