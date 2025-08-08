@@ -15,55 +15,51 @@ import { submissionOptions } from '@/constants/submissionOptions';
 import type { StatusOrderDetail } from '@/interfaces/statusOrderDetailProps';
 
 export default function SubmissionStatusSection({ detail }: StatusOrderDetail) {
+  const ajukanDetail = detail?.ajukan;
+
   const getFileFields = () => {
     const match = submissionOptions.find(
-      (option) => option.label.trim() === detail.ajukan.Nama_Ajukan.trim()
+      (option) => option.label.trim() === ajukanDetail?.Nama_Ajukan?.trim()
     );
     return match ? match.files : [];
   };
+
+  // Early return kalau ajukan null
+  if (!ajukanDetail) {
+    return null;
+  }
 
   return (
     <OrderItem
       icon={<AntDesign name="filetext1" size={24} color="white" />}
       title="Status Pengajuan"
-      status={detail.ajukan.Status_Ajukan}
+      status={ajukanDetail.Status_Ajukan}
       content={
         <>
-          {/* JENIS KEGIATAN */}
-          <TextDetail
-            label="Jenis Kegiatan"
-            value={detail.ajukan.Nama_Ajukan}
-          />
-
-          {/* JENIS PENGAJUAN */}
+          <TextDetail label="Jenis Kegiatan" value={ajukanDetail.Nama_Ajukan} />
           <TextDetail
             label="Jenis Pengajuan"
-            value={detail.ajukan.Jenis_Ajukan}
+            value={ajukanDetail.Jenis_Ajukan}
           />
-
-          {/* STATUS PENGAJUAN */}
           <TextDetail
             label="Status Pengajuan"
-            value={detail.ajukan.Status_Ajukan}
+            value={ajukanDetail.Status_Ajukan}
           />
 
-          {/* KETERANGAN DITOLAK */}
-          {detail.ajukan.Status_Ajukan === 'Ditolak' &&
-            detail.ajukan.Keterangan && (
+          {ajukanDetail.Status_Ajukan === 'Ditolak' &&
+            ajukanDetail.Keterangan && (
               <TextDetail
                 label="Keterangan Ditolak"
-                value={detail.ajukan.Keterangan}
+                value={ajukanDetail.Keterangan}
               />
             )}
 
-          {/* TANGGAL PENGAJUAN */}
           <TextDetail
             label="Tanggal Pengajuan"
-            value={detail.ajukan.Tanggal_Pembuatan_Ajukan.toDate().toLocaleString()}
+            value={ajukanDetail.Tanggal_Pembuatan_Ajukan.toDate().toLocaleString()}
           />
 
-          {/* PERBAIKI DOKUMEN */}
-          {detail.ajukan.Status_Ajukan === 'Ditolak' && (
+          {ajukanDetail.Status_Ajukan === 'Ditolak' && (
             <View className="mt-1">
               <ButtonCustom
                 text="Perbaiki Dokumen"
@@ -75,11 +71,11 @@ export default function SubmissionStatusSection({ detail }: StatusOrderDetail) {
                   router.push({
                     pathname: '/screens/fixSubmissionScreen',
                     params: {
-                      ajukanID: detail.ajukan.id,
-                      namaAjukan: detail.ajukan.Nama_Ajukan,
-                      jenisAjukan: detail.ajukan.Jenis_Ajukan,
-                      keterangan: detail.ajukan.Keterangan || '',
-                      statusPesanan: detail.ajukan.Status_Ajukan,
+                      ajukanID: ajukanDetail.id,
+                      namaAjukan: ajukanDetail.Nama_Ajukan,
+                      jenisAjukan: ajukanDetail.Jenis_Ajukan,
+                      keterangan: ajukanDetail.Keterangan || '',
+                      statusPesanan: ajukanDetail.Status_Ajukan,
                       files: JSON.stringify(getFileFields()),
                     },
                   });

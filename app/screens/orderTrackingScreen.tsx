@@ -182,7 +182,7 @@ export default function OrderTrackingScreen() {
                           className="mb-2 flex-row items-center justify-between border-b border-gray-200 pb-2"
                         >
                           <View style={{ flex: 2 }}>
-                            {detail.ajukan.Jenis_Ajukan !== 'Gratis' &&
+                            {detail.ajukan?.Jenis_Ajukan !== 'Gratis' &&
                               item.Nomor_VA && (
                                 <Text>Nomor VA : {item.Nomor_VA}</Text>
                               )}
