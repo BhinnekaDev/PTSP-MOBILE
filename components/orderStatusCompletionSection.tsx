@@ -25,7 +25,7 @@ export default function OrderCompletionStatusSection({
         <>
           <TextDetail
             label="Status Pengisian IKM"
-            value={detail.Status_Pengisian_IKM}
+            value={detail.Status_Pengisian_IKM || 'IKM Belum Diisi'}
           />
           <TextDetail label="Status Pesanan" value={detail.Status_Pesanan} />
 

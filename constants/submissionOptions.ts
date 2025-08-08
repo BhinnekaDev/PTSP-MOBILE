@@ -37,6 +37,7 @@ export const submissionOptions = [
   {
     label: 'Kegiatan Pelayanan Informasi dengan Tarif PNBP',
     jenisAjukan: 'Berbayar',
-    files: ['Identitas KTP', 'Surat Pengantar'],
+    // files: ['Identitas KTP', 'Surat Pengantar'],
+    files: ['Surat Pengantar'],
   },
 ];

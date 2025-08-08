@@ -1,7 +1,6 @@
 import { db, firebaseAuth, serverTimestamp } from '@/lib/firebase';
 
 type IndividualData = {
-  No_Identitas: string;
   Nama_Lengkap: string;
   Jenis_Kelamin: string;
   Pekerjaan: string;

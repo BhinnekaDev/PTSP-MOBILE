@@ -19,20 +19,18 @@ export default function IndividualRegisterScreen() {
   const router = useRouter();
   const { register } = useIndividualRegister();
   const [step, setStep] = useState(1);
-  const [selectedGender, setSelectedGender] = useState('');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
 
   // State input
-  const [identityNumber, setIdentityNumber] = useState('');
   const [fullName, setFullName] = useState('');
   const [job, setJob] = useState('');
   const [lastEducation, setLastEducation] = useState('');
+  const [selectedGender, setSelectedGender] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [numberPhone, setNumberPhone] = useState('');
+  const [isChecked, setIsChecked] = useState(false);
 
   const handleRegister = async () => {
     if (
-      !identityNumber || //
       !fullName ||
       !selectedGender ||
       !job ||
@@ -45,7 +43,6 @@ export default function IndividualRegisterScreen() {
 
     try {
       await register({
-        No_Identitas: identityNumber,
         Nama_Lengkap: fullName,
         Jenis_Kelamin: selectedGender,
         Pekerjaan: job,
@@ -108,18 +105,6 @@ export default function IndividualRegisterScreen() {
           <View className="mt-3 gap-6">
             <View className="gap-1">
               <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
-                No Identitas
-              </Text>
-              <TextInput
-                value={identityNumber}
-                onChangeText={setIdentityNumber}
-                keyboardType="phone-pad"
-                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
-                style={{ fontFamily: 'LexRegular' }}
-              />
-            </View>
-            <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
                 Nama Lengkap
               </Text>
               <TextInput
@@ -173,11 +158,8 @@ export default function IndividualRegisterScreen() {
                 </View>
               )}
             </View>
-          </View>
-        )}
 
-        {step === 2 && (
-          <View className="mt-2 gap-6 pb-2">
+            {/* Input Pekerjaan */}
             <View className="gap-1">
               <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
                 Pekerjaan
@@ -189,6 +171,11 @@ export default function IndividualRegisterScreen() {
                 style={{ fontFamily: 'LexRegular' }}
               />
             </View>
+          </View>
+        )}
+
+        {step === 2 && (
+          <View className="mt-2 gap-6 pb-2">
             <View className="gap-1">
               <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
                 Pendidikan Terakhir

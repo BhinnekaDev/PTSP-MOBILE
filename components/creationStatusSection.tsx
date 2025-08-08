@@ -15,7 +15,7 @@ export default function CreationStatusSection({ detail }: StatusOrderDetail) {
     <OrderItem
       icon={<AntDesign name="inbox" size={24} color="white" />}
       title="Status Pembuatan"
-      status={isPaid ? 'Status Pembuatan' : ''}
+      status={isPaid ? detail.Status_Pembuatan : ''}
       content={
         <>
           <TextDetail

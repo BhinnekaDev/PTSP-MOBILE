@@ -1,13 +1,14 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
   View,
   ScrollView,
   Text,
   ImageBackground,
   TouchableOpacity,
+  Animated,
+  Easing,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Animated, Easing } from 'react-native';
 
 // OUR COMPONENTS
 import ButtonCustom from '@/components/buttonCustom';
@@ -32,7 +33,7 @@ export default function CartOrderScreen() {
   const [editableIndex, setEditableIndex] = React.useState<number | null>(null);
   const pulseAnim = useRef(new Animated.Value(0.6)).current;
 
-  React.useEffect(() => {
+  useEffect(() => {
     Animated.loop(
       Animated.sequence([
         Animated.timing(pulseAnim, {
@@ -49,7 +50,7 @@ export default function CartOrderScreen() {
         }),
       ])
     ).start();
-  }, []);
+  }, [pulseAnim]);
 
   return (
     <View className="flex-1 bg-[#A7CBE5]">
@@ -176,7 +177,7 @@ export default function CartOrderScreen() {
                   <View className="mt-2 flex-row items-center justify-between">
                     <View className="flex-row items-center gap-5">
                       <MaterialIcons
-                        name="add-circle-outline"
+                        name="remove-circle-outline"
                         size={24}
                         color="white"
                         onPress={() => {
@@ -184,7 +185,7 @@ export default function CartOrderScreen() {
                           updateQuantity(
                             item.ID_Informasi || item.ID_Jasa || '',
                             type,
-                            'increment'
+                            'decrement'
                           );
                         }}
                       />
@@ -195,7 +196,7 @@ export default function CartOrderScreen() {
                         x{item.Kuantitas}
                       </Text>
                       <MaterialIcons
-                        name="remove-circle-outline"
+                        name="add-circle-outline"
                         size={24}
                         color="white"
                         onPress={() => {
@@ -203,7 +204,7 @@ export default function CartOrderScreen() {
                           updateQuantity(
                             item.ID_Informasi || item.ID_Jasa || '',
                             type,
-                            'decrement'
+                            'increment'
                           );
                         }}
                       />

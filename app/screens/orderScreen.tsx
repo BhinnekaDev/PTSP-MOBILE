@@ -81,20 +81,12 @@ export default function OrderScreen() {
                   <Text
                     style={{ fontFamily: 'LexRegular' }}
                     className={`rounded-md px-2 ${
-                      item.statusPemesanan === 'Selesai'
+                      item.statusPesanan === 'Selesai'
                         ? 'bg-green-500/20 text-green-500'
                         : 'bg-red-500/20 text-red-500'
                     }`}
                   >
-                    {item.statusPemesanan}
-                  </Text>
-                  <Text>
-                    <Text
-                      className="py-4 text-[18px] text-black"
-                      style={{ fontFamily: 'LexBold' }}
-                    >
-                      {item.statusPesanan}
-                    </Text>
+                    {item.statusPesanan}
                   </Text>
                 </View>
                 <View className="flex-row items-center justify-between">
@@ -116,9 +108,7 @@ export default function OrderScreen() {
                   <View className="flex-row items-center gap-1">
                     <MaterialIcons name="date-range" size={20} color="black" />
                     <Text style={{ fontFamily: 'LexSemiBold' }}>
-
                       Tanggal Pemesanan:
-
                     </Text>
                   </View>
                   <Text style={{ fontFamily: 'LexRegular' }}>
@@ -227,48 +217,16 @@ export default function OrderScreen() {
                       : orderInfo?.email}
                   </Text>
                 </View>
-
                 <View className="flex-row items-center justify-between">
                   <View className="flex-row items-center gap-1">
                     <MaterialIcons name="call" size={20} color="black" />
                     <Text style={{ fontFamily: 'LexSemiBold' }}>No HP:</Text>
-
                     <Text style={{ fontFamily: 'LexRegular' }}>
                       {orderInfo?.tipe === 'perusahaan'
                         ? `${orderInfo.noHp} / ${orderInfo.noHpPerusahaan}`
                         : orderInfo?.noHp}
                     </Text>
                   </View>
-                  {/* Tombol lihat detail (nanti aktifin sesuai instruksi kamu berikutnya) */}
-                  <View className="mt-2">
-                    <ButtonCustom
-                      classNameContainer="bg-[#1475BA] py-2 rounded-[10px]"
-                      text="Lihat Detail"
-                      textClassName="text-[14px] text-center text-white"
-                      textStyle={{ fontFamily: 'LexSemiBold' }}
-                      isTouchable={true}
-                      onPress={() => {
-                        console.log('ID : ====>', item.id);
-                        router.push({
-                          pathname: '/screens/orderTrackingScreen',
-                          params: { id: item.id }, // ← Kirim ID ke screen detail
-                        });
-                      }}
-                      containerStyle={{
-                        shadowColor: '#000',
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.2,
-                        shadowRadius: 2,
-                        elevation: 3,
-                      }}
-                    />
-
-                  </View>
-                  <Text style={{ fontFamily: 'LexRegular' }}>
-                    {orderInfo?.tipe === 'perusahaan'
-                      ? `${orderInfo.noHp} / ${orderInfo.noHpPerusahaan}`
-                      : orderInfo?.noHp}
-                  </Text>
                 </View>
                 {/* Tombol lihat detail (nanti aktifin sesuai instruksi kamu berikutnya) */}
                 <View className="mt-2">
@@ -279,8 +237,11 @@ export default function OrderScreen() {
                     textStyle={{ fontFamily: 'LexSemiBold' }}
                     isTouchable={true}
                     onPress={() => {
-                      // nanti pasang logic navigate ke detail
-                      alert(`Detail pesanan ${item.id}`);
+                      // console.log('ID : ====>', item.id);
+                      router.push({
+                        pathname: '/screens/orderTrackingScreen',
+                        params: { id: item.id },
+                      });
                     }}
                     containerStyle={{
                       shadowColor: '#000',

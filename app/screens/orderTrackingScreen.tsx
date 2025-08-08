@@ -154,41 +154,52 @@ export default function OrderTrackingScreen() {
                   {/* Baris 2: Nomor Pesanan full lebar */}
                   <View className="mb-10 rounded-[10px] border-2 border-[#73BF40] bg-white p-4">
                     <View
-                      className="flex-row items-center gap-2"
+                      className="flex-row items-center"
                       style={{ flexWrap: 'wrap' }}
                     >
+                      {/* NOMOR PESANAN */}
                       <Text style={{ fontFamily: 'LexRegular', flexShrink: 1 }}>
                         Nomor Pesanan :
                       </Text>
                       <Text style={{ fontFamily: 'LexRegular', flexShrink: 1 }}>
                         {id}
                       </Text>
+
+                      {/* TANGGAL PEMESANAN */}
+                      <Text style={{ fontFamily: 'LexRegular', flexShrink: 1 }}>
+                        Dipesan pada tanggal :{' '}
+                      </Text>
+                      <Text style={{ fontFamily: 'LexRegular', flexShrink: 1 }}>
+                        {detail.Tanggal_Pemesanan.toDate().toLocaleString()}
+                      </Text>
                     </View>
 
                     {/* DATA PEMESANAN DARI DETAIL KERAN*/}
                     <View>
-                      <View>
-                        {detail.keranjang.map((item, index) => (
-                          <View
-                            key={index}
-                            className="mb-2 flex-row items-center justify-between border-b border-gray-200 pb-2"
-                          >
-                            <View style={{ flex: 2 }}>
-                              <Text>Nomor VA : {item.Nomor_VA}</Text>
-                              <Text className="font-semibold">{item.Nama}</Text>
-                              <Text className="text-xs text-gray-600">
-                                Pemilik: {item.Pemilik}
-                              </Text>
-                            </View>
-                            <Text style={{ flex: 1, textAlign: 'center' }}>
-                              x{item.Kuantitas}
-                            </Text>
-                            <Text style={{ flex: 1, textAlign: 'right' }}>
-                              Rp{item.Total_Harga.toLocaleString('id-ID')}
+                      {detail.keranjang.map((item, index) => (
+                        <View
+                          key={index}
+                          className="mb-2 flex-row items-center justify-between border-b border-gray-200 pb-2"
+                        >
+                          <View style={{ flex: 2 }}>
+                            {detail.ajukan?.Jenis_Ajukan !== 'Gratis' &&
+                              item.Nomor_VA && (
+                                <Text>Nomor VA : {item.Nomor_VA}</Text>
+                              )}
+
+                            <Text className="font-semibold">{item.Nama}</Text>
+                            <Text className="text-xs text-gray-600">
+                              Pemilik: {item.Pemilik}
                             </Text>
                           </View>
-                        ))}
-                      </View>
+                          <Text style={{ flex: 1, textAlign: 'center' }}>
+                            x{item.Kuantitas}
+                          </Text>
+                          <Text style={{ flex: 1, textAlign: 'right' }}>
+                            Rp{item.Total_Harga.toLocaleString('id-ID')}
+                          </Text>
+                        </View>
+                      ))}
                     </View>
 
                     <ButtonCustom

@@ -38,6 +38,7 @@ export const useGetUserDetailOrderInfo = (idPemesanan: string) => {
             pemesananData?.Data_Keranjang || [];
 
           setDetail({
+            idPemesanan: docSnap.id,
             Status_Pembayaran: pemesananData?.Status_Pembayaran,
             Status_Pembuatan: pemesananData?.Status_Pembuatan,
             Status_Pesanan: pemesananData?.Status_Pesanan,

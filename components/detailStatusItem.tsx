@@ -18,7 +18,7 @@ const getStatusColor = (status: string) => {
     case 'Ditolak':
       return '#EB5757'; // Merah
     case 'Sedang Ditinjau':
-    case 'Status Pembuatan':
+    case 'Menunggu Pembuatan':
       return '#f9a825'; // Kuning
     default:
       return '#3498db'; // Abu default
