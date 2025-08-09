@@ -124,6 +124,7 @@ export default function OrderTrackingScreen() {
                         <>
                           <Text>{detail.user.Nama_Perusahaan}</Text>
                           <Text>{detail.user.No_Hp_Perusahaan}</Text>
+                          <Text>{detail.user.Email}</Text>
                           <Text>{detail.user.Email_Perusahaan}</Text>
                           <Text>{detail.user.Alamat_Perusahaan}</Text>
                         </>
@@ -179,25 +180,43 @@ export default function OrderTrackingScreen() {
                       {detail.keranjang.map((item, index) => (
                         <View
                           key={index}
-                          className="mb-2 flex-row items-center justify-between border-b border-gray-200 pb-2"
+                          className="mb-2 border-b border-gray-200 pb-2"
+                          style={{ flexDirection: 'column' }}
                         >
-                          <View style={{ flex: 2 }}>
-                            {detail.ajukan?.Jenis_Ajukan !== 'Gratis' &&
-                              item.Nomor_VA && (
-                                <Text>Nomor VA : {item.Nomor_VA}</Text>
-                              )}
+                          {/* Nomor VA di baris terpisah */}
+                          {detail.ajukan?.Jenis_Ajukan !== 'Gratis' &&
+                            item.Nomor_VA && (
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  color: 'gray',
+                                  flexWrap: 'wrap',
+                                }}
+                              >
+                                Nomor VA: {item.Nomor_VA}
+                              </Text>
+                            )}
 
-                            <Text className="font-semibold">{item.Nama}</Text>
-                            <Text className="text-xs text-gray-600">
-                              Pemilik: {item.Pemilik}
+                          {/* Baris utama */}
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <View style={{ flex: 2 }}>
+                              <Text className="font-semibold">{item.Nama}</Text>
+                              <Text className="text-xs text-gray-600">
+                                Pemilik: {item.Pemilik}
+                              </Text>
+                            </View>
+                            <Text style={{ flex: 1, textAlign: 'center' }}>
+                              x{item.Kuantitas}
+                            </Text>
+                            <Text style={{ flex: 1, textAlign: 'right' }}>
+                              Rp{item.Total_Harga.toLocaleString('id-ID')}
                             </Text>
                           </View>
-                          <Text style={{ flex: 1, textAlign: 'center' }}>
-                            x{item.Kuantitas}
-                          </Text>
-                          <Text style={{ flex: 1, textAlign: 'right' }}>
-                            Rp{item.Total_Harga.toLocaleString('id-ID')}
-                          </Text>
                         </View>
                       ))}
                     </View>
