@@ -10,7 +10,10 @@ import OrderItem from '@/components/detailStatusItem';
 import TextDetail from '@/components/textDetail';
 import ButtonCustom from '@/components/buttonCustom';
 
-export default function PaymentStatusSection({ detail }: { detail: any }) {
+// OUR PROPS
+import type { StatusOrderDetail } from '@/interfaces/statusOrderDetailProps';
+
+export default function PaymentStatusSection({ detail }: StatusOrderDetail) {
   return (
     <OrderItem
       icon={<FontAwesome name="dollar" size={24} color="white" />}
@@ -43,9 +46,7 @@ export default function PaymentStatusSection({ detail }: { detail: any }) {
                       flexShrink: 1,
                     }}
                   >
-                    {new Date(detail.ajukan.Tanggal_Masuk).toLocaleString(
-                      'id-ID'
-                    )}
+                    {detail.ajukan.Tanggal_Masuk.toDate().toLocaleString()}
                   </Text>
                 </View>
               )}
@@ -67,16 +68,13 @@ export default function PaymentStatusSection({ detail }: { detail: any }) {
                       flexShrink: 1,
                     }}
                   >
-                    {new Date(detail.ajukan.Tanggal_Kadaluwarsa).toLocaleString(
-                      'id-ID'
-                    )}
+                    {detail.ajukan.Tanggal_Kadaluwarsa.toDate().toLocaleString()}
                   </Text>
                 </View>
               )}
 
-              {/* TOMBOL UPLOAD BUKTI PEMBAYARAN (Hanya jika bukan Gratis) */}
-              {detail.ajukan?.Jenis_Ajukan !== 'Gratis' &&
-                detail.Status_Pembayaran !== 'Sedang Ditinjau' &&
+              {/* TOMBOL UPLOAD BUKTI PEMBAYARAN (Hanya jika Status Pembayaran = Ditolak dan Menunggu Pembayaran) */}
+              {detail.Status_Pembayaran !== 'Sedang Ditinjau' &&
                 detail.Status_Pembayaran !== 'Lunas' && (
                   <View className="mt-3">
                     <ButtonCustom

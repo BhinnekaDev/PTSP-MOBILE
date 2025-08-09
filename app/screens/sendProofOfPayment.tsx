@@ -57,6 +57,9 @@ export default function SendProofOfPayment() {
       Alert.alert('Gagal', 'Gagal memilih file.');
     }
   };
+  const hasFiles = Object.values(fileMap).some(
+    (files) => files && files.length > 0
+  );
 
   const simulateUploadProgress = (field: string, fileName: string) => {
     const steps = [0, 20, 35, 50, 70, 85, 100];
@@ -101,6 +104,14 @@ export default function SendProofOfPayment() {
   };
 
   const handleFixSubmit = async () => {
+    if (!hasFiles) {
+      Alert.alert(
+        'Peringatan',
+        'Silakan upload minimal satu file terlebih dahulu.'
+      );
+      return;
+    }
+
     try {
       await handleSendProof({
         paymentID: paymentID!,
@@ -144,7 +155,6 @@ export default function SendProofOfPayment() {
                 Upload Bukti Pembayaran
               </Text>
               <Text className="text-black" style={{ fontFamily: 'LexRegular' }}>
-                Simulasi unggah dokumen bukti pembayaran.
                 {paymentID}
               </Text>
             </View>
@@ -264,10 +274,12 @@ export default function SendProofOfPayment() {
         <View className="w-[80%] self-center py-6">
           <ButtonCustom
             text="Upload Dokumen Perbaikan"
-            classNameContainer="bg-[#72C02C] py-3 rounded-xl"
+            classNameContainer={`py-3 rounded-xl ${
+              hasFiles ? 'bg-[#1475BA]' : 'bg-gray-400'
+            }`}
             textClassName="text-white text-[15px]"
             textStyle={{ fontFamily: 'LexSemiBold' }}
-            isTouchable
+            isTouchable={hasFiles}
             onPress={handleFixSubmit}
           />
         </View>

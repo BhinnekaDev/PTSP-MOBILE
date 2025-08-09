@@ -26,8 +26,6 @@ export default function OrderScreen() {
   const router = useRouter();
   const { showButtonPlus, animatedValue, animatedOpacity } =
     useAjukanTransition();
-
-  // ✅ Gunakan hook profil
   const { orderInfo, listPemesanan, loading } = useGetUserOrderInfo();
 
   if (loading) {
@@ -96,7 +94,7 @@ export default function OrderScreen() {
                   <Text
                     style={{ fontFamily: 'LexRegular' }}
                     className={`rounded-md px-2 ${
-                      item.statusPembayaran === 'Selesai'
+                      item.statusPembayaran === 'Lunas'
                         ? 'bg-green-500/20 text-green-500'
                         : 'bg-red-500/20 text-red-500'
                     }`}
@@ -112,38 +110,10 @@ export default function OrderScreen() {
                     </Text>
                   </View>
                   <Text style={{ fontFamily: 'LexRegular' }}>
-                    {item.tanggalPemesanan.toLocaleString('en-US', {
-                      day: 'numeric',
-                      month: 'numeric',
-                      year: 'numeric',
-                      hour: 'numeric',
-                      minute: 'numeric',
-                      second: 'numeric',
-                      hour12: true,
-                      timeZone: 'Asia/Jakarta',
-                    })}
+                    {item.tanggalPemesanan.toDate().toLocaleString()}
                   </Text>
                 </View>
-                <View className="flex-row items-center justify-between">
-                  <View className="flex-row items-center gap-1">
-                    <MaterialIcons name="date-range" size={20} color="black" />
-                    <Text style={{ fontFamily: 'LexSemiBold' }}>
-                      Tanggal Pemesanan:
-                    </Text>
-                  </View>
-                  <Text style={{ fontFamily: 'LexRegular' }}>
-                    {item.tanggalPemesanan.toLocaleString('en-US', {
-                      day: 'numeric',
-                      month: 'numeric',
-                      year: 'numeric',
-                      hour: 'numeric',
-                      minute: 'numeric',
-                      second: 'numeric',
-                      hour12: true,
-                      timeZone: 'Asia/Jakarta',
-                    })}
-                  </Text>
-                </View>
+
                 <View className="flex-row items-center justify-between">
                   <View className="flex-row items-center gap-1">
                     <MaterialIcons name="date-range" size={20} color="black" />
@@ -152,16 +122,7 @@ export default function OrderScreen() {
                     </Text>
                   </View>
                   <Text style={{ fontFamily: 'LexRegular' }}>
-                    {item.tanggalPengajuan?.toLocaleString('en-US', {
-                      day: 'numeric',
-                      month: 'numeric',
-                      year: 'numeric',
-                      hour: 'numeric',
-                      minute: 'numeric',
-                      second: 'numeric',
-                      hour12: true,
-                      timeZone: 'Asia/Jakarta',
-                    })}
+                    {item.tanggalPengajuan?.toDate().toLocaleString()}
                   </Text>
                 </View>
                 <View className="flex-row items-center justify-between">
@@ -206,17 +167,35 @@ export default function OrderScreen() {
                   </>
                 )}
 
+                {/* Email Pribadi */}
                 <View className="flex-row items-center justify-between">
                   <View className="flex-row items-center gap-1">
                     <MaterialIcons name="email" size={20} color="black" />
-                    <Text style={{ fontFamily: 'LexSemiBold' }}>Email:</Text>
+                    <Text style={{ fontFamily: 'LexSemiBold' }}>
+                      Email Pribadi:
+                    </Text>
                   </View>
                   <Text style={{ fontFamily: 'LexRegular' }}>
-                    {orderInfo?.tipe === 'perusahaan'
-                      ? `${orderInfo.email} / ${orderInfo.emailPerusahaan}`
-                      : orderInfo?.email}
+                    {orderInfo?.email}
                   </Text>
                 </View>
+
+                {/* Email Perusahaan */}
+                {orderInfo?.tipe === 'perusahaan' && (
+                  <View className="flex-row items-center justify-between">
+                    <View className="flex-row items-center gap-1">
+                      <MaterialIcons name="business" size={20} color="black" />
+                      <Text style={{ fontFamily: 'LexSemiBold' }}>
+                        Email Perusahaan:
+                      </Text>
+                    </View>
+                    <Text style={{ fontFamily: 'LexRegular' }}>
+                      {orderInfo?.emailPerusahaan}
+                    </Text>
+                  </View>
+                )}
+
+                {/* No HP */}
                 <View className="flex-row items-center justify-between">
                   <View className="flex-row items-center gap-1">
                     <MaterialIcons name="call" size={20} color="black" />
