@@ -58,7 +58,7 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false, animation: 'fade' }} />
 
       <FlashMessage
-        position="bottom"
+        position="top"
         floating
         transitionConfig={slideInUp}
         style={{
@@ -67,7 +67,6 @@ export default function RootLayout() {
           margin: 16,
           paddingVertical: 10,
           paddingHorizontal: 16,
-          backgroundColor: '#72C02C',
           elevation: 4,
           shadowColor: '#000',
           shadowOffset: { width: 0, height: 2 },
