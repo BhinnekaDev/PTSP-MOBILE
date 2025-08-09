@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Text,
   View,
@@ -29,8 +29,8 @@ export default function Regulation() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImages, setSelectedImages] = useState<any[]>([]);
   const ZoomAny = ImageZoom as unknown as React.ComponentType<any>;
-  const scrollRef = useRef<ScrollView>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const scrollRef = useRef<ScrollView>(null);
 
   const handleNext = () => {
     const nextIndex = Math.min(activeIndex + 1, selectedImages.length - 1);

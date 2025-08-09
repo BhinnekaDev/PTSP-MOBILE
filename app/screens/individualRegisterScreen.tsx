@@ -13,6 +13,8 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Entypo from '@expo/vector-icons/Entypo';
 import Button from '@/components/button';
 
+import { showMessage } from 'react-native-flash-message';
+
 import { useIndividualRegister } from '@/hooks/Backend/useIndividualRegister';
 
 export default function IndividualRegisterScreen() {
@@ -30,14 +32,13 @@ export default function IndividualRegisterScreen() {
   const [isChecked, setIsChecked] = useState(false);
 
   const handleRegister = async () => {
-    if (
-      !fullName ||
-      !selectedGender ||
-      !job ||
-      !lastEducation ||
-      !numberPhone
-    ) {
-      Alert.alert('Peringatan', 'Mohon lengkapi semua data terlebih dahulu.');
+    if (!lastEducation || !numberPhone) {
+      showMessage({
+        message: 'Harap isi seluruh form yang ada!',
+        type: 'danger',
+        backgroundColor: '#FF3B30',
+        color: '#fff',
+      });
       return;
     }
 
@@ -50,15 +51,39 @@ export default function IndividualRegisterScreen() {
         No_Hp: numberPhone,
       });
 
-      Alert.alert('Berhasil', 'Registrasi berhasil disimpan!', [
-        {
-          text: 'OK',
-          onPress: () => router.push('/(tabs)/home'),
-        },
-      ]);
-    } catch {
-      Alert.alert('Gagal', 'Terjadi kesalahan saat menyimpan data.');
+      showMessage({
+        message: 'Registrasi berhasil disimpan!',
+        type: 'success',
+        backgroundColor: '#72C02C',
+        color: '#fff',
+        icon: 'success',
+      });
+
+      setTimeout(() => {
+        router.push('/(tabs)/home');
+      }, 1200);
+    } catch (error) {
+      showMessage({
+        message: 'Gagal menyimpan data.',
+        type: 'danger',
+        backgroundColor: '#FF3B30',
+        color: '#fff',
+        icon: 'danger',
+      });
     }
+  };
+
+  const validateStep1 = () => {
+    if (!fullName || !selectedGender || !job) {
+      showMessage({
+        message: 'Harap isi seluruh form yang ada!',
+        type: 'danger',
+        backgroundColor: '#FF0000',
+        color: '#fff',
+      });
+      return false;
+    }
+    return true;
   };
 
   return (
@@ -110,6 +135,7 @@ export default function IndividualRegisterScreen() {
               <TextInput
                 value={fullName}
                 onChangeText={setFullName}
+                maxLength={50}
                 className="w-80 rounded-xl border border-[#6BBC3F] p-2"
                 style={{ fontFamily: 'LexRegular' }}
               />
@@ -167,6 +193,7 @@ export default function IndividualRegisterScreen() {
               <TextInput
                 value={job}
                 onChangeText={setJob}
+                maxLength={50}
                 className="w-80 rounded-xl border border-[#6BBC3F] p-2"
                 style={{ fontFamily: 'LexRegular' }}
               />
@@ -194,6 +221,7 @@ export default function IndividualRegisterScreen() {
               <TextInput
                 value={numberPhone}
                 onChangeText={setNumberPhone}
+                maxLength={13}
                 keyboardType="phone-pad"
                 className="w-80 rounded-xl border border-[#6BBC3F] p-2"
                 style={{ fontFamily: 'LexRegular' }}
@@ -250,9 +278,13 @@ export default function IndividualRegisterScreen() {
 
         {step === 1 && (
           <Button
-            style="bg-[#1475BA] mt-12 py-3 px-28 rounded-xl" //
+            style="bg-[#1475BA] mt-12 py-3 px-28 rounded-xl"
             textStyle="text-white"
-            onPress={() => setStep(2)}
+            onPress={() => {
+              if (validateStep1()) {
+                setStep(2);
+              }
+            }}
             activeOpacity={0.8}
           >
             Selanjutnya

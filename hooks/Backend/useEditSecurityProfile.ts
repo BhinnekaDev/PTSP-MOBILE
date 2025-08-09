@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
+import { showMessage } from 'react-native-flash-message';
 // LIB
 import {
   firebaseAuth,
@@ -35,20 +36,29 @@ export const useEditSecurityProfile = (onClose: () => void) => {
   const handleSave = async () => {
     try {
       // VALIDASI INPUT
-      if (!numberPhone.trim() || !email.trim()) {
-        alert('❌ Semua kolom wajib diisi.');
-        return;
-      }
+        if (!numberPhone.trim() || !email.trim()) {
+      showMessage({
+        message: "Semua kolom wajib diisi.",
+        type: "danger",
+      });
+      return;
+    }
 
-      if (numberPhone.length < 10 || numberPhone.length > 13) {
-        alert('❌ Nomor HP harus terdiri dari 10–13 digit angka.');
-        return;
-      }
+    if (numberPhone.length < 10 || numberPhone.length > 13) {
+      showMessage({
+        message: "Nomor HP harus terdiri dari 10–13 digit angka.",
+        type: "danger",
+      });
+      return;
+    }
 
-      if (!isValidEmail(email)) {
-        alert('❌ Format email tidak valid.');
-        return;
-      }
+    if (!isValidEmail(email)) {
+      showMessage({
+        message: "Format email tidak valid.",
+        type: "danger",
+      });
+      return;
+    }
 
       const user = firebaseAuth.currentUser;
       if (!user) throw new Error('User tidak ditemukan.');
@@ -71,9 +81,12 @@ export const useEditSecurityProfile = (onClose: () => void) => {
           },
         });
 
-        alert(
-          '📧 Email verifikasi telah dikirim ke email baru kamu. Silakan cek dan klik link verifikasi untuk menyelesaikan perubahan email.'
-        );
+        showMessage({
+      message:
+        '📧 Email verifikasi telah dikirim ke email baru kamu. Silakan cek dan klik link verifikasi untuk menyelesaikan perubahan email.',
+      type: 'info',
+      icon: 'info',
+    });
         console.log('✅ verifyBeforeUpdateEmail dijalankan');
       }
 
@@ -91,7 +104,11 @@ export const useEditSecurityProfile = (onClose: () => void) => {
       await db.collection(collectionName).doc(uid).update(data);
       console.log('✅ Firestore berhasil diupdate');
 
-      alert('✅ Data keamanan berhasil disimpan.');
+      showMessage({
+    message: '✅ Data keamanan berhasil disimpan.',
+    type: 'success',
+    icon: 'success',
+  });
       onClose();
 
       // Kembali hanya jika email berubah (untuk menghindari bug routing)
@@ -101,12 +118,24 @@ export const useEditSecurityProfile = (onClose: () => void) => {
       console.error('Gagal menyimpan data keamanan:', err);
 
       if (err.code === 'auth/requires-recent-login') {
-        alert('⚠️ Demi keamanan, silakan login ulang untuk ubah email.');
-      } else if (err.code === 'auth/email-already-in-use') {
-        alert('⚠️ Email ini sudah digunakan oleh akun lain.');
-      } else {
-        alert(err.message || 'Terjadi kesalahan saat menyimpan data keamanan.');
-      }
+    showMessage({
+      message: '⚠️ Demi keamanan, silakan login ulang untuk ubah email.',
+      type: 'warning',
+      icon: 'warning',
+    });
+  } else if (err.code === 'auth/email-already-in-use') {
+    showMessage({
+      message: '⚠️ Email ini sudah digunakan oleh akun lain.',
+      type: 'warning',
+      icon: 'warning',
+    });
+  } else {
+    showMessage({
+      message: err.message || 'Terjadi kesalahan saat menyimpan data keamanan.',
+      type: 'danger',
+      icon: 'danger',
+    });
+  }
     }
   };
 

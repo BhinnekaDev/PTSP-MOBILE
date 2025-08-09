@@ -1,7 +1,16 @@
-import React from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  Modal,
+  Pressable,
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import { Video, ResizeMode } from 'expo-av';
 
 // OUR HOOKS
 import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
@@ -21,7 +30,10 @@ export default function ProfileTabs() {
   const headerPaddingVertical = getHeaderPaddingVertical();
   const router = useRouter();
   const { profile, loading } = useGetUserProfile();
+  const [modalVisible, setModalVisible] = useState(false);
+
   if (loading) return <Text>Loading...</Text>;
+
   return (
     <LinearGradient
       colors={['#1475BA', '#399385', '#6BBC3F']} //
@@ -65,9 +77,10 @@ export default function ProfileTabs() {
             className="h-40 w-full rounded-lg object-cover"
           />
         </View>
-        <View className="flex-row items-center justify-between gap-4 px-6 py-3">
+        <View className="flex-row items-center justify-evenly gap-10 py-3">
           <TouchableOpacity
             activeOpacity={0.4}
+            onPress={() => router.push('/(tabs)/product')}
             className="flex-col items-center justify-center gap-1"
           >
             <Image
@@ -99,6 +112,7 @@ export default function ProfileTabs() {
           <TouchableOpacity
             activeOpacity={0.4}
             className="flex-col items-center justify-center gap-1"
+            onPress={() => router.push('/(tabs)/regulation')}
           >
             <Image
               source={require('@/assets/images/HomeScreen/rates-icon.png')}
@@ -112,9 +126,10 @@ export default function ProfileTabs() {
             </Text>
           </TouchableOpacity>
         </View>
-        <View className="flex-row items-center gap-14 px-4 py-4">
+        <View className="flex-row items-center justify-evenly gap-10 py-3">
           <TouchableOpacity
             activeOpacity={0.4}
+            onPress={() => setModalVisible(true)}
             className="flex-col items-center justify-center gap-1"
           >
             <Image
@@ -147,7 +162,6 @@ export default function ProfileTabs() {
           <TouchableOpacity
             activeOpacity={0.4}
             className="flex-col items-center justify-center gap-1"
-            onPress={() => router.push('/screens/fixSubmissionScreen')}
           >
             <MaterialCommunityIcons
               name="email-fast-outline"
@@ -158,7 +172,25 @@ export default function ProfileTabs() {
               style={{ fontFamily: 'LexRegular' }}
               className="text-center text-white"
             >
-              TEST KEAMANAN
+              Test{'\n'}Keamanan
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View className="flex-row items-center justify-evenly gap-10 py-3">
+          <TouchableOpacity
+            activeOpacity={0.4}
+            onPress={() => router.push('/screens/ikmScreen')}
+            className="flex-col items-center justify-center gap-1"
+          >
+            <Image
+              source={require('@/assets/images/HomeScreen/guide-icon.png')}
+              className="h-10 w-10 object-cover"
+            />
+            <Text
+              style={{ fontFamily: 'LexRegular' }}
+              className="text-center text-white"
+            >
+              IKM{'\n'}DUMBASS{'\n'}ini jan lupa dihapus
             </Text>
           </TouchableOpacity>
         </View>
@@ -176,6 +208,12 @@ export default function ProfileTabs() {
           >
             <TouchableOpacity
               activeOpacity={0.8}
+              onPress={() =>
+                router.push({
+                  pathname: '/screens/productDetailScreen',
+                  params: { category: 'Informasi_Meteorologi' },
+                })
+              }
               className="mr-4 h-32 w-36 items-center justify-center gap-2 rounded-lg border-2 border-[#3498DB] bg-white shadow-md shadow-[#3498DB]"
             >
               <FontAwesome6 name="mountain" size={40} color="#3498DB" />
@@ -189,6 +227,12 @@ export default function ProfileTabs() {
 
             <TouchableOpacity
               activeOpacity={0.8}
+              onPress={() =>
+                router.push({
+                  pathname: '/screens/productDetailScreen',
+                  params: { category: 'Informasi_Klimatologi' },
+                })
+              }
               className="mr-4 h-32 w-36 items-center justify-center gap-2 rounded-lg border-2 border-[#3498DB] bg-white shadow-md shadow-[#3498DB]"
             >
               <FontAwesome6 name="cloud-bolt" size={40} color="#3498DB" />
@@ -196,12 +240,18 @@ export default function ProfileTabs() {
                 style={{ fontFamily: 'LexBold' }}
                 className="text-center text-sm text-black"
               >
-                Informasi Stasiun{'\n'}Meteorologi
+                Informasi Stasiun{'\n'}Klimatologi
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               activeOpacity={0.8}
+              onPress={() =>
+                router.push({
+                  pathname: '/screens/productDetailScreen',
+                  params: { category: 'Informasi_Geofisika' },
+                })
+              }
               className="h-32 w-36 items-center justify-center gap-2 rounded-lg border-2 border-[#3498DB] bg-white shadow-md shadow-[#3498DB]"
             >
               <Feather name="wind" size={40} color="#3498DB" />
@@ -209,7 +259,7 @@ export default function ProfileTabs() {
                 style={{ fontFamily: 'LexBold' }}
                 className="text-center text-sm text-black"
               >
-                Informasi Stasiun{'\n'}Meteorologi
+                Informasi Stasiun{'\n'}Geofisika
               </Text>
             </TouchableOpacity>
           </ScrollView>
@@ -228,6 +278,12 @@ export default function ProfileTabs() {
           >
             <TouchableOpacity
               activeOpacity={0.8}
+              onPress={() =>
+                router.push({
+                  pathname: '/screens/productDetailScreen',
+                  params: { category: 'Jasa_Meteorologi' },
+                })
+              }
               className="mr-4 h-32 w-36 items-center justify-center gap-2 rounded-lg border-2 border-[#3498DB] bg-white shadow-md shadow-[#3498DB]"
             >
               <FontAwesome6 name="mountain" size={40} color="#3498DB" />
@@ -241,6 +297,12 @@ export default function ProfileTabs() {
 
             <TouchableOpacity
               activeOpacity={0.8}
+              onPress={() =>
+                router.push({
+                  pathname: '/screens/productDetailScreen',
+                  params: { category: 'Jasa_Klimatologi' },
+                })
+              }
               className="mr-4 h-32 w-36 items-center justify-center gap-2 rounded-lg border-2 border-[#3498DB] bg-white shadow-md shadow-[#3498DB]"
             >
               <FontAwesome6 name="cloud-bolt" size={40} color="#3498DB" />
@@ -248,12 +310,18 @@ export default function ProfileTabs() {
                 style={{ fontFamily: 'LexBold' }}
                 className="text-center text-sm text-black"
               >
-                Jasa Stasiun{'\n'}Meteorologi
+                Jasa Stasiun{'\n'}Klimatologi
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               activeOpacity={0.8}
+              onPress={() =>
+                router.push({
+                  pathname: '/screens/productDetailScreen',
+                  params: { category: 'Jasa_Geofisika' },
+                })
+              }
               className="h-32 w-36 items-center justify-center gap-2 rounded-lg border-2 border-[#3498DB] bg-white shadow-md shadow-[#3498DB]"
             >
               <Feather name="wind" size={40} color="#3498DB" />
@@ -261,11 +329,59 @@ export default function ProfileTabs() {
                 style={{ fontFamily: 'LexBold' }}
                 className="text-center text-sm text-black"
               >
-                Jasa Stasiun{'\n'}Meteorologi
+                Jasa Stasiun{'\n'}Geofisika
               </Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: 'rgba(0,0,0,0.8)',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <View
+              style={{
+                width: '90%',
+                height: 250,
+                backgroundColor: '#000',
+                borderRadius: 10,
+                overflow: 'hidden',
+              }}
+            >
+              <Video
+                source={require('@/assets/videos/GuideLinePTSP.mp4')}
+                rate={1.0}
+                volume={1.0}
+                isMuted={false}
+                resizeMode={ResizeMode.CONTAIN}
+                shouldPlay
+                useNativeControls
+                style={{ flex: 1 }}
+              />
+            </View>
+            <Pressable
+              onPress={() => setModalVisible(false)}
+              style={{
+                marginTop: 20,
+                padding: 10,
+                backgroundColor: '#fff',
+                borderRadius: 20,
+                alignSelf: 'center',
+              }}
+            >
+              <Feather name="x" size={24} color="black" />
+            </Pressable>
+          </View>
+        </Modal>
       </ScrollView>
     </LinearGradient>
   );

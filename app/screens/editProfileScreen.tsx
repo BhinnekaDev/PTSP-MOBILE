@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   View,
   ActivityIndicator,
+  TouchableOpacity,
+  Text,
 } from 'react-native';
 
 // COMPONENTS
 import BackButton from '@/components/headerBackButton';
-import ButtonCustom from '@/components/buttonCustom';
 import FormDropdownSelect from '@/components/formDropdownSelect';
 import InputField from '@/components/formInput';
 
@@ -34,6 +35,72 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
     : isCompany
       ? companyHook
       : null;
+
+  // Fungsi untuk cek perubahan data
+  const isDataChanged = useMemo(() => {
+    if (!profile || !selected) return false;
+
+    // Untuk tipe perorangan
+    if (isIndividual) {
+      return (
+        selected.fullName !== profile.Nama_Lengkap ||
+        selected.selectGender !== profile.Jenis_Kelamin ||
+        selected.job !== profile.Pekerjaan ||
+        selected.lastEducation !== profile.Pendidikan_Terakhir
+      );
+    }
+
+    if (isCompany && selected.type === 'perusahaan' && profile) {
+      return (
+        selected.fullName !== profile.Nama_Lengkap ||
+        selected.selectGender !== profile.Jenis_Kelamin ||
+        selected.job !== profile.Pekerjaan ||
+        selected.lastEducation !== profile.Pendidikan_Terakhir ||
+        selected.companyName !== profile.Nama_Perusahaan ||
+        selected.companyPhone !== profile.No_Hp_Perusahaan ||
+        selected.companyEmail !== profile.Email_Perusahaan ||
+        selected.npwpCompany !== profile.NPWP_Perusahaan ||
+        selected.companyAddress !== profile.Alamat_Perusahaan ||
+        selected.districtCityCompany !== profile.Kabupaten_Kota_Perusahaan ||
+        selected.provinceCompany !== profile.Provinsi_Perusahaan
+      );
+    }
+
+    return false;
+  }, [profile, selected, isIndividual, isCompany]);
+
+  const isAllFieldsFilled = useMemo(() => {
+    if (!selected) return false;
+
+    if (isIndividual) {
+      return (
+        selected.fullName?.trim() !== '' &&
+        selected.selectGender?.trim() !== '' &&
+        selected.job?.trim() !== '' &&
+        selected.lastEducation?.trim() !== ''
+      );
+    }
+
+    if (selected && selected.type === 'perusahaan') {
+      return (
+        selected.fullName?.trim() !== '' &&
+        selected.selectGender?.trim() !== '' &&
+        selected.job?.trim() !== '' &&
+        selected.lastEducation?.trim() !== '' &&
+        selected.companyName?.trim() !== '' &&
+        selected.companyPhone?.trim() !== '' &&
+        selected.companyEmail?.trim() !== '' &&
+        selected.npwpCompany?.trim() !== '' &&
+        selected.companyAddress?.trim() !== '' &&
+        selected.districtCityCompany?.trim() !== '' &&
+        selected.provinceCompany?.trim() !== ''
+      );
+    }
+
+    return false;
+  }, [selected, isIndividual, isCompany]);
+
+  const canSave = isDataChanged && isAllFieldsFilled;
 
   if (loading || !profile || !selected) {
     return (
@@ -168,12 +235,21 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
 
           {/* Tombol simpan */}
           <View className="mt-4 w-[80%] self-center">
-            <ButtonCustom
-              classNameContainer="bg-[#73BF40] py-[6px] px-10 rounded-lg"
-              text="Simpan Data"
-              textClassName="text-[20px] text-center text-white"
+            <TouchableOpacity
               onPress={selected.handleSave}
-            />
+              activeOpacity={0.7}
+              disabled={!isDataChanged}
+              className={`rounded-lg px-10 py-[6px] ${
+                canSave ? 'bg-[#73BF40]' : 'bg-gray-400'
+              }`}
+            >
+              <Text
+                style={{ fontFamily: 'LexBold' }}
+                className="text-center text-[20px] text-white"
+              >
+                Simpan Data
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </KeyboardAvoidingView>

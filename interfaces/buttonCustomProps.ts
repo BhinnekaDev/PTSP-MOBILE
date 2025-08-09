@@ -19,4 +19,5 @@ export interface ButtonCustomProps {
   isTouchable?: boolean;
   activeOpacity?: number;
   containerStyle?: ViewStyle;
+  disabled?: boolean;
 }
