@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { firebaseAuth, db } from '@/lib/firebase';
+import { Timestamp } from '@react-native-firebase/firestore';
 
 type OrderInfo = {
   tipe: 'perorangan' | 'perusahaan';
@@ -15,9 +16,9 @@ type PemesananData = {
   idAjukan: string;
   id: string;
   statusPembayaran: string;
-  tanggalPemesanan: Date;
+  tanggalPemesanan: Timestamp;
   statusPesanan: string;
-  tanggalPengajuan?: Date;
+  tanggalPengajuan?: Timestamp;
 };
 
 export const useGetUserOrderInfo = () => {
@@ -92,11 +93,13 @@ export const useGetUserOrderInfo = () => {
 
             return {
               id: doc.id,
-              tanggalPemesanan: data.Tanggal_Pemesanan.toDate(),
+              tanggalPemesanan: data.Tanggal_Pemesanan,
               idAjukan: data.ID_Ajukan || '',
               statusPembayaran: data.Status_Pembayaran || '',
               statusPesanan: data.Status_Pesanan || '',
-              tanggalPengajuan,
+              tanggalPengajuan: tanggalPengajuan
+                ? Timestamp.fromDate(tanggalPengajuan)
+                : undefined,
             };
           })
         );
