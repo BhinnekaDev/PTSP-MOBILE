@@ -1,11 +1,11 @@
-import { TouchableOpacity, Text, View } from "react-native";
-import { ButtonCustomProps } from "@/interfaces/buttonCustomProps";
+import { TouchableOpacity, Text, View } from 'react-native';
+import { ButtonCustomProps } from '@/interfaces/buttonCustomProps';
 
 const ButtonCustom = ({
-  FontLexBold = { fontFamily: "LexBold" },
+  FontLexBold = { fontFamily: 'LexBold' },
   text, //
-  classNameContainer = "",
-  textClassName = "",
+  classNameContainer = '',
+  textClassName = '',
   onPress,
   onPressLeftIcon,
   onPressRightIcon,
@@ -23,10 +23,10 @@ const ButtonCustom = ({
       onPress={onPress} //
       activeOpacity={isTouchable ? 0.7 : 1}
       disabled={!isTouchable}
-      className={`px-4 py-3  ${classNameContainer}`}
+      className={`px-4 py-3 ${classNameContainer}`}
       style={containerStyle}
     >
-      <View className="flex-row items-center justify-between w-full">
+      <View className="w-full flex-row items-center justify-between">
         {/* ICON KIRI */}
         <TouchableOpacity
           activeOpacity={0.7} //
@@ -50,7 +50,7 @@ const ButtonCustom = ({
           onPress={onPressRightIcon}
           style={styleButtonIconRight}
           onLayout={onLayout}
-          className=" rounded-full"
+          className="rounded-full"
         >
           {iconRight && <View className="ml-2">{iconRight}</View>}
         </TouchableOpacity>

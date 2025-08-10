@@ -151,7 +151,7 @@ export default function ProductDetailScreen() {
                     fadeAnim={fadeAnim}
                     closePopup={closePopup}
                   />
-                  <View className="h-[140px] w-full shadow-xl">
+                  <View className="h-[200px] w-full shadow-xl">
                     <Image
                       source={require('@/assets/images/ProductScreen/bg-icon.png')}
                       className="h-full w-full rounded-[20px] object-cover"

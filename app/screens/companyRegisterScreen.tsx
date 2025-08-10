@@ -9,6 +9,7 @@ import {
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { showMessage } from 'react-native-flash-message';
 
 // OUR ICONS
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -55,7 +56,12 @@ export default function CompanyRegisterScreen() {
       !emailCompany ||
       !companyNumberPhone
     ) {
-      Alert.alert('Peringatan', 'Mohon lengkapi semua data terlebih dahulu.');
+      showMessage({
+        message: 'Mohon lengkapi semua data terlebih dahulu.',
+        type: 'danger',
+        backgroundColor: '#FF3B30', // merah terang
+        color: '#fff',
+      });
       return;
     }
 
@@ -75,15 +81,76 @@ export default function CompanyRegisterScreen() {
         No_Hp_Perusahaan: companyNumberPhone,
       });
 
-      Alert.alert('Berhasil', 'Registrasi berhasil disimpan!', [
-        {
-          text: 'OK',
-          onPress: () => router.push('/(tabs)/home'),
-        },
-      ]);
+      showMessage({
+        message: 'Registrasi berhasil disimpan!',
+        type: 'success',
+        backgroundColor: '#72C02C', // hijau
+        color: '#fff',
+      });
+
+      setTimeout(() => {
+        router.push('/(tabs)/home');
+      }, 1200);
     } catch {
-      Alert.alert('Gagal', 'Terjadi kesalahan saat menyimpan data.');
+      showMessage({
+        message: 'Terjadi kesalahan saat menyimpan data.',
+        type: 'danger',
+        backgroundColor: '#FF3B30',
+        color: '#fff',
+      });
     }
+  };
+
+  const validateStep = (currentStep: number) => {
+    if (currentStep === 1) {
+      if (!fullName || !selectedGender || !job) {
+        showMessage({
+          message: 'Mohon lengkapi semua data diri terlebih dahulu.',
+          type: 'danger',
+          backgroundColor: '#FF3B30',
+          color: '#fff',
+        });
+        return false;
+      }
+    } else if (currentStep === 2) {
+      if (!lastEducation || !numberPhone) {
+        showMessage({
+          message: 'Mohon lengkapi pendidikan terakhir dan nomor telepon.',
+          type: 'danger',
+          backgroundColor: '#FF3B30',
+          color: '#fff',
+        });
+        return false;
+      }
+    } else if (currentStep === 3) {
+      if (!npwpCompany || !companyName || !companyAddress || !provinceCompany) {
+        showMessage({
+          message:
+            'Mohon lengkapi data badan usaha (NPWP, nama, alamat, provinsi).',
+          type: 'danger',
+          backgroundColor: '#FF3B30',
+          color: '#fff',
+        });
+        return false;
+      }
+    } else if (currentStep === 4) {
+      if (
+        !districtCityCompany ||
+        !emailCompany ||
+        !companyNumberPhone ||
+        !isChecked
+      ) {
+        showMessage({
+          message:
+            'Mohon lengkapi data perusahaan dan setujui syarat & ketentuan.',
+          type: 'danger',
+          backgroundColor: '#FF3B30',
+          color: '#fff',
+        });
+        return false;
+      }
+    }
+    return true;
   };
 
   return (
@@ -406,7 +473,9 @@ export default function CompanyRegisterScreen() {
         {step === 1 && (
           <Button
             style="bg-[#73BF40] mt-12 py-3 px-28 rounded-xl"
-            onPress={() => setStep(2)}
+            onPress={() => {
+              if (validateStep(1)) setStep(2);
+            }}
             activeOpacity={0.8}
           >
             Selanjutnya
@@ -416,7 +485,9 @@ export default function CompanyRegisterScreen() {
       {(step === 2 || step === 3) && (
         <Button
           style="bg-[#73BF40] mt-6 py-3 px-28 rounded-xl"
-          onPress={() => setStep(step + 1)}
+          onPress={() => {
+            if (validateStep(step)) setStep(step + 1);
+          }}
           activeOpacity={0.8}
         >
           Selanjutnya
@@ -425,7 +496,11 @@ export default function CompanyRegisterScreen() {
 
       {step === 4 && (
         <Button
-          onPress={handleRegister}
+          onPress={async () => {
+            if (validateStep(4)) {
+              await handleRegister();
+            }
+          }}
           style={`mt-6 py-3 rounded-xl ${isChecked ? 'bg-[#1475BA] px-20' : 'bg-gray-400 px-8'}`}
           disabled={!isChecked}
         >
