@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import * as Animatable from 'react-native-animatable';
@@ -14,7 +14,7 @@ import FilePreviewModal from '@/components/filePreviewModal';
 
 // OUR HOOK
 import { useFixSubmissionScreen } from '@/hooks/Backend/useFixSubmitSubmissionScreen';
-import { useSelectDocumentMulti } from '@/hooks/Frontend/filePreviewModalScreen/useSelectDocument';
+import { useSelectDocument } from '@/hooks/Frontend/filePreviewModalScreen/useSelectDocument';
 import { useFilePreview } from '@/hooks/Frontend/filePreviewModalScreen/useFilePreview';
 
 // OUR INTERFACE
@@ -25,9 +25,10 @@ import getFileIcon from '@/utils/getFileIcon';
 
 export default function FixSubmissionScreen() {
   const { handleFixSubmission } = useFixSubmissionScreen();
-  const [fileMap, setFileMap] = useState<Record<string, any>>({});
+  // const [fileMap, setFileMap] = useState<Record<string, any>>({});
 
-  const { pickDocument, uploadedFiles } = useSelectDocumentMulti();
+  const { uploadedFiles, pickDocument, simulateProgress, removeFile } =
+    useSelectDocument();
   const {
     modalVisible,
     setModalVisible,
@@ -60,51 +61,11 @@ export default function FixSubmissionScreen() {
         type: result.file.mimeType,
       });
 
-      // Update fileMap lebih dulu
-      setFileMap((prev) => ({
-        ...prev,
-        [fieldName]: {
-          ...result.file,
-          progress: 0,
-        },
-      }));
-
-      // Mulai simulasi progres
-      simulateUploadProgress(fieldName);
+      // simulateProgress sudah update uploadedFiles di hook
+      simulateProgress(fieldName);
     } else {
       Alert.alert('Gagal', 'Gagal memilih file.');
     }
-  };
-
-  // Simulasi progres upload
-  const simulateUploadProgress = (field: string) => {
-    const steps = [0, 20, 35, 50, 70, 85, 100];
-    let index = 0;
-
-    const nextStep = () => {
-      if (index >= steps.length) return;
-
-      const progress = steps[index];
-      setFileMap((prev) => {
-        if (!prev[field]) return prev; // ❗stop jika sudah dihapus
-        return {
-          ...prev,
-          [field]: {
-            ...prev[field],
-            progress,
-          },
-        };
-      });
-
-      index++;
-
-      if (index < steps.length) {
-        const delay = Math.floor(Math.random() * 200) + 150;
-        setTimeout(nextStep, delay);
-      }
-    };
-
-    nextStep();
   };
 
   // handleFixSubmit
@@ -164,14 +125,7 @@ export default function FixSubmissionScreen() {
 
   // handleRemoveFile
   const handleRemoveFile = (field: string) => {
-    console.log('Menghapus:', field);
-
-    setFileMap((prev) => {
-      const newMap = { ...prev };
-      delete newMap[field];
-      console.log('Hasil setelah hapus fileMap:', newMap);
-      return newMap;
-    });
+    removeFile(field);
   };
 
   return (
@@ -225,106 +179,107 @@ export default function FixSubmissionScreen() {
               isTouchable
               onPress={() => handleUploadFile(fileLabel)}
             />
-            {fileMap[fileLabel] && (
-              <View className="mt-2 flex-row items-center gap-4 rounded-[10px] border border-gray-300 px-4 py-2">
-                {getFileIcon(fileMap[fileLabel].name)}
-                <View className="flex-1 flex-col">
-                  <Text style={{ fontFamily: 'LexMedium' }}>
-                    {(() => {
-                      const name = fileMap[fileLabel].name;
-                      const lastDot = name.lastIndexOf('.');
-                      const baseName = name.substring(0, lastDot);
-                      const extension = name.substring(lastDot);
-                      const slicedName =
-                        baseName.length > 20
-                          ? baseName.slice(0, 20) + '...'
-                          : baseName;
-                      return slicedName + extension;
-                    })()}
-                  </Text>
+            {uploadedFiles[fileLabel] != null
+              ? (() => {
+                  const file = uploadedFiles[fileLabel]!; // pasti ada karena sudah dicek != null
 
-                  <Text style={{ fontFamily: 'LexMedium' }}>
-                    {(fileMap[fileLabel].size / 1024).toFixed(2)} KB
-                  </Text>
+                  const name = file.name || '';
+                  const lastDot = name.lastIndexOf('.');
+                  const baseName =
+                    lastDot !== -1 ? name.substring(0, lastDot) : name;
+                  const extension =
+                    lastDot !== -1 ? name.substring(lastDot) : '';
+                  const slicedName =
+                    baseName.length > 20
+                      ? baseName.slice(0, 20) + '...'
+                      : baseName;
 
-                  <View className="mb-3 mt-2 h-[8px] w-full overflow-hidden rounded-md bg-gray-300">
-                    <View
-                      className="h-full bg-green-500"
-                      style={{ width: `${fileMap[fileLabel].progress}%` }}
-                    />
-                  </View>
+                  return (
+                    <View className="mt-2 flex-row items-center gap-4 rounded-[10px] border border-gray-300 px-4 py-2">
+                      {getFileIcon(file.name)}
+                      <View className="flex-1 flex-col">
+                        <Text style={{ fontFamily: 'LexMedium' }}>
+                          {slicedName + extension}
+                        </Text>
 
-                  <View className="flex-row items-center justify-between">
-                    {fileMap[fileLabel].progress >= 100 ? (
-                      <View className="flex-row items-center gap-1">
-                        <Animatable.View
-                          animation="bounceIn"
-                          duration={2000}
-                          useNativeDriver
-                        >
-                          <Ionicons
-                            name="checkmark-circle-sharp"
-                            size={18}
-                            color="green"
+                        <Text style={{ fontFamily: 'LexMedium' }}>
+                          {(file.size / 1024).toFixed(2)} KB
+                        </Text>
+
+                        <View className="mb-3 mt-2 h-[8px] w-full overflow-hidden rounded-md bg-gray-300">
+                          <View
+                            className="h-full bg-green-500"
+                            style={{ width: `${file.progress ?? 0}%` }}
                           />
-                        </Animatable.View>
+                        </View>
 
-                        <Animatable.Text
-                          animation={{
-                            from: {
-                              opacity: 0,
-                              translateX: -10,
-                            },
-                            to: {
-                              opacity: 1,
-                              translateX: 0,
-                            },
-                          }}
-                          delay={500}
-                          duration={600}
-                          style={{ fontFamily: 'LexMedium' }}
-                          className="text-[11px]"
-                        >
-                          Upload Berhasil !
-                        </Animatable.Text>
+                        <View className="flex-row items-center justify-between">
+                          {file.progress && file.progress >= 100 ? (
+                            <View className="flex-row items-center gap-1">
+                              <Animatable.View
+                                animation="bounceIn"
+                                duration={2000}
+                                useNativeDriver
+                              >
+                                <Ionicons
+                                  name="checkmark-circle-sharp"
+                                  size={18}
+                                  color="green"
+                                />
+                              </Animatable.View>
+
+                              <Animatable.Text
+                                animation={{
+                                  from: { opacity: 0, translateX: -10 },
+                                  to: { opacity: 1, translateX: 0 },
+                                }}
+                                delay={500}
+                                duration={600}
+                                style={{ fontFamily: 'LexMedium' }}
+                                className="text-[11px]"
+                              >
+                                Upload Berhasil !
+                              </Animatable.Text>
+                            </View>
+                          ) : (
+                            <View />
+                          )}
+
+                          <View className="mt-1 flex-row gap-2">
+                            <TouchableOpacity
+                              onPress={() => handleRemoveFile(fileLabel)}
+                              disabled={!file.progress || file.progress < 100}
+                              className={`items-center justify-center rounded-[5px] px-3 py-2 ${
+                                !file.progress || file.progress < 100
+                                  ? 'bg-gray-400'
+                                  : 'bg-red-500'
+                              }`}
+                            >
+                              <Ionicons name="trash" size={18} color="white" />
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                              onPress={() => {
+                                if (file.progress && file.progress >= 100) {
+                                  openPreview(file);
+                                }
+                              }}
+                              disabled={!file.progress || file.progress < 100}
+                              className={`items-center justify-center rounded-[5px] px-3 py-2 ${
+                                !file.progress || file.progress < 100
+                                  ? 'bg-gray-400'
+                                  : 'bg-[#1475BA]'
+                              }`}
+                            >
+                              <Ionicons name="eye" size={18} color="white" />
+                            </TouchableOpacity>
+                          </View>
+                        </View>
                       </View>
-                    ) : (
-                      <View />
-                    )}
-
-                    <View className="mt-1 flex-row gap-2">
-                      <TouchableOpacity
-                        onPress={() => handleRemoveFile(fileLabel)}
-                        disabled={fileMap[fileLabel].progress < 100}
-                        className={`items-center justify-center rounded-[5px] px-3 py-2 ${
-                          fileMap[fileLabel].progress < 100
-                            ? 'bg-gray-400'
-                            : 'bg-red-500'
-                        }`}
-                      >
-                        <Ionicons name="trash" size={18} color="white" />
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        onPress={() => {
-                          if (fileMap[fileLabel].progress >= 100) {
-                            openPreview(fileMap[fileLabel]);
-                          }
-                        }}
-                        disabled={fileMap[fileLabel].progress < 100}
-                        className={`items-center justify-center rounded-[5px] px-3 py-2 ${
-                          fileMap[fileLabel].progress < 100
-                            ? 'bg-gray-400'
-                            : 'bg-[#1475BA]'
-                        }`}
-                      >
-                        <Ionicons name="eye" size={18} color="white" />
-                      </TouchableOpacity>
                     </View>
-                  </View>
-                </View>
-              </View>
-            )}
+                  );
+                })()
+              : null}
           </View>
         ))}
 

@@ -1,47 +1,93 @@
 import React, { useState } from 'react';
-import { View, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 
 // OUR COMPONENTS
 import NavCartOrder from '@/components/navCartOrder';
-import InputField from '@/components/formInput';
 import FilePreviewModal from '@/components/filePreviewModal';
-import ButtonCustom from '@/components/buttonCustom';
-
-// OUR UTILS
-import { validationFullString } from '@/utils/validationFullString';
+import SuggestionForm from '@/components/suggestionForm';
+import ComplaintForm from '@/components/complaintForm';
 
 // OUR HOOKS
 import { useFilePreview } from '@/hooks/Frontend/filePreviewModalScreen/useFilePreview';
-import { useSelectDocumentMulti } from '@/hooks/Frontend/filePreviewModalScreen/useSelectDocument';
+import { useSelectDocument } from '@/hooks/Frontend/filePreviewModalScreen/useSelectDocument';
 
 export default function SuggestionsAndComplaints() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'Saran' | 'Pengaduan'>('Saran');
 
+  // FORM STATE
   const [saranFullName, setSaranFullName] = useState('');
   const [saranEmail, setSaranEmail] = useState('');
   const [saranText, setSaranText] = useState('');
-
   const [pengaduanFullName, setPengaduanFullName] = useState('');
   const [pengaduanEmail, setPengaduanEmail] = useState('');
   const [pengaduanText, setPengaduanText] = useState('');
 
-  const { pickDocument } = useSelectDocumentMulti();
-  const { modalVisible, setModalVisible, pdfViewerHtml, openFileExternal } =
-    useFilePreview();
+  // Ambil state file dari hook, jangan pakai fileMap lokal
+  const { uploadedFiles, pickDocument, simulateProgress, removeFile } =
+    useSelectDocument();
+
+  const {
+    modalVisible,
+    setModalVisible,
+    openPreview,
+    currentFile,
+    pdfViewerHtml,
+    openFileExternal,
+  } = useFilePreview();
+
+  // HANDLE PICK FILE
+  const handlePickFile = async (fieldKey: string) => {
+    try {
+      const result = await pickDocument(fieldKey);
+      if (result?.success && result.file) {
+        simulateProgress(fieldKey);
+      } else {
+        Alert.alert('Gagal', 'Gagal memilih file.');
+      }
+    } catch (err) {
+      console.error('pickDocument error', err);
+      Alert.alert('Gagal', 'Terjadi kesalahan saat memilih file.');
+    }
+  };
+
+  // HANDLE REMOVE FILE
+  const handleRemoveFile = (fieldKey: string) => {
+    removeFile(fieldKey);
+  };
+
+  // SUBMIT HANDLER
+  const handleSubmitSuggestion = () => {
+    if (!saranFullName.trim() || !saranEmail.trim() || !saranText.trim()) {
+      alert('Semua field wajib diisi untuk Saran.');
+      return;
+    }
+    alert('Saran terkirim!');
+  };
+
+  const handleSubmitComplaint = () => {
+    if (
+      !pengaduanFullName.trim() ||
+      !pengaduanEmail.trim() ||
+      !pengaduanText.trim()
+    ) {
+      alert('Semua field wajib diisi untuk Pengaduan.');
+      return;
+    }
+    alert('Pengaduan terkirim!');
+  };
 
   return (
-    <View className="flex-1 gap-4 bg-white">
+    <View className="flex-1">
       <NavCartOrder
-        text="Saran Dan Pengaduan" //
+        text="Saran Dan Pengaduan"
         textClassName="ml-4 text-left"
         onPressLeftIcon={() => router.back()}
         isTouchable={false}
       />
-
-      {/* === TAB BUTTON === */}
-      <View className="flex-row justify-center gap-4 px-4">
+      {/* Tab Button */}
+      <View className="mt-4 flex-row justify-center gap-4 px-4">
         {['Saran', 'Pengaduan'].map((tab) => (
           <TouchableOpacity
             key={tab}
@@ -60,215 +106,50 @@ export default function SuggestionsAndComplaints() {
         ))}
       </View>
 
-      {/* === BODY === */}
-      <View className="flex-1 px-4">
-        {/* === SARAN === */}
-        {activeTab === 'Saran' && (
-          <View className="flex-1 py-2">
-            <Text className="text-[24px]" style={{ fontFamily: 'LexBold' }}>
-              Saran
-            </Text>
+      {activeTab === 'Saran' ? (
+        <SuggestionForm
+          fullName={saranFullName}
+          setFullName={setSaranFullName}
+          email={saranEmail}
+          setEmail={setSaranEmail}
+          text={saranText}
+          setText={setSaranText}
+          file={uploadedFiles['saranFile']} // Ganti dari fileMap ke uploadedFiles
+          handlePickFile={() => handlePickFile('saranFile')}
+          handleRemoveFile={() => handleRemoveFile('saranFile')}
+          openPreview={() => {
+            const file = uploadedFiles['saranFile'];
+            if (file) openPreview(file);
+          }}
+          onSubmit={handleSubmitSuggestion}
+        />
+      ) : (
+        <ComplaintForm
+          fullName={pengaduanFullName}
+          setFullName={setPengaduanFullName}
+          email={pengaduanEmail}
+          setEmail={setPengaduanEmail}
+          text={pengaduanText}
+          setText={setPengaduanText}
+          file={uploadedFiles['pengaduanFile']} // Ganti dari fileMap ke uploadedFiles
+          handlePickFile={() => handlePickFile('pengaduanFile')}
+          handleRemoveFile={() => handleRemoveFile('pengaduanFile')}
+          openPreview={() => {
+            const file = uploadedFiles['pengaduanFile'];
+            if (file) openPreview(file);
+          }}
+          onSubmit={handleSubmitComplaint}
+        />
+      )}
 
-            <ScrollView
-              contentContainerStyle={{ paddingVertical: 24 }}
-              showsVerticalScrollIndicator={false}
-            >
-              {/* === INPUT NAMA LENGKAP === */}
-              <InputField
-                label="Nama Lengkap" //
-                textClassName="border border-[#3498DB]"
-                value={saranFullName}
-                onChangeText={(input) =>
-                  setSaranFullName(validationFullString(input, 50))
-                }
-                placeholder="Nama lengkap"
-              />
-
-              {/* === INPUT EMAIL === */}
-              <InputField
-                label="Email" //
-                textClassName="border border-[#3498DB]"
-                value={saranEmail}
-                onChangeText={(input) =>
-                  setSaranEmail(validationFullString(input, 50))
-                }
-                placeholder="Email"
-              />
-
-              {/* === INPUT SARAN === */}
-              <InputField
-                label="Saran" //
-                textClassName="border border-[#3498DB] p-1 h-24"
-                value={saranText}
-                onChangeText={(input) =>
-                  setSaranText(validationFullString(input, 150))
-                }
-                placeholder="Tulis saran kamu di sini"
-                multiline
-              />
-
-              {/* === UPLOAD FILE === */}
-              <View className="px-4 pb-4 pt-6">
-                <Text style={{ fontFamily: 'LexSemiBold', marginBottom: 12 }}>
-                  Upload Lampiran (Jika Ada){' '}
-                </Text>
-
-                <TouchableOpacity
-                  onPress={pickDocument} //
-                  className="mb-4 rounded-[8px] bg-[#1475BA] py-3"
-                  style={{ alignItems: 'center' }}
-                >
-                  <Text
-                    style={{
-                      color: 'white',
-                      fontFamily: 'LexSemiBold',
-                    }}
-                  >
-                    Upload File
-                  </Text>
-                </TouchableOpacity>
-
-                {uploadSuccess && file && (
-                  <View className="my-4 rounded-[8px] border border-[#6BBC3F] bg-[#E6F4EA] p-[12px]">
-                    <Text
-                      className="mb-[6px] text-[#4CAF50]"
-                      style={{ fontFamily: 'LexMedium' }}
-                    >
-                      ✅ Upload berhasil!
-                    </Text>
-                    <Text style={{ fontFamily: 'LexRegular' }}>
-                      <Text style={{ fontWeight: 'bold' }}>Nama File:</Text>{' '}
-                      {file.name}
-                    </Text>
-                    <Text style={{ fontFamily: 'LexRegular' }}>
-                      <Text style={{ fontWeight: 'bold' }}>Ukuran:</Text>{' '}
-                      {(file.size / 1024).toFixed(2)} KB
-                    </Text>
-
-                    <TouchableOpacity
-                      onPress={() => setModalVisible(true)}
-                      className="mt-[12px] items-center rounded-[8px] bg-[#1475BA] p-[10px]"
-                    >
-                      <Text
-                        style={{
-                          color: 'white',
-                          fontFamily: 'LexSemiBold',
-                        }}
-                      >
-                        Lihat Preview
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-
-                <ButtonCustom
-                  classNameContainer="bg-[#72C02C] rounded-[10px] py-1 w-[160px] self-end"
-                  text="Kirim"
-                  textClassName="text-[20px] text-center text-white"
-                  textStyle={{ fontFamily: 'LexSemiBold' }}
-                  onPress={() => alert('Tambah')}
-                  isTouchable={true}
-                  containerStyle={{
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 4 },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 3,
-                    elevation: 4,
-                  }}
-                />
-              </View>
-
-              {/* === MODAL PREVIEW FILE === */}
-              <FilePreviewModal
-                visible={modalVisible} //
-                onClose={() => setModalVisible(false)}
-                file={file}
-                pdfViewerHtml={pdfViewerHtml}
-                onOpenExternal={openFileExternal}
-              />
-            </ScrollView>
-          </View>
-        )}
-
-        {/* === PENGADUAN === */}
-        {activeTab === 'Pengaduan' && (
-          <View className="flex-1 py-2">
-            <Text className="text-[24px]" style={{ fontFamily: 'LexBold' }}>
-              Pengaduan
-            </Text>
-
-            <ScrollView
-              contentContainerStyle={{ paddingVertical: 24 }}
-              showsVerticalScrollIndicator={false}
-            >
-              {/* === INPUT NAMA LENGKAP === */}
-              <InputField
-                label="Nama Lengkap" //
-                textClassName="border border-[#3498DB]"
-                value={pengaduanFullName}
-                onChangeText={(input) =>
-                  setPengaduanFullName(validationFullString(input, 50))
-                }
-                placeholder="Nama lengkap"
-              />
-
-              {/* === INPUT EMAIL === */}
-              <InputField
-                label="Email" //
-                textClassName="border border-[#3498DB]"
-                value={pengaduanEmail}
-                onChangeText={(input) =>
-                  setPengaduanEmail(validationFullString(input, 50))
-                }
-                placeholder="Email"
-              />
-
-              {/* === INPUT PENGADUAN === */}
-              <InputField
-                label="Pengaduan" //
-                textClassName="border border-[#3498DB] p-1 h-24"
-                value={pengaduanText}
-                onChangeText={(input) =>
-                  setPengaduanText(validationFullString(input, 150))
-                }
-                placeholder="Tulis pengaduan kamu di sini"
-                multiline
-              />
-
-              {/* === BUTTON KIRIM === */}
-              <View className="px-4 pb-4 pt-6">
-                <ButtonCustom
-                  classNameContainer="bg-[#72C02C] rounded-[10px] py-1 w-[160px] self-end"
-                  text="Kirim"
-                  textClassName="text-[20px] text-center text-white"
-                  textStyle={{ fontFamily: 'LexSemiBold' }}
-                  onPress={() => alert('Tambah')}
-                  isTouchable={true}
-                  containerStyle={{
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 4 },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 3,
-                    elevation: 4,
-                  }}
-                />
-              </View>
-
-              {/* === MODAL PREVIEW FILE === */}
-              <FilePreviewModal
-                visible={modalVisible} //
-                onClose={() => setModalVisible(false)}
-                file={file}
-                pdfViewerHtml={pdfViewerHtml}
-                onOpenExternal={openFileExternal}
-              />
-            </ScrollView>
-          </View>
-        )}
-      </View>
-
-      {/* === BAR BAWAH === */}
-      <View className="h-[4%] w-full bg-[#1475BA]" />
+      {/* File preview modal */}
+      <FilePreviewModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        file={currentFile}
+        pdfViewerHtml={pdfViewerHtml}
+        onOpenExternal={openFileExternal}
+      />
     </View>
   );
 }
