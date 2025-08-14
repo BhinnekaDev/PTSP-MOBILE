@@ -20,7 +20,7 @@ import FilePreviewModal from '@/components/filePreviewModal';
 
 // HOOK
 import { useFilePreview } from '@/hooks/Frontend/filePreviewModalScreen/useFilePreview';
-import { useSelectDocumentMulti } from '@/hooks/Frontend/filePreviewModalScreen/useSelectDocument';
+import { useSelectDocument } from '@/hooks/Frontend/filePreviewModalScreen/useSelectDocument';
 import { useSubmitSubmission } from '@/hooks/Backend/useSubmitSubmission';
 
 // OUR ICON
@@ -33,7 +33,7 @@ export default function SubmissionScreen() {
   const router = useRouter();
   const [selectedJenisKegiatan, setSelectedJenisKegiatan] = useState('');
   const [fileMap, setFileMap] = useState<Record<string, any>>({});
-  const { pickDocument } = useSelectDocumentMulti();
+  const { pickDocument } = useSelectDocument();
   const {
     modalVisible,
     setModalVisible,

@@ -2,9 +2,12 @@ import { useState } from 'react';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import { Audio } from 'expo-av';
+import { Alert } from 'react-native';
+
+// OUR INTERFACES
 import { UploadFileProps } from '@/interfaces/uploadFileProps';
 
-export function useSelectDocumentMulti() {
+export function useSelectDocument() {
   const [uploadedFiles, setUploadedFiles] = useState<
     Record<string, UploadFileProps | null>
   >({});
@@ -14,8 +17,6 @@ export function useSelectDocumentMulti() {
     'image/jpg',
     'image/png',
     'application/pdf',
-    // 'application/msword', // .doc
-    // 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
   ];
 
   const isAllowedType = (mimeType: string | undefined) => {
@@ -27,42 +28,47 @@ export function useSelectDocumentMulti() {
   };
 
   // SIMULASI PROGRESS
-  const simulateProgress = async (fieldName: string) => {
-    setUploadedFiles((prev) => {
-      const existingUploadFileProps = prev[fieldName];
-      if (!existingUploadFileProps) {
-        throw new Error(`File '${fieldName}' tidak ditemukan.`);
-      }
+  const simulateProgress = (fieldName: string) => {
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 10;
 
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += 10;
+      setUploadedFiles((prev) => {
+        const file = prev[fieldName];
+        if (!file) {
+          clearInterval(interval);
+          return prev;
+        }
 
+        // Jika sudah 100, hentikan interval dan mainkan suara
         if (progress >= 100) {
           clearInterval(interval);
-          setUploadedFiles((prev) => ({
-            ...prev,
-            [fieldName]: {
-              ...existingUploadFileProps,
-            },
-          }));
 
           Audio.Sound.createAsync(
             require('@/assets/audios/alert-audio.mp3')
           ).then(({ sound }) => sound.playAsync());
-        } else {
-          setUploadedFiles((prev) => ({
+
+          return {
             ...prev,
             [fieldName]: {
-              ...existingUploadFileProps,
-              progress,
+              ...file,
+              progress: 100,
+              loading: false,
             },
-          }));
+          };
         }
-      }, 100);
 
-      return prev;
-    });
+        // Update progress di bawah 100
+        return {
+          ...prev,
+          [fieldName]: {
+            ...file,
+            progress,
+            loading: true,
+          },
+        };
+      });
+    }, 100);
   };
 
   // PILIH TIPE FILE
@@ -140,8 +146,28 @@ export function useSelectDocumentMulti() {
     }
   };
 
+  // HAPUS FILE
+  const removeFile = (fieldName: string) => {
+    Alert.alert('Hapus File', 'Yakin ingin menghapus file ini?', [
+      { text: 'Batal', style: 'cancel' },
+      {
+        text: 'Hapus',
+        style: 'destructive',
+        onPress: () => {
+          setUploadedFiles((prev) => {
+            const newFiles = { ...prev };
+            delete newFiles[fieldName];
+            return newFiles;
+          });
+        },
+      },
+    ]);
+  };
+
   return {
     uploadedFiles,
     pickDocument,
+    simulateProgress,
+    removeFile,
   };
 }

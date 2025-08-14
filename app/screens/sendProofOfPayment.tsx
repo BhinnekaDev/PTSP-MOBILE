@@ -10,7 +10,7 @@ import NavCartOrder from '@/components/navCartOrder';
 import FilePreviewModal from '@/components/filePreviewModal';
 
 // HOOKS
-import { useSelectDocumentMulti } from '@/hooks/Frontend/filePreviewModalScreen/useSelectDocument';
+import { useSelectDocument } from '@/hooks/Frontend/filePreviewModalScreen/useSelectDocument';
 import { useFilePreview } from '@/hooks/Frontend/filePreviewModalScreen/useFilePreview';
 import { useSendProofOfPayment } from '@/hooks/Backend/useSendProofOfPayment';
 
@@ -21,7 +21,7 @@ export default function SendProofOfPayment() {
   const { paymentID } = useLocalSearchParams<{ paymentID: string }>();
   const [fileMap, setFileMap] = useState<Record<string, any[]>>({});
 
-  const { pickDocument } = useSelectDocumentMulti();
+  const { pickDocument } = useSelectDocument();
   const {
     modalVisible,
     setModalVisible,
