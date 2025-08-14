@@ -24,7 +24,6 @@ export default function SuggestionsAndComplaints() {
   const [pengaduanEmail, setPengaduanEmail] = useState('');
   const [pengaduanText, setPengaduanText] = useState('');
 
-  // Ambil state file dari hook, jangan pakai fileMap lokal
   const { uploadedFiles, pickDocument, simulateProgress, removeFile } =
     useSelectDocument();
 

@@ -3,24 +3,17 @@ import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Ionicons } from '@expo/vector-icons';
 
+// OUR COMPONENTS
 import InputField from '@/components/formInput';
 import ButtonCustom from '@/components/buttonCustom';
+
+// OUR UTILS
 import getFileIcon from '@/utils/getFileIcon';
 import { validationFullString } from '@/utils/validationFullString';
 
-type Props = {
-  fullName: string;
-  setFullName: (val: string) => void;
-  email: string;
-  setEmail: (val: string) => void;
-  text: string;
-  setText: (val: string) => void;
-  file?: any;
-  handlePickFile: () => void;
-  handleRemoveFile: () => void;
-  openPreview: () => void;
-  onSubmit: () => void;
-};
+// OUR INTERFACES
+import { SuggestionFormProps } from '@/interfaces/suggestionFormProps';
+
 
 export default function SuggestionForm({
   fullName,
@@ -34,7 +27,7 @@ export default function SuggestionForm({
   handleRemoveFile,
   openPreview,
   onSubmit,
-}: Props) {
+}: SuggestionFormProps) {
   return (
     <ScrollView contentContainerStyle={{ paddingVertical: 24 }}>
       <Text className="text-[24px]" style={{ fontFamily: 'LexBold' }}>
