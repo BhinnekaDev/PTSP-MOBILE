@@ -1,6 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { router } from 'expo-router';
 
 // OUR COMPONENTS
 import OrderItem from '@/components/detailStatusItem';
@@ -50,7 +51,7 @@ export default function OrderCompletionStatusSection({
                 textStyle={{ fontFamily: 'LexSemiBold' }}
                 isTouchable
                 onPress={() => {
-                  alert('Pengisian IKM');
+                  router.push('/screens/ikmScreen');
                 }}
               />
             ) : null}
