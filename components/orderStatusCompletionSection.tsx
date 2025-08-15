@@ -48,7 +48,7 @@ export default function OrderCompletionStatusSection({
               />
             ) : detail.Status_Pembuatan === 'Selesai Pembuatan' ? (
               <ButtonCustom
-                text="Pengisian IKM"
+                text="Pengisian IKMssssss"
                 classNameContainer="bg-[#1475BA] py-2 rounded-[10px]"
                 textClassName="text-white text-center text-[14px]"
                 textStyle={{ fontFamily: 'LexSemiBold' }}
