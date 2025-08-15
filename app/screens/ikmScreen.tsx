@@ -26,28 +26,31 @@ export default function IKMScreen() {
 
   const [currentStep, setCurrentStep] = useState(0);
 
- const handleSelectRadio = (
-  sectionIndex: number,
-  type: 'KualitasLayanan' | 'HarapanKonsumen',
-  value: string,
-  questionTitle: string
-) => {
-  handleSetResponse(type, value, questionTitle);
-  console.log(
-    `DEBUG: User memilih [${type}] = "${value}" pada pertanyaan "${questionTitle}"`
-  );
-};
-
+  const handleSelectRadio = (
+    sectionIndex: number,
+    type: 'KualitasLayanan' | 'HarapanKonsumen',
+    value: string,
+    questionTitle: string
+  ) => {
+    handleSetResponse(type, value, questionTitle);
+    console.log(
+      `DEBUG: User memilih [${type}] = "${value}" pada pertanyaan "${questionTitle}"`
+    );
+  };
 
   const handleNext = async () => {
     if (currentStep < stepsData.length) {
       setCurrentStep(currentStep + 1);
     } else {
-      await handleSubmitIKM();
-      console.log('DEBUG: IKM sudah disubmit', {
-        opsiYangDipilih,
-        responses: ikmResponses,
-      });
+      try {
+        await handleSubmitIKM();
+        console.log('IKM sudah disubmit', {
+          opsiYangDipilih,
+          responses: ikmResponses,
+        });
+      } catch (error: any) {
+        alert(error.message);
+      }
     }
   };
 

@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
 import { firebaseAuth, db } from '@/lib/firebase';
+import { router } from 'expo-router';
+import { Alert } from 'react-native';
+
+// OUR CONSTANTS
 import { ikmData, stepsData } from '@/constants/dataIkm';
 
 export type IKMType = 'KualitasLayanan' | 'HarapanKonsumen';
@@ -9,7 +13,7 @@ export interface IKMResponse {
   KualitasLayanan: string;
   HarapanKonsumen: string;
   id: number;
-  name: string;
+  Name: string;
 }
 
 interface OpsiYangDipilihMap {
@@ -23,44 +27,22 @@ export const useInsertIkmScreen = () => {
   const [ikmResponses, setIkmResponses] = useState<IKMResponse[]>([]);
   const [alreadySubmitted, setAlreadySubmitted] = useState(false);
 
-  // Inisialisasi ikmResponses dari stepsData
+  // Inisialisasi jawaban awal
   useEffect(() => {
-    const initialResponses: IKMResponse[] = [];
-    stepsData.forEach((step, stepIndex) => {
-      step.forEach((question, questionIndex) => {
-        initialResponses.push({
-          Nama_Pertanyaan: question.title,
-          KualitasLayanan: '',
-          HarapanKonsumen: '',
-          id: stepIndex * 100 + questionIndex + 1,
-          name: question.title,
-        });
-      });
-    });
+    const initialResponses: IKMResponse[] = stepsData
+      .flatMap((step) => step)
+      .map((question, index) => ({
+        Nama_Pertanyaan: question.title,
+        KualitasLayanan: '',
+        HarapanKonsumen: '',
+        id: index + 1, // langsung urut 1,2,3…
+        Name: question.title,
+      }));
+
     setIkmResponses(initialResponses);
   }, []);
 
-  // Cek apakah user sudah submit
-  useEffect(() => {
-    const checkSubmission = async () => {
-      const user = firebaseAuth.currentUser;
-      if (!user) return;
-
-      const snapshot = await db
-        .collection('ikm')
-        .where('uid', '==', user.uid)
-        .limit(1)
-        .get();
-
-      if (!snapshot.empty) {
-        setAlreadySubmitted(true);
-      }
-    };
-
-    checkSubmission();
-  }, []);
-
-  // Toggle checklist opsi di step pertama
+  // Toggle checklist opsi
   const handleSelectOpsi = (item: string) => {
     setOpsiYangDipilih((prev) => {
       const category = ikmData.find((cat) =>
@@ -80,9 +62,9 @@ export const useInsertIkmScreen = () => {
     });
   };
 
-  // Set jawaban KualitasLayanan / HarapanKonsumen untuk pertanyaan tertentu
+  // Set jawaban KualitasLayanan / HarapanKonsumen
   const handleSetResponse = (
-    type: 'KualitasLayanan' | 'HarapanKonsumen',
+    type: IKMType,
     value: string,
     questionTitle: string
   ) => {
@@ -95,30 +77,47 @@ export const useInsertIkmScreen = () => {
     );
   };
 
-  // Submit ke Firestore
+  // Submit IKM
   const handleSubmitIKM = async () => {
     try {
       const user = firebaseAuth.currentUser;
       if (!user) throw new Error('User belum login');
-      if (alreadySubmitted) throw new Error('Anda sudah pernah mengisi IKM');
 
-      if (Object.keys(opsiYangDipilih).length === 0) {
-        throw new Error('Pilih setidaknya satu opsi di langkah pertama');
+      if (Object.keys(opsiYangDipilih).length === 0)
+        throw new Error('Pilih setidaknya satu opsi');
+
+      const pemesananSnapshot = await db
+        .collection('pemesanan')
+        .where('ID_Pengguna', '==', user.uid)
+        .limit(1)
+        .get();
+
+      if (pemesananSnapshot.empty) {
+        throw new Error('Pemesanan user tidak ditemukan');
       }
 
-      await db.collection('ikm').add({
-        uid: user.uid,
+      const idPemesanan = pemesananSnapshot.docs[0].id;
+
+      await db.collection('ikm').doc(idPemesanan).set({
         Opsi_Yang_Dipilih: opsiYangDipilih,
         ikmResponses,
+      });
+
+      await db.collection('pemesanan').doc(idPemesanan).update({
+        Status_Pengisian_IKM: 'Telah Diisi',
+        Status_Pesanan: 'Selesai',
       });
 
       setOpsiYangDipilih({});
       setIkmResponses([]);
       setAlreadySubmitted(true);
-      console.log('IKM berhasil disimpan!');
-    } catch (error) {
+
+      // Alert sukses dan kembali
+      Alert.alert('Sukses', 'IKM berhasil disimpan.');
+      router.back();
+    } catch (error: any) {
       console.error('Gagal simpan IKM:', error);
-      throw error;
+      Alert.alert('Gagal', error.message || 'Terjadi kesalahan.');
     }
   };
 

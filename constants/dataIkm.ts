@@ -94,8 +94,8 @@ export const optionsKualitas = [
 
 // Untuk Harapan Konsumen
 export const optionsHarapan = [
-  'Sangat Setuju',
-  'Setuju',
-  'Kurang Setuju',
+  'Sangat Penting',
+  'Penting',
+  'Kurang Penting',
   'Tidak Penting',
 ];
