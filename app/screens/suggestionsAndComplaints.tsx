@@ -23,7 +23,6 @@ export default function SuggestionsAndComplaints() {
   const [pengaduanFullName, setPengaduanFullName] = useState('');
   const [pengaduanEmail, setPengaduanEmail] = useState('');
   const [pengaduanText, setPengaduanText] = useState('');
-
   const { uploadedFiles, pickDocument, simulateProgress, removeFile } =
     useSelectDocument();
 

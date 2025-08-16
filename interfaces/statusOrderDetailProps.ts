@@ -7,6 +7,7 @@ export interface ItemKeranjang {
   Pemilik: string;
   Total_Harga: number;
   Nomor_VA?: string;
+  ID_Penerimaan: string;
 }
 
 export interface AjukanDetail {

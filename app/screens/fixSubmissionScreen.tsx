@@ -25,7 +25,6 @@ import getFileIcon from '@/utils/getFileIcon';
 
 export default function FixSubmissionScreen() {
   const { handleFixSubmission } = useFixSubmissionScreen();
-  // const [fileMap, setFileMap] = useState<Record<string, any>>({});
 
   const { uploadedFiles, pickDocument, simulateProgress, removeFile } =
     useSelectDocument();

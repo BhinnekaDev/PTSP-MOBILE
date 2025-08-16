@@ -74,7 +74,8 @@
     "react-native-webview": "13.13.5",
     "react-navigation-stack": "^2.10.4",
     "tailwindcss": "^3.4.4",
-    "react-native-gesture-handler": "~2.24.0"
+    "react-native-gesture-handler": "~2.24.0",
+    "expo-sharing": "~13.1.5"
   },
   "devDependencies": {
     "@babel/core": "^7.27.4",

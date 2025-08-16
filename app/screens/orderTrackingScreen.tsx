@@ -12,7 +12,7 @@ import NavCartOrder from '@/components/navCartOrder';
 import SubmissionStatusSection from '@/components/submissionStatusSection';
 import PaymentStatusSection from '@/components/paymentStatusSection';
 import CreationStatusSection from '@/components/creationStatusSection';
-import OrderStatusSection from '@/components/orderStatusCompletionSection';
+import OrderCompletionStatusSection from '@/components/orderStatusCompletionSection';
 
 // OUR HOOKS
 import useAjukanTransition from '@/hooks/Frontend/orderScreen/useAnimationButtonPlus';
@@ -99,7 +99,7 @@ export default function OrderTrackingScreen() {
                     <CreationStatusSection detail={detail} />
 
                     {/* STATUS PESANAN SELESAI */}
-                    <OrderStatusSection detail={detail} />
+                    <OrderCompletionStatusSection detail={detail} />
                   </View>
                 </View>
 
