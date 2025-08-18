@@ -8,6 +8,7 @@ export interface ItemKeranjang {
   Total_Harga: number;
   Nomor_VA?: string;
   ID_Penerimaan: string;
+  Harga: number;
 }
 
 export interface AjukanDetail {
@@ -34,6 +35,7 @@ export interface OrderDetail {
   keranjang: ItemKeranjang[];
   user: UserProfile | null;
   Keterangan?: string; // Tambahkan field Keterangan
+  Total_Harga_Pesanan?: number; // Tambahkan field Total_Harga_Pesanan
 }
 
 export interface StatusOrderDetail {

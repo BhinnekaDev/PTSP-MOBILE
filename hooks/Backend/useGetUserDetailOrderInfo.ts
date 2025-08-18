@@ -8,7 +8,7 @@ import type {
   ItemKeranjang,
 } from '@/interfaces/statusOrderDetailProps';
 
-export const useGetUserDetailOrderInfo = (idPemesanan: string) => {
+export const useGetUserDetailOrderInfo = (idPemesanan?: string) => {
   const [detail, setDetail] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -49,6 +49,7 @@ export const useGetUserDetailOrderInfo = (idPemesanan: string) => {
             keranjang: keranjangData,
             user: userProfile,
             Keterangan: pemesananData?.Keterangan || '',
+            Total_Harga_Pesanan: pemesananData?.Total_Harga_Pesanan || 0,
           });
           setLoading(false);
         };

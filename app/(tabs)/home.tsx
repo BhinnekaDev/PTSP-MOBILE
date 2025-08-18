@@ -179,7 +179,7 @@ export default function ProfileTabs() {
         <View className="flex-row items-center justify-evenly gap-10 py-3">
           <TouchableOpacity
             activeOpacity={0.4}
-            onPress={() => router.push('/screens/ikmScreen')}
+            onPress={() => router.push('/screens/invoiceScreen')}
             className="flex-col items-center justify-center gap-1"
           >
             <Image
@@ -190,7 +190,7 @@ export default function ProfileTabs() {
               style={{ fontFamily: 'LexRegular' }}
               className="text-center text-white"
             >
-              IKM{'\n'}DUMBASS{'\n'}ini jan lupa dihapus
+              KE INVOICE
             </Text>
           </TouchableOpacity>
         </View>
