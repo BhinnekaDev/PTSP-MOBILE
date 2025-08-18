@@ -16,7 +16,7 @@ export interface AjukanDetail {
   Jenis_Ajukan: string;
   Status_Ajukan: string;
   Tanggal_Pembuatan_Ajukan: Timestamp;
-  Keterangan_Ditolak?: string;
+  // Keterangan_Ditolak?: string;
   Tanggal_Masuk?: Timestamp;
   Tanggal_Kadaluwarsa?: Timestamp;
   Keterangan?: string;
@@ -33,6 +33,7 @@ export interface OrderDetail {
   ajukan: AjukanDetail | null;
   keranjang: ItemKeranjang[];
   user: UserProfile | null;
+  Keterangan?: string; // Tambahkan field Keterangan
 }
 
 export interface StatusOrderDetail {

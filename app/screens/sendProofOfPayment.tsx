@@ -18,7 +18,11 @@ import { useSendProofOfPayment } from '@/hooks/Backend/useSendProofOfPayment';
 import getFileIcon from '@/utils/getFileIcon';
 
 export default function SendProofOfPayment() {
-  const { paymentID } = useLocalSearchParams<{ paymentID: string }>();
+  const { paymentID, keterangan } = useLocalSearchParams<{
+    paymentID: string;
+    keterangan?: string;
+  }>();
+
   const [fileMap, setFileMap] = useState<Record<string, any[]>>({});
 
   const { pickDocument } = useSelectDocument();
@@ -31,6 +35,7 @@ export default function SendProofOfPayment() {
     openFileExternal,
   } = useFilePreview();
   const { handleSendProof } = useSendProofOfPayment();
+
   // Default field upload
   useEffect(() => {
     setFileMap({ 'Bukti Pembayaran': [] });
@@ -152,10 +157,11 @@ export default function SendProofOfPayment() {
                 className="mb-1 font-semibold text-red-700"
                 style={{ fontFamily: 'LexSemiBold' }}
               >
-                Upload Bukti Pembayaran
+                Upload Bukti Pembayaran {''}
+                {paymentID}
               </Text>
               <Text className="text-black" style={{ fontFamily: 'LexRegular' }}>
-                {paymentID}
+                {keterangan || 'Tidak ada keterangan'}
               </Text>
             </View>
           </View>
