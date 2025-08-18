@@ -24,7 +24,10 @@ export const useDownloadDocument = () => {
 
   const downloadAllFromKeranjang = async (keranjang: ItemKeranjang[]) => {
     if (!keranjang || keranjang.length === 0) {
-      Alert.alert('Info', 'Keranjang kosong, tidak ada dokumen untuk diunduh.');
+      Alert.alert(
+        'Info',
+        'Keranjang kosong, tidak ada dokumen untuk diunduh sekarang.'
+      );
       return;
     }
 
