@@ -39,7 +39,7 @@ export default function OrderCompletionStatusSection({
           <View className="mt-3">
             {isCompleted ? (
               <ButtonCustom
-                text={loading ? 'Sedang Mengunduh...' : 'Unduh Dokumen'}
+                text={loading ? 'Sedang Mengunduh...' : 'Unduh Dokumenss'}
                 classNameContainer="bg-[#72C02C] py-2 rounded-[10px]"
                 textClassName="text-white text-center text-[14px]"
                 textStyle={{ fontFamily: 'LexSemiBold' }}
@@ -48,7 +48,7 @@ export default function OrderCompletionStatusSection({
               />
             ) : detail.Status_Pembuatan === 'Selesai Pembuatan' ? (
               <ButtonCustom
-                text="Pengisian IKMssssss"
+                text="Pengisian IKM"
                 classNameContainer="bg-[#1475BA] py-2 rounded-[10px]"
                 textClassName="text-white text-center text-[14px]"
                 textStyle={{ fontFamily: 'LexSemiBold' }}

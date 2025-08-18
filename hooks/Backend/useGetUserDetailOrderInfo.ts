@@ -48,6 +48,7 @@ export const useGetUserDetailOrderInfo = (idPemesanan: string) => {
             ajukan: ajukanData,
             keranjang: keranjangData,
             user: userProfile,
+            Keterangan: pemesananData?.Keterangan || '',
           });
           setLoading(false);
         };

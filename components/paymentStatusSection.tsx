@@ -88,6 +88,7 @@ export default function PaymentStatusSection({ detail }: StatusOrderDetail) {
                           pathname: '/screens/sendProofOfPayment',
                           params: {
                             paymentID: detail.idPemesanan,
+                            keterangan: detail.Keterangan,
                           },
                         });
                       }}
