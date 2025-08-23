@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import * as Sharing from 'expo-sharing';
+
 import {
   View,
   Text,
@@ -6,12 +8,17 @@ import {
   TouchableOpacity,
   Animated,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 
+// OUR ICONS
+import Ionicons from '@expo/vector-icons/Ionicons';
+
 // COMPONENTS
 import NavCartOrder from '@/components/navCartOrder';
+import { InvoicePreviewModal } from '@/components/invoicePreviewModal';
 
 // OUR CONSTANTS
 import { invoiceTabs } from '@/constants/invoiceTabs';
@@ -19,6 +26,8 @@ import { invoiceTabs } from '@/constants/invoiceTabs';
 // HOOKS
 import { useTabAnimation } from '@/hooks/Frontend/useAnimatedTab/useTabAnimation';
 import { useGetInvoiceData } from '@/hooks/Backend/useGetInvoiceData';
+import { useGenerateInvoicePDF } from '@/hooks/Frontend/generatePDF/useGenerateInvoicePDF';
+
 // OUR UTILS
 import { getCategoryIcon } from '@/components/getCategoryIcon';
 
@@ -31,7 +40,19 @@ export default function InvoiceScreen() {
   }>({});
   const { idPemesanan } = useLocalSearchParams<{ idPemesanan: string }>();
   const { detail: invoiceDetail, loading } = useGetInvoiceData(idPemesanan);
+  const { downloadInvoice } = useGenerateInvoicePDF();
+  const [previewHtml, setPreviewHtml] = useState<string | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
+  // 🚨 Kalau loading, tampilkan spinner di tengah layar
+  if (loading) {
+    return (
+      <View className="flex-1 items-center justify-center bg-[#A7CBE5]">
+        <ActivityIndicator size="large" color="#1475BA" />
+        <Text className="mt-2 text-gray-700">Memuat data...</Text>
+      </View>
+    );
+  }
   return (
     <View className="flex-1 bg-[#A7CBE5]">
       {/* NAVBAR */}
@@ -53,9 +74,17 @@ export default function InvoiceScreen() {
             {invoiceDetail?.idPemesanan || 'Null'}
           </Text>
 
-          <Text className="rounded-lg bg-green-400 p-1 px-4 text-center text-white">
-            Lunas
-          </Text>
+          {invoiceDetail?.Status_Pembayaran && (
+            <Text
+              className={`rounded-lg p-1 px-4 text-center text-white ${
+                invoiceDetail.Status_Pembayaran === 'Lunas'
+                  ? 'bg-green-400'
+                  : 'bg-red-400'
+              }`}
+            >
+              {invoiceDetail.Status_Pembayaran}
+            </Text>
+          )}
         </View>
 
         <View className="w-full flex-row justify-between px-4">
@@ -320,6 +349,50 @@ export default function InvoiceScreen() {
           </View>
         )}
       </View>
+
+      {/* Tombol Unduh Voice */}
+      <View className="mt-5 flex-row justify-center gap-3">
+        {/* Download */}
+        <TouchableOpacity
+          onPress={async () => {
+            if (!invoiceDetail) return;
+            const { uri } = await downloadInvoice(
+              invoiceDetail,
+              invoiceDetail?.user,
+              invoiceDetail?.ajukan
+            );
+            await Sharing.shareAsync(uri);
+          }}
+          className="flex-row items-center rounded-xl bg-blue-500 px-5 py-3"
+        >
+          <Ionicons name="download-outline" size={18} color="white" />
+          <Text className="ml-2 text-white">Download</Text>
+        </TouchableOpacity>
+
+        {/* Lihat */}
+        <TouchableOpacity
+          onPress={async () => {
+            if (!invoiceDetail) return;
+            const { html } = await downloadInvoice(
+              invoiceDetail,
+              invoiceDetail?.user,
+              invoiceDetail?.ajukan
+            );
+            setPreviewHtml(html);
+            setModalVisible(true);
+          }}
+          className="flex-row items-center rounded-xl bg-green-500 px-5 py-3"
+        >
+          <Ionicons name="eye" size={18} color="white" />
+          <Text className="ml-2 text-white">Lihat</Text>
+        </TouchableOpacity>
+      </View>
+
+      <InvoicePreviewModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        html={previewHtml}
+      />
     </View>
   );
 }

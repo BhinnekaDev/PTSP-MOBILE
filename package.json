@@ -43,6 +43,7 @@
     "expo-image": "~2.3.0",
     "expo-linear-gradient": "^14.1.5",
     "expo-linking": "~7.1.5",
+    "expo-print": "^14.1.4",
     "expo-router": "~5.1.0",
     "expo-screen-orientation": "~8.1.7",
     "expo-sharing": "~13.1.5",

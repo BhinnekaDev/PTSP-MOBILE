@@ -11,7 +11,7 @@ import ButtonCustom from '@/components/buttonCustom';
 // OUR PROPS
 import type { StatusOrderDetail } from '@/interfaces/statusOrderDetailProps';
 
-// HOOKS
+// OUR HOOKS
 import { useDownloadDocument } from '@/hooks/Backend/useDownloadDocument';
 
 export default function OrderCompletionStatusSection({
