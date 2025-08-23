@@ -146,213 +146,221 @@ export default function InvoiceScreen() {
       </View>
 
       {/* CONTENTS */}
-      <View className="flex-1 bg-[#A7CBE5] p-4">
-        {/* DETAIL PEMESANAN */}
-        {activeTab === 'Pemesan' && (
-          <View className="mb-4 rounded-2xl bg-gray-50 p-5 shadow-md">
-            {/* Header */}
-            <Text className="mb-4 text-lg font-semibold text-gray-700">
-              Detail Pemesan
-            </Text>
+      <View className="bg-[#A7CBE5] p-4">
+        <ScrollView>
+          {/* DETAIL PEMESANAN */}
+          {activeTab === 'Pemesan' && (
+            <View className="mb-4 rounded-2xl bg-gray-50 p-5 shadow-md">
+              {/* Header */}
+              <Text className="mb-4 text-lg font-semibold text-gray-700">
+                Detail Pemesan
+              </Text>
 
-            {/* Nomor Pesanan & Nomor Ajukan */}
-            <View className="mb-4 flex-row justify-between">
-              <View className="mr-2 flex-1">
-                <Text className="mb-1 text-sm text-gray-500">
-                  Nomor Pesanan
-                </Text>
-                <Text className="text-base font-medium text-gray-800">
-                  {invoiceDetail?.idPemesanan || 'Null'}
-                </Text>
-              </View>
-              <View className="ml-2 flex-1">
-                <Text className="mb-1 text-sm text-gray-500">Nomor Ajukan</Text>
-                <Text className="text-base font-medium text-gray-800">
-                  {invoiceDetail?.ajukan?.id || '-'}
-                </Text>
-              </View>
-            </View>
-
-            {/* Divider */}
-            <View className="my-1 h-px bg-gray-200" />
-
-            {/* Email */}
-            <View className="mt-3 w-full">
-              {/* Email Pribadi */}
-              {invoiceDetail?.user?.tipe === 'perorangan' && (
-                <View className="mb-2">
+              {/* Nomor Pesanan & Nomor Ajukan */}
+              <View className="mb-4 flex-row justify-between">
+                <View className="mr-2 flex-1">
                   <Text className="mb-1 text-sm text-gray-500">
-                    Email Pribadi
+                    Nomor Pesanan
                   </Text>
-                  <View className="flex-row items-center rounded-lg bg-gray-100 p-2">
-                    <Text className="mr-2 text-base">📧</Text>
-                    <Text className="flex-shrink text-base font-semibold text-gray-800">
-                      {invoiceDetail.user.Email}
-                    </Text>
-                  </View>
+                  <Text className="text-base font-medium text-gray-800">
+                    {invoiceDetail?.idPemesanan || 'Null'}
+                  </Text>
                 </View>
-              )}
+                <View className="ml-2 flex-1">
+                  <Text className="mb-1 text-sm text-gray-500">
+                    Nomor Ajukan
+                  </Text>
+                  <Text className="text-base font-medium text-gray-800">
+                    {invoiceDetail?.ajukan?.id || '-'}
+                  </Text>
+                </View>
+              </View>
 
-              {/* Email Perusahaan */}
-              {invoiceDetail?.user?.tipe === 'perusahaan' && (
-                <View className="mb-2">
-                  <View>
+              {/* Divider */}
+              <View className="my-1 h-px bg-gray-200" />
+
+              {/* Email */}
+              <View className="mt-3 w-full">
+                {/* Email Pribadi */}
+                {invoiceDetail?.user?.tipe === 'perorangan' && (
+                  <View className="mb-2">
                     <Text className="mb-1 text-sm text-gray-500">
                       Email Pribadi
                     </Text>
                     <View className="flex-row items-center rounded-lg bg-gray-100 p-2">
                       <Text className="mr-2 text-base">📧</Text>
                       <Text className="flex-shrink text-base font-semibold text-gray-800">
-                        {invoiceDetail.user.Email || 'Null'}
+                        {invoiceDetail.user.Email}
                       </Text>
                     </View>
                   </View>
-                  <View>
-                    <Text className="mb-1 text-sm text-gray-500">
-                      Email Perusahaan
-                    </Text>
-                    <View className="flex-row items-center rounded-lg bg-gray-100 p-2">
-                      <Text className="mr-2 text-base">📧</Text>
-                      <Text className="flex-shrink text-base font-semibold text-gray-800">
-                        {invoiceDetail.user.Email_Perusahaan || 'Null'}
+                )}
+
+                {/* Email Perusahaan */}
+                {invoiceDetail?.user?.tipe === 'perusahaan' && (
+                  <View className="mb-2">
+                    <View>
+                      <Text className="mb-1 text-sm text-gray-500">
+                        Email Pribadi
                       </Text>
+                      <View className="flex-row items-center rounded-lg bg-gray-100 p-2">
+                        <Text className="mr-2 text-base">📧</Text>
+                        <Text className="flex-shrink text-base font-semibold text-gray-800">
+                          {invoiceDetail.user.Email || 'Null'}
+                        </Text>
+                      </View>
+                    </View>
+                    <View>
+                      <Text className="mb-1 text-sm text-gray-500">
+                        Email Perusahaan
+                      </Text>
+                      <View className="flex-row items-center rounded-lg bg-gray-100 p-2">
+                        <Text className="mr-2 text-base">📧</Text>
+                        <Text className="flex-shrink text-base font-semibold text-gray-800">
+                          {invoiceDetail.user.Email_Perusahaan || 'Null'}
+                        </Text>
+                      </View>
                     </View>
                   </View>
-                </View>
-              )}
+                )}
+              </View>
             </View>
-          </View>
-        )}
+          )}
 
-        {/* Detail Produk */}
-        {activeTab === 'Produk' && (
-          <View className="mb-4 rounded-2xl bg-gray-50 p-5 shadow-md">
-            {/* Header */}
-            <Text className="mb-4 text-lg font-semibold text-gray-700">
-              Detail Produk
-            </Text>
+          {/* Detail Produk */}
+          {activeTab === 'Produk' && (
+            <View className="mb-4 rounded-2xl bg-gray-50 p-5 shadow-md">
+              {/* Header */}
+              <Text className="mb-4 text-lg font-semibold text-gray-700">
+                Detail Produk
+              </Text>
 
-            {/* Scrollable List Produk */}
-            <ScrollView
-              style={{ maxHeight: 400 }}
-              showsVerticalScrollIndicator={true}
-            >
-              {invoiceDetail?.keranjang.map((item, idx) => {
-                return (
-                  <View
-                    key={idx}
-                    className="mb-4 flex-row rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
-                  >
-                    {/* Icon Produk */}
-                    <View className="mr-4 h-20 w-20 items-center justify-center overflow-hidden rounded-lg bg-gray-100">
-                      <View className="h-[200px] w-full shadow-xl">
-                        <Image
-                          source={require('@/assets/images/ProductScreen/bg-icon.png')}
-                          className="h-full w-full rounded-[20px] object-cover"
-                        />
-                        <View className="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center gap-2 px-2">
-                          {getCategoryIcon(item.Pemilik)}
+              {/* Scrollable List Produk */}
+              <ScrollView
+                style={{ maxHeight: 400 }}
+                showsVerticalScrollIndicator={true}
+              >
+                {invoiceDetail?.keranjang.map((item, idx) => {
+                  return (
+                    <View
+                      key={idx}
+                      className="mb-4 flex-row rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
+                    >
+                      {/* Icon Produk */}
+                      <View className="mr-4 h-20 w-20 items-center justify-center overflow-hidden rounded-lg bg-gray-100">
+                        <View className="h-[200px] w-full shadow-xl">
+                          <Image
+                            source={require('@/assets/images/ProductScreen/bg-icon.png')}
+                            className="h-full w-full rounded-[20px] object-cover"
+                          />
+                          <View className="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center gap-2 px-2">
+                            {getCategoryIcon(item.Pemilik)}
+                          </View>
+                        </View>
+                      </View>
+
+                      {/* Detail Produk */}
+                      <View className="flex-1 justify-between">
+                        {/* Pemilik dan Harga */}
+                        <View className="mb-1 flex-row items-start justify-between">
+                          <Text className="text-sm text-gray-500">
+                            {item.Pemilik}
+                          </Text>
+                          <Text className="text-sm font-semibold text-green-600">
+                            Rps {item.Harga.toLocaleString()}
+                          </Text>
+                        </View>
+
+                        {/* Nama Produk */}
+                        <TouchableOpacity
+                          className="mb-1 flex-row items-center justify-between"
+                          onPress={() =>
+                            setExpandedItems((prev) => ({
+                              ...prev,
+                              [idx]: !prev[idx],
+                            }))
+                          }
+                        >
+                          <Text
+                            className="flex-1 text-base font-semibold"
+                            numberOfLines={expandedItems[idx] ? undefined : 1}
+                            ellipsizeMode="tail"
+                          >
+                            {item.Nama}
+                          </Text>
+
+                          <FontAwesome6
+                            name={
+                              expandedItems[idx] ? 'caret-up' : 'caret-down'
+                            }
+                            size={16}
+                            color="gray"
+                          />
+                        </TouchableOpacity>
+
+                        {/* Info tambahan */}
+                        <View className="mb-1 flex-row flex-wrap justify-between">
+                          <Text className="flex-shrink text-sm text-gray-600">
+                            Total/Produk: Rp {item.Total_Harga.toLocaleString()}
+                          </Text>
+                          <Text className="flex-shrink text-sm text-gray-600">
+                            Qty: {item.Kuantitas}
+                          </Text>
                         </View>
                       </View>
                     </View>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          )}
 
-                    {/* Detail Produk */}
-                    <View className="flex-1 justify-between">
-                      {/* Pemilik dan Harga */}
-                      <View className="mb-1 flex-row items-start justify-between">
-                        <Text className="text-sm text-gray-500">
-                          {item.Pemilik}
-                        </Text>
-                        <Text className="text-sm font-semibold text-green-600">
-                          Rps {item.Harga.toLocaleString()}
-                        </Text>
-                      </View>
+          {/* Detail Penerima */}
+          {activeTab === 'Penerima' && invoiceDetail?.user && (
+            <View className="mb-4 rounded-2xl bg-gray-100 p-4">
+              <Text className="mb-4 text-lg font-semibold text-gray-700">
+                Detail Penerima
+              </Text>
 
-                      {/* Nama Produk */}
-                      <TouchableOpacity
-                        className="mb-1 flex-row items-center justify-between"
-                        onPress={() =>
-                          setExpandedItems((prev) => ({
-                            ...prev,
-                            [idx]: !prev[idx],
-                          }))
-                        }
-                      >
-                        <Text
-                          className="flex-1 text-base font-semibold"
-                          numberOfLines={expandedItems[idx] ? undefined : 1}
-                          ellipsizeMode="tail"
-                        >
-                          {item.Nama}
-                        </Text>
-
-                        <FontAwesome6
-                          name={expandedItems[idx] ? 'caret-up' : 'caret-down'}
-                          size={16}
-                          color="gray"
-                        />
-                      </TouchableOpacity>
-
-                      {/* Info tambahan */}
-                      <View className="mb-1 flex-row flex-wrap justify-between">
-                        <Text className="flex-shrink text-sm text-gray-600">
-                          Total/Produk: Rp {item.Total_Harga.toLocaleString()}
-                        </Text>
-                        <Text className="flex-shrink text-sm text-gray-600">
-                          Qty: {item.Kuantitas}
-                        </Text>
-                      </View>
-                    </View>
+              <View className="flex-row items-center justify-between">
+                {/* Nama Lengkap */}
+                <View className="flex-1 flex-row items-center">
+                  <View className="mr-3 p-3">
+                    <FontAwesome6 name="user" size={24} color="#1475BA" />
                   </View>
-                );
-              })}
-            </ScrollView>
-          </View>
-        )}
-
-        {/* Detail Penerima */}
-        {activeTab === 'Penerima' && invoiceDetail?.user && (
-          <View className="mb-4 rounded-2xl bg-gray-100 p-4">
-            <Text className="mb-4 text-lg font-semibold text-gray-700">
-              Detail Penerima
-            </Text>
-
-            <View className="flex-row items-center justify-between">
-              {/* Nama Lengkap */}
-              <View className="flex-1 flex-row items-center">
-                <View className="mr-3 p-3">
-                  <FontAwesome6 name="user" size={24} color="#1475BA" />
+                  <View>
+                    <Text className="text-sm text-gray-500">Nama Lengkap</Text>
+                    <Text className="text-base font-semibold text-gray-800">
+                      {invoiceDetail.user.Nama_Lengkap}
+                    </Text>
+                  </View>
                 </View>
-                <View>
-                  <Text className="text-sm text-gray-500">Nama Lengkap</Text>
-                  <Text className="text-base font-semibold text-gray-800">
-                    {invoiceDetail.user.Nama_Lengkap}
-                  </Text>
-                </View>
-              </View>
 
-              {/* Nama Perusahaan (jika tipe perusahaan) */}
-              <View className="flex-1 flex-row items-center justify-end">
-                <View className="mr-3 p-3">
-                  <FontAwesome6 name="building" size={24} color="#0A7F3F" />
-                </View>
-                <View className="items-end">
-                  <Text className="text-sm text-gray-500">Nama Perusahaan</Text>
-                  <Text className="text-base font-semibold text-gray-800">
-                    {invoiceDetail.user.tipe === 'perusahaan'
-                      ? invoiceDetail.user.Nama_Perusahaan
-                      : '-'}
-                  </Text>
+                {/* Nama Perusahaan (jika tipe perusahaan) */}
+                <View className="flex-1 flex-row items-center justify-end">
+                  <View className="mr-3 p-3">
+                    <FontAwesome6 name="building" size={24} color="#0A7F3F" />
+                  </View>
+                  <View className="items-end">
+                    <Text className="text-sm text-gray-500">
+                      Nama Perusahaan
+                    </Text>
+                    <Text className="text-base font-semibold text-gray-800">
+                      {invoiceDetail.user.tipe === 'perusahaan'
+                        ? invoiceDetail.user.Nama_Perusahaan
+                        : '-'}
+                    </Text>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-        )}
+          )}
+        </ScrollView>
       </View>
 
-      {/* Tombol Unduh Voice */}
-      <View className="mt-5 flex-row justify-center gap-3">
-        {/* Download */}
+      {/* TOMBOL DOWNLOAD DAN LIHAT */}
+      <View className="mx-4 mb-5 flex-row items-center justify-between gap-3">
+        {/* TOMBOL DOWNLOAD */}
         <TouchableOpacity
           onPress={async () => {
             if (!invoiceDetail) return;
@@ -363,13 +371,13 @@ export default function InvoiceScreen() {
             );
             await Sharing.shareAsync(uri);
           }}
-          className="flex-row items-center rounded-xl bg-blue-500 px-5 py-3"
+          className="flex-1 flex-row items-center justify-center rounded-xl bg-blue-500 px-5 py-3"
         >
           <Ionicons name="download-outline" size={18} color="white" />
-          <Text className="ml-2 text-white">Download</Text>
+          <Text className="ml-2 font-semibold text-white">Download</Text>
         </TouchableOpacity>
 
-        {/* Lihat */}
+        {/* TOMBOL LIHAT */}
         <TouchableOpacity
           onPress={async () => {
             if (!invoiceDetail) return;
@@ -381,10 +389,10 @@ export default function InvoiceScreen() {
             setPreviewHtml(html);
             setModalVisible(true);
           }}
-          className="flex-row items-center rounded-xl bg-green-500 px-5 py-3"
+          className="flex-2 flex-row items-center justify-center rounded-xl bg-green-500 px-5 py-3"
         >
           <Ionicons name="eye" size={18} color="white" />
-          <Text className="ml-2 text-white">Lihat</Text>
+          <Text className="ml-2 font-semibold text-white">Lihat</Text>
         </TouchableOpacity>
       </View>
 

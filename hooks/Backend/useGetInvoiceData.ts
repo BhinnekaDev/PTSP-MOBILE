@@ -88,6 +88,7 @@ export const useGetInvoiceData = (idPemesanan?: string) => {
           user: userProfile,
           ajukan: ajukanData,
           keranjang: keranjangData,
+          ID_Transaksi: pemesananData?.ID_Transaksi || null,
         });
 
         setLoading(false);
