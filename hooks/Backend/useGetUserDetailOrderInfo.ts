@@ -8,7 +8,7 @@ import type {
   ItemKeranjang,
 } from '@/interfaces/statusOrderDetailProps';
 
-export const useGetUserDetailOrderInfo = (idPemesanan: string) => {
+export const useGetUserDetailOrderInfo = (idPemesanan?: string) => {
   const [detail, setDetail] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -31,6 +31,10 @@ export const useGetUserDetailOrderInfo = (idPemesanan: string) => {
         }
 
         const pemesananData = docSnap.data();
+        console.log(
+          '🔥 Dokumen pemesanan snapshot (raw):',
+          JSON.stringify(pemesananData, null, 2)
+        );
         const idAjukan = pemesananData?.ID_Ajukan;
 
         const buildDetail = (ajukanData: AjukanDetail | null) => {
@@ -49,9 +53,15 @@ export const useGetUserDetailOrderInfo = (idPemesanan: string) => {
             keranjang: keranjangData,
             user: userProfile,
             Keterangan: pemesananData?.Keterangan || '',
+            Total_Harga_Pesanan: pemesananData?.Total_Harga_Pesanan || 0,
+            ID_Transaksi: pemesananData?.ID_Transaksi || '-',
           });
           setLoading(false);
         };
+        console.log('🎯 DETAIL YANG DI SET :', {
+          idPemesanan: docSnap.id,
+          ID_Transaksi: pemesananData?.ID_Transaksi,
+        });
 
         if (idAjukan) {
           if (unsubscribeAjukan) unsubscribeAjukan();

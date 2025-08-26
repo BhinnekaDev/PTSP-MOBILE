@@ -141,12 +141,7 @@ export default function OrderTrackingScreen() {
                         <Text>Total Pesanan:</Text>
                         <Text className="font-bold">
                           Rp
-                          {detail?.keranjang
-                            ?.reduce(
-                              (acc, item) => acc + (item.Total_Harga || 0),
-                              0
-                            )
-                            .toLocaleString('id-ID')}
+                          {detail?.Total_Harga_Pesanan?.toLocaleString('id-ID')}
                         </Text>
                       </View>
                     </View>
@@ -226,7 +221,14 @@ export default function OrderTrackingScreen() {
                       text="CEK INVOICE"
                       textClassName="text-[13px] text-center text-white"
                       textStyle={{ fontFamily: 'LexSemiBold' }}
-                      onPress={() => alert('Tambah')}
+                      onPress={() => {
+                        router.push({
+                          pathname: '/screens/invoiceScreen',
+                          params: {
+                            idPemesanan: detail.idPemesanan,
+                          },
+                        });
+                      }}
                       isTouchable={true}
                       containerStyle={{
                         shadowColor: '#000',
