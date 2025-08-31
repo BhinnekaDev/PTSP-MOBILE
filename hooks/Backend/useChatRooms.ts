@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { db, firebaseAuth } from '@/lib/firebase';
+import { db, firebaseAuth, serverTimestamp } from '@/lib/firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface ChatRoom {
@@ -20,29 +20,20 @@ export const useChatRooms = () => {
     Record<string, Record<string, number>>
   >({});
   const lastReadRef = useRef<Record<string, Record<string, number>>>({});
-
   const userId = firebaseAuth.currentUser?.uid;
 
-  // Ambil lastRead dari AsyncStorage
   useEffect(() => {
     AsyncStorage.getItem('lastRead').then((data) => {
       if (data) {
         const parsed = JSON.parse(data);
         setLastRead(parsed);
         lastReadRef.current = parsed;
-        console.log('✅ Loaded lastRead from AsyncStorage:', parsed);
-      } else {
-        console.log('ℹ️ No lastRead data found in AsyncStorage');
       }
     });
   }, []);
 
-  // Listener chatRooms
   useEffect(() => {
-    if (!userId) {
-      setLoading(false);
-      return;
-    }
+    if (!userId) return setLoading(false);
 
     const unsubscribe = db
       .collection('chatRooms')
@@ -52,7 +43,6 @@ export const useChatRooms = () => {
         snapshot.docs.forEach((doc) => {
           const data = doc.data() as Omit<ChatRoom, 'id'>;
 
-          // Listener pesan
           db.collection('chatRooms')
             .doc(doc.id)
             .collection('pesan')
@@ -65,68 +55,74 @@ export const useChatRooms = () => {
                 pesanTerakhir =
                   pesanSnap.docs[0].data().isi || 'Pesan tanpa teks';
 
-                // Ambil lastRead untuk user + room
-                const userLastRead = lastReadRef.current[userId]?.[doc.id] || 0;
-
+                // ✅ Hitung unreadCount berdasarkan sudahDibaca
                 unreadCount = pesanSnap.docs.filter(
                   (p) =>
-                    p.data().waktu?.toMillis?.() > userLastRead &&
-                    p.data().idPengirim !== userId // hanya hitung pesan dari orang lain
+                    p.data().sudahDibaca === false &&
+                    p.data().idPengirim !== userId
                 ).length;
               }
-              console.log(
-                'Room:',
-                doc.id,
-                'UnreadCount:',
-                unreadCount,
-                'LastReadRef:',
-                lastReadRef.current[userId]?.[doc.id]
-              );
 
               setChatRooms((prev) => {
                 const otherRooms = prev.filter((r) => r.id !== doc.id);
                 return [
-                  {
-                    id: doc.id,
-                    ...data,
-                    pesanTerakhir,
-                    unreadCount,
-                  },
+                  { id: doc.id, ...data, pesanTerakhir, unreadCount },
                   ...otherRooms,
-                ].sort(
-                  (a, b) =>
-                    b.terakhirDiperbarui?.seconds -
-                    a.terakhirDiperbarui?.seconds
-                );
+                ];
               });
             });
         });
-
         setLoading(false);
       });
 
     return () => unsubscribe();
   }, [userId]);
 
-  // markAsRead
-  const markAsRead = async (roomId: string) => {
+  // ✅ Fungsi buat tandai semua pesan di room ini sudah dibaca
+  const markMessagesAsRead = async (roomId: string) => {
     if (!userId) return;
-    const now = Date.now();
-    const newLastRead = { ...lastRead };
-    if (!newLastRead[userId]) newLastRead[userId] = {};
-    newLastRead[userId][roomId] = now;
 
-    setLastRead(newLastRead);
-    lastReadRef.current = newLastRead;
+    const pesanRef = db.collection('chatRooms').doc(roomId).collection('pesan');
+    const snapshot = await pesanRef.get(); // 🔥 ambil semua pesan
 
-    await AsyncStorage.setItem('lastRead', JSON.stringify(newLastRead));
+    const batch = db.batch();
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      // filter di client aja
+      if (data.idPengirim !== userId && data.sudahDibaca === false) {
+        batch.update(doc.ref, { sudahDibaca: true });
+      }
+    });
 
-    console.log('✅ markAsRead:', roomId, 'newLastRead:', newLastRead);
+    await batch.commit();
 
+    // update state supaya unreadCount langsung 0
     setChatRooms((prev) =>
       prev.map((r) => (r.id === roomId ? { ...r, unreadCount: 0 } : r))
     );
   };
 
-  return { chatRooms, loading, markAsRead };
+  // ✅ Fungsi buat room baru
+  const createRoomIfNotExist = async (
+    station: { name: string; instansi: string },
+    profileTipe: string
+  ) => {
+    if (!userId) return '';
+    const existingRoom = chatRooms.find(
+      (r) => r.roomChat.toLowerCase() === station.name.toLowerCase()
+    );
+    if (existingRoom?.id) return existingRoom.id;
+    const newRoomRef = db.collection('chatRooms').doc();
+    await newRoomRef.set({
+      roomChat: station.name,
+      Instansi: station.instansi,
+      peserta: [userId],
+      tipePeserta: [profileTipe],
+      pesanTerakhir: '',
+      terakhirDiperbarui: serverTimestamp(),
+    });
+    return newRoomRef.id;
+  };
+
+  return { chatRooms, loading, markMessagesAsRead, createRoomIfNotExist };
 };

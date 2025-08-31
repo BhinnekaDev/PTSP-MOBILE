@@ -18,6 +18,7 @@ import { dataStations } from '@/constants/dataStations';
 
 // OUR HOOKS
 import { useChatRooms } from '@/hooks/Backend/useChatRooms';
+import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 
 export default function Chat() {
   const router = useRouter();
@@ -25,7 +26,9 @@ export default function Chat() {
   const rotateChevron = useSharedValue(0);
 
   // 🔥 Ambil UID user yang login
-  const { chatRooms, markAsRead, loading } = useChatRooms();
+  const { chatRooms, markMessagesAsRead, loading, createRoomIfNotExist } =
+    useChatRooms();
+  const { profile, loading: loadingProfile } = useGetUserProfile();
 
   const chevronStyle = useAnimatedStyle(() => {
     return {
@@ -43,8 +46,19 @@ export default function Chat() {
       return !prev;
     });
   };
+  const handlePressStation = async (station: (typeof dataStations)[0]) => {
+    if (!profile) return;
+    const roomId = await createRoomIfNotExist(station, profile.tipe);
+    if (!roomId) return;
 
-  if (loading) {
+    // Jalankan update pesan tapi jangan tunggu selesai
+    markMessagesAsRead(roomId).catch(console.error);
+
+    // Langsung navigasi
+    router.push({ pathname: '/screens/roomChatScreen', params: { roomId } });
+  };
+
+  if (loading || loadingProfile) {
     return (
       <View className="flex-1 items-center justify-center">
         <Text>Loading chat...</Text>
@@ -98,13 +112,7 @@ export default function Chat() {
                   key={station.name}
                   className="mt-2 flex-row items-center gap-4 rounded-xl bg-white p-2 shadow"
                   activeOpacity={0.5}
-                  onPress={() => {
-                    if (room?.id) markAsRead(room.id);
-                    router.push({
-                      pathname: '/screens/roomChatScreen',
-                      params: { roomId: room?.id || station.name },
-                    });
-                  }}
+                  onPress={() => handlePressStation(station)}
                 >
                   {/* ICON */}
                   <View className="rounded-full bg-gray-300 p-4">

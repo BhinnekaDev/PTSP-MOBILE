@@ -2,24 +2,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
-type Message = {
-  id: number;
-  text: string;
-  time: string;
-  sender: 'me' | 'other';
-};
-
-interface ChatMessageProps {
-  msg: Message;
-  expandedIdR: number | null;
-  expandedIdL: number | null;
-  toggleExpandedR: (id: number) => void;
-  toggleExpandedL: (id: number) => void;
-  setSelectedMessage: (msg: Message) => void;
-  setShowOptionMessage: (val: boolean) => void;
-  setShowEmojiPicker: (val: boolean) => void;
-  setShowAttachmentOptions: (val: boolean) => void;
-}
+// OUR INTERFACES
+import { ChatMessageProps } from '@/interfaces/messagesProps';
 
 export default function ChatMessage({
   msg,
@@ -88,7 +72,12 @@ export default function ChatMessage({
             style={{ fontFamily: 'LexRegular' }}
             className="ml-auto rounded-full bg-white px-1.5 text-xs text-black"
           >
-            {msg.time}
+            <Text>
+              {msg.time.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </Text>
           </Text>
         </View>
       </TouchableOpacity>

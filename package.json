@@ -28,6 +28,7 @@
     "@react-navigation/native": "^7.1.6",
     "@react-navigation/stack": "^7.3.6",
     "@sendgrid/mail": "^8.1.5",
+    "dayjs": "^1.11.18",
     "dotenv": "^16.5.0",
     "emoji-mart-native": "^0.6.5-beta",
     "expo": "~53.0.12",

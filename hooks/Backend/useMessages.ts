@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
-import { db, serverTimestamp } from '@/lib/firebase'; // serverTimestamp dari config
+import { db, serverTimestamp } from '@/lib/firebase'; // tambahin firebaseAuth biar tau UID
 
 interface Message {
-  id: string;
+  id: string; // id dokumen pesan
+  roomId: string; // 🔥 id room tempat pesan disimpan
   isi: string;
   idPengirim: string;
   waktu: any;
   sudahDibaca: boolean;
   namaFile?: string | null;
   urlFile?: string | null;
-  tipePengirim: string;
+  tipePengirim: string; // admin | perusahaan | perorangan
 }
 
 export const useMessages = (roomId: string) => {
@@ -36,26 +37,30 @@ export const useMessages = (roomId: string) => {
     return () => unsubscribe();
   }, [roomId]);
 
+  /**
+   * Kirim pesan ke subcollection `pesan`
+   */
   const sendMessage = async (
     isi: string,
     idPengirim: string,
-    tipePengirim: string
+    tipePengirim: string,
+    roomIdOverride?: string
   ) => {
-    if (!roomId) return;
+    const targetRoomId = roomIdOverride || roomId;
+    if (!targetRoomId) return;
 
-    await db.collection('chatRooms').doc(roomId).collection('pesan').add({
-      id: roomId,
+    await db.collection('chatRooms').doc(targetRoomId).collection('pesan').add({
       isi,
       idPengirim,
       tipePengirim,
-      waktu: serverTimestamp(), // 🔥 harus dipanggil
+      waktu: serverTimestamp(),
       sudahDibaca: false,
       namaFile: null,
       urlFile: null,
+      id: targetRoomId, // tambahan: simpan id room ke pesan
     });
 
-    // update pesan terakhir & timestamp di chatRooms
-    await db.collection('chatRooms').doc(roomId).update({
+    await db.collection('chatRooms').doc(targetRoomId).update({
       pesanTerakhir: isi,
       terakhirDiperbarui: serverTimestamp(),
     });

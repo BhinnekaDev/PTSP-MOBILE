@@ -8,9 +8,11 @@ import {
   Modal,
   ToastAndroid,
   Platform,
+  Alert,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
+import { firebaseAuth } from '@/lib/firebase';
 
 // OUR ICONS
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -24,18 +26,22 @@ import { dataEmojis } from '@/constants/dataEmojis';
 // OUR COMPONENTS
 import ChatMessage from '@/components/chatMessage';
 
-type Message = {
-  id: number;
-  text: string;
-  time: string;
-  sender: 'me' | 'other';
-};
+// OUR HOOKS
+import { useMessages } from '@/hooks/Backend/useMessages';
+import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
+// UTILS
+import { formatDateLabel } from '@/utils/formalDateLabel';
+
+// OUR INTERFACES
+import { Message } from '@/interfaces/messagesProps';
 
 export default function RoomChat() {
   const router = useRouter();
+  const { roomId } = useLocalSearchParams();
+  const { profile } = useGetUserProfile();
   const scrollViewRef = useRef<ScrollView>(null);
-  const [expandedIdR, setExpandedIdR] = useState<number | null>(null);
-  const [expandedIdL, setExpandedIdL] = useState<number | null>(null);
+  const [expandedIdR, setExpandedIdR] = useState<string | null>(null);
+  const [expandedIdL, setExpandedIdL] = useState<string | null>(null);
   const [showAttachmentOptions, setShowAttachmentOptions] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showOptionMessage, setShowOptionMessage] = useState(false);
@@ -43,71 +49,52 @@ export default function RoomChat() {
   const [messageToDelete, setMessageToDelete] = useState<Message | null>(null);
   const [customAlertVisible, setCustomAlertVisible] = useState(false);
 
+  // HOOK FIRESTORE
+  const { messages, sendMessage } = useMessages(roomId as string);
+  const currentUserId = firebaseAuth.currentUser?.uid;
+  const [inputText, setInputText] = useState('');
+
+  const handleSendMessage = async () => {
+    if (!inputText.trim() || !roomId || !currentUserId || !profile) return;
+
+    const tipePengirim = profile.tipe; // "perusahaan" | "perorangan" | "admin"
+    await sendMessage(inputText, currentUserId, tipePengirim);
+    setInputText('');
+  };
+  // MAPPING ke format ChatMessage
+  const mappedMessages: Message[] = messages.map((m) => ({
+    id: m.id,
+    text: m.isi,
+    time: m.waktu?.toDate() || new Date(),
+    sender: m.idPengirim === currentUserId ? 'me' : 'other',
+  }));
+
+  const groupedMessages = mappedMessages.reduce(
+    (groups, msg) => {
+      const dateKey = formatDateLabel(msg.time); // msg.time sudah Date
+      if (!groups[dateKey]) groups[dateKey] = [];
+      groups[dateKey].push(msg);
+      return groups;
+    },
+    {} as Record<string, Message[]>
+  );
+
   const confirmDeleteMessage = (message: Message) => {
     setMessageToDelete(message);
     setCustomAlertVisible(true);
   };
 
-  const [messagesToday, setMessagesToday] = useState<Message[]>([
-    {
-      id: 1,
-      text: 'Ini adalah pesan pendek.',
-      time: '10:00',
-      sender: 'me',
-    },
-    {
-      id: 2,
-      text: 'Ini adalah pesan yang lebih panjang untuk melihat apakah box akan mengikuti panjang teks namun tetap memiliki batas maksimal lebar tertentu seperti yang diminta. Ini adalah pesan yang lebih panjang untuk melihat apakah box akan mengikuti panjang teks namun tetap memiliki batas maksimal lebar tertentu seperti yang diminta.',
-      time: '10:05',
-      sender: 'other',
-    },
-    {
-      id: 3,
-      text: 'Pesan lainnya yang sedang diuji.',
-      time: '10:10',
-      sender: 'me',
-    },
-  ]);
-  const [inputText, setInputText] = useState('');
-
-  const toggleExpandedR = (id: number) => {
-    setExpandedIdR((prev: number | null) => (prev === id ? null : id));
+  const toggleExpandedR = (id: string) => {
+    setExpandedIdR((prev: string | null) => (prev === id ? null : id));
   };
 
-  const toggleExpandedL = (id: number) => {
-    setExpandedIdL((prev: number | null) => (prev === id ? null : id));
-  };
-
-  const handleSendMessage = () => {
-    if (!inputText.trim()) return;
-
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-
-    const myMessage: Message = {
-      id: Date.now(),
-      text: inputText,
-      time: timeStr,
-      sender: 'me',
-    };
-
-    const replyMessage: Message = {
-      id: Date.now() + 1,
-      text: 'Terima kasih atas pesan Anda. Kami akan segera menindaklanjuti.',
-      time: timeStr,
-      sender: 'other',
-    };
-
-    setMessagesToday((prev) => [...prev, myMessage, replyMessage]);
-    setInputText('');
+  const toggleExpandedL = (id: string) => {
+    setExpandedIdL((prev: string | null) => (prev === id ? null : id));
   };
 
   useEffect(() => {
     scrollViewRef.current?.scrollToEnd({ animated: true });
-  }, [messagesToday]);
+  }, [mappedMessages]);
 
   return (
     <View className="flex-1">
@@ -139,26 +126,31 @@ export default function RoomChat() {
         showsVerticalScrollIndicator={false}
       >
         <View className="mt-4">
-          <Text
-            style={{ fontFamily: 'LexRegular' }}
-            className="mb-2 self-center rounded-lg bg-gray-300 px-2 py-1 text-gray-700"
-          >
-            Kemarin
-          </Text>
           {/* MESSAGE */}
-          {messagesToday.map((msg) => (
-            <ChatMessage
-              key={msg.id}
-              msg={msg}
-              expandedIdR={expandedIdR}
-              expandedIdL={expandedIdL}
-              toggleExpandedR={toggleExpandedR}
-              toggleExpandedL={toggleExpandedL}
-              setSelectedMessage={setSelectedMessage}
-              setShowOptionMessage={setShowOptionMessage}
-              setShowEmojiPicker={setShowEmojiPicker}
-              setShowAttachmentOptions={setShowAttachmentOptions}
-            />
+          {Object.entries(groupedMessages).map(([dateLabel, msgs]) => (
+            <View key={dateLabel} className="mt-4">
+              <Text
+                style={{ fontFamily: 'LexRegular' }}
+                className="mb-2 self-center rounded-lg bg-gray-300 px-2 py-1 text-gray-700"
+              >
+                {dateLabel} {/* Hari ini / Kemarin / dd MMM yyyy */}
+              </Text>
+
+              {msgs.map((msg) => (
+                <ChatMessage
+                  key={msg.id}
+                  msg={msg} // time tetap Date
+                  expandedIdR={expandedIdR}
+                  expandedIdL={expandedIdL}
+                  toggleExpandedR={toggleExpandedR}
+                  toggleExpandedL={toggleExpandedL}
+                  setSelectedMessage={setSelectedMessage}
+                  setShowOptionMessage={setShowOptionMessage}
+                  setShowEmojiPicker={setShowEmojiPicker}
+                  setShowAttachmentOptions={setShowAttachmentOptions}
+                />
+              ))}
+            </View>
           ))}
         </View>
       </ScrollView>
@@ -188,7 +180,7 @@ export default function RoomChat() {
             placeholderTextColor="#999"
             value={inputText}
             onChangeText={setInputText}
-            onSubmitEditing={handleSendMessage}
+            onSubmitEditing={() => Alert.alert('Fitur kirim belum tersedia')}
             style={{
               fontFamily: 'LexRegular',
             }}
@@ -378,15 +370,7 @@ export default function RoomChat() {
             </Text>
 
             <TouchableOpacity
-              onPress={() => {
-                if (messageToDelete) {
-                  setMessagesToday((prev) =>
-                    prev.filter((m) => m.id !== messageToDelete.id)
-                  );
-                }
-                setCustomAlertVisible(false);
-                setMessageToDelete(null);
-              }}
+              onPress={() => Alert.alert('Fitur hapus belum tersedia')}
               className="mt-2 rounded-lg bg-red-500 px-4 py-2"
             >
               <Text
