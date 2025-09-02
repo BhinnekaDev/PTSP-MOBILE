@@ -138,7 +138,7 @@ export default function RoomChat() {
 
               {msgs.map((msg) => (
                 <ChatMessage
-                  key={msg.id}
+                  key={`${msg.id}-${msg.time.getTime()}`}
                   msg={msg} // time tetap Date
                   expandedIdR={expandedIdR}
                   expandedIdL={expandedIdL}

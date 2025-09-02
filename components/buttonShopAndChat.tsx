@@ -6,23 +6,23 @@ import { useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-// OUT HOOKS
+// OUR HOOKS
 import { useCartItemCount } from '@/hooks/Backend/useCartItemCount';
+import { useUnreadMessagesCount } from '@/hooks/Backend/useUnreadMessagesCount';
 
 type ButtonShopAndChatProps = {
   showButtonShop?: boolean;
   showButtonChat?: boolean;
-  showShopCount?: number;
-  showhatCount?: number;
 };
 
 export default function ButtonShopAndChat({
-  showButtonShop = true, //
+  showButtonShop = true,
   showButtonChat = true,
-  showhatCount = 2,
 }: ButtonShopAndChatProps) {
   const router = useRouter();
   const { cartCount } = useCartItemCount();
+  const { unreadCount } = useUnreadMessagesCount();
+
   return (
     <View className="flex-row items-center gap-4">
       {/* Icon Shop */}
@@ -51,13 +51,13 @@ export default function ButtonShopAndChat({
           onPress={() => router.push('/screens/chatScreen')}
         >
           <Ionicons name="chatbubbles-outline" size={28} color="white" />
-          {showhatCount > 0 && (
+          {unreadCount > 0 && (
             <View className="absolute -right-1.5 -top-1.5 h-5 w-5 items-center justify-center rounded-full bg-red-500">
               <Text
                 className="text-[10px] text-white"
                 style={{ fontFamily: 'LexBold' }}
               >
-                {showhatCount}
+                {unreadCount}
               </Text>
             </View>
           )}
