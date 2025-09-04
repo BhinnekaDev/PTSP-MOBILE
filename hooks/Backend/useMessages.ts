@@ -1,21 +1,11 @@
 import { useEffect, useState } from 'react';
-import { db, serverTimestamp } from '@/lib/firebase'; // tambahin firebaseAuth biar tau UID
-
-interface Message {
-  id: string; // id dokumen pesan
-  roomId: string; // 🔥 id room tempat pesan disimpan
-  isi: string;
-  idPengirim: string;
-  waktu: any;
-  sudahDibaca: boolean;
-  namaFile?: string | null;
-  urlFile?: string | null;
-  tipePengirim: string; // admin | perusahaan | perorangan
-}
+import { db, firebaseAuth, serverTimestamp } from '@/lib/firebase';
+import { FirestoreMessage } from '@/interfaces/messagesProps';
 
 export const useMessages = (roomId: string) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<FirestoreMessage[]>([]);
   const [loading, setLoading] = useState(true);
+  const currentUserId = firebaseAuth.currentUser?.uid;
 
   useEffect(() => {
     if (!roomId) return;
@@ -26,20 +16,30 @@ export const useMessages = (roomId: string) => {
       .collection('pesan')
       .orderBy('waktu', 'asc')
       .onSnapshot((snapshot) => {
-        const msgs: Message[] = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...(doc.data() as Omit<Message, 'id'>),
-        }));
+        const msgs: FirestoreMessage[] = snapshot.docs.map((doc) => {
+          const data = doc.data() as Omit<FirestoreMessage, 'id'>;
+          return { id: doc.id, ...data };
+        });
+
         setMessages(msgs);
         setLoading(false);
+
+        // Tandai pesan yang belum dibaca oleh user ini
+        msgs.forEach(async (msg) => {
+          if (msg.idPengirim !== currentUserId && msg.sudahDibaca !== true) {
+            await db
+              .collection('chatRooms')
+              .doc(roomId)
+              .collection('pesan')
+              .doc(msg.id)
+              .update({ sudahDibaca: true });
+          }
+        });
       });
 
     return () => unsubscribe();
-  }, [roomId]);
+  }, [roomId, currentUserId]);
 
-  /**
-   * Kirim pesan ke subcollection `pesan`
-   */
   const sendMessage = async (
     isi: string,
     idPengirim: string,
@@ -57,7 +57,6 @@ export const useMessages = (roomId: string) => {
       sudahDibaca: false,
       namaFile: null,
       urlFile: null,
-      id: targetRoomId, // tambahan: simpan id room ke pesan
     });
 
     await db.collection('chatRooms').doc(targetRoomId).update({

@@ -20,7 +20,7 @@ import { dataStations } from '@/constants/dataStations';
 import { useChatRooms } from '@/hooks/Backend/useChatRooms';
 import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 
-export default function Chat() {
+export default function ChatScreen() {
   const router = useRouter();
   const [showMessages, setShowMessages] = useState(true);
   const rotateChevron = useSharedValue(0);
@@ -46,6 +46,7 @@ export default function Chat() {
       return !prev;
     });
   };
+
   const handlePressStation = async (station: (typeof dataStations)[0]) => {
     if (!profile) return;
     const roomId = await createRoomIfNotExist(station, profile.tipe);

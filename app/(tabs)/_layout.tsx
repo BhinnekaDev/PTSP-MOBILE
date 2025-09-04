@@ -1,18 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Animated } from 'react-native';
 import { Tabs } from 'expo-router';
-
-// OUR ICONS
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-// OUT UTILS
-import { getHeightLayoutTabs } from '@/utils/platformStyleAndroidIos';
-
 export default function TabNavigator() {
   const [jumlahNotifikasiPesanan] = useState(3);
   const [jumlahFavoritBaru] = useState(2);
-  const getHeightAndroidIos = getHeightLayoutTabs();
+  const tabOrder = ['home', 'regulation', 'product', 'faq', 'profile'];
+  const bounceValues = useRef(
+    tabOrder.map(() => new Animated.Value(0))
+  ).current;
+  const runBounceAnimation = () => {
+    const animations = bounceValues.map((value) =>
+      Animated.sequence([
+        Animated.timing(value, {
+          toValue: -25,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(value, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+
+    Animated.stagger(150, animations).start();
+  };
+
+  useEffect(() => {
+    runBounceAnimation();
+  }, [ ]);
 
   const tabConfig: Record<
     string,
@@ -77,45 +98,22 @@ export default function TabNavigator() {
         }
 
         return {
-          tabBarIcon: ({ color, size, focused }) => {
-            const iconName = focused ? config.iconActive : config.iconInactive;
-
-            switch (config.lib) {
-              case 'FontAwesome':
-                return (
-                  <FontAwesome
-                    name={iconName as keyof typeof FontAwesome.glyphMap}
-                    size={size}
-                    color={color}
-                  />
-                );
-              case 'AntDesign':
-                return (
-                  <AntDesign
-                    name={iconName as keyof typeof AntDesign.glyphMap}
-                    size={size}
-                    color={color}
-                  />
-                );
-              default:
-                return (
-                  <Ionicons
-                    name={iconName as keyof typeof Ionicons.glyphMap}
-                    size={size}
-                    color={color}
-                  />
-                );
-            }
-          },
           headerShown: false,
           tabBarStyle: {
-            height: getHeightAndroidIos,
-            backgroundColor: '#1475BA',
-            borderTopWidth: 0,
-            borderTopRightRadius: 10,
-            borderTopLeftRadius: 10,
             position: 'absolute',
-            overflow: 'hidden',
+            bottom: 20, // jarak dari bawah layar
+            left: 40, // jarak dari kiri layar
+            right: 40,
+            height: 70,
+            backgroundColor: '#1475BA',
+            borderRadius: 35, // lengkung semua sisi
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 3 },
+            shadowOpacity: 0.2,
+            shadowRadius: 5,
+            elevation: 5, // Android shadow
+            marginLeft: 10,
+            marginRight: 10,
           },
           tabBarLabelStyle: {
             fontSize: 12,
@@ -130,6 +128,52 @@ export default function TabNavigator() {
             backgroundColor: 'red',
             color: 'white',
             fontSize: 10,
+          },
+          tabBarIcon: ({ focused, color, size }) => {
+            const index = tabOrder.indexOf(route.name);
+            const bounce = bounceValues[index];
+            const iconName = focused ? config.iconActive : config.iconInactive;
+
+            return (
+              <Animated.View
+                style={{
+                  transform: [{ translateY: bounce }],
+                  width: 50,
+                  height: 50,
+                  borderRadius: 25,
+                  backgroundColor: focused ? '#32CD32' : 'transparent',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  position: focused ? 'absolute' : 'relative',
+                  top: focused ? -30 : 0,
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 3 },
+                  shadowOpacity: focused ? 0.3 : 0,
+                  shadowRadius: 3,
+                  elevation: focused ? 5 : 0,
+                }}
+              >
+                {config.lib === 'FontAwesome' ? (
+                  <FontAwesome
+                    name={iconName as any}
+                    size={size}
+                    color={focused ? 'white' : color}
+                  />
+                ) : config.lib === 'AntDesign' ? (
+                  <AntDesign
+                    name={iconName as any}
+                    size={size}
+                    color={focused ? 'white' : color}
+                  />
+                ) : (
+                  <Ionicons
+                    name={iconName as any}
+                    size={size}
+                    color={focused ? 'white' : color}
+                  />
+                )}
+              </Animated.View>
+            );
           },
         };
       }}

@@ -3,7 +3,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
 // OUR INTERFACES
-import { ChatMessageProps } from '@/interfaces/messagesProps';
+import { ChatMessageProps } from '@/interfaces/uiMessagesProps';
 
 export default function ChatMessage({
   msg,

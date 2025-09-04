@@ -1,17 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
-import { db, firebaseAuth, serverTimestamp } from '@/lib/firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { db, firebaseAuth, serverTimestamp } from '@/lib/firebase';
 
-export interface ChatRoom {
-  id: string;
-  roomChat: string;
-  pesanTerakhir: string;
-  peserta: string[];
-  instansi?: string;
-  terakhirDiperbarui: any;
-  tipePeserta?: string[];
-  unreadCount?: number;
-}
+// OUR INTERFACES
+import { ChatRoom } from '@/interfaces/messagesProps';
 
 export const useChatRooms = () => {
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
@@ -124,5 +116,11 @@ export const useChatRooms = () => {
     return newRoomRef.id;
   };
 
-  return { chatRooms, loading, markMessagesAsRead, createRoomIfNotExist };
+  return {
+    chatRooms,
+    loading,
+    markMessagesAsRead,
+    createRoomIfNotExist,
+    lastRead,
+  };
 };

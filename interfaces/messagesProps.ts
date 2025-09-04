@@ -1,18 +1,22 @@
-export type Message = {
+export interface ChatRoom {
   id: string;
-  text: string;
-  time: Date;
-  sender: 'me' | 'other';
-};
+  roomChat: string;
+  pesanTerakhir: string;
+  peserta: string[];
+  instansi?: string;
+  terakhirDiperbarui: any;
+  tipePeserta?: string[];
+  unreadCount?: number;
+}
 
-export interface ChatMessageProps {
-  msg: Message;
-  expandedIdR: string | null;
-  expandedIdL: string | null;
-  toggleExpandedR: (id: string) => void;
-  toggleExpandedL: (id: string) => void;
-  setSelectedMessage: (msg: Message) => void;
-  setShowOptionMessage: (val: boolean) => void;
-  setShowEmojiPicker: (val: boolean) => void;
-  setShowAttachmentOptions: (val: boolean) => void;
+export interface FirestoreMessage {
+  id: string;
+  roomId: string;
+  isi: string;
+  idPengirim: string;
+  waktu: any;
+  sudahDibaca: boolean;
+  namaFile?: string | null;
+  urlFile?: string | null;
+  tipePengirim: string;
 }

@@ -8,7 +8,6 @@ import {
   Modal,
   ToastAndroid,
   Platform,
-  Alert,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
@@ -29,11 +28,13 @@ import ChatMessage from '@/components/chatMessage';
 // OUR HOOKS
 import { useMessages } from '@/hooks/Backend/useMessages';
 import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
+import { useHandleDeleteMessages } from '@/hooks/Backend/useHandleDeleteMessages';
+
 // UTILS
 import { formatDateLabel } from '@/utils/formalDateLabel';
 
 // OUR INTERFACES
-import { Message } from '@/interfaces/messagesProps';
+import { UIMessage } from '@/interfaces/uiMessagesProps';
 
 export default function RoomChat() {
   const router = useRouter();
@@ -45,9 +46,17 @@ export default function RoomChat() {
   const [showAttachmentOptions, setShowAttachmentOptions] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showOptionMessage, setShowOptionMessage] = useState(false);
-  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
-  const [messageToDelete, setMessageToDelete] = useState<Message | null>(null);
-  const [customAlertVisible, setCustomAlertVisible] = useState(false);
+  const [selectedMessage, setSelectedMessage] = useState<UIMessage | null>(
+    null
+  );
+
+  const {
+    customAlertVisible,
+    confirmDeleteMessage,
+    handleDeleteMessage,
+    setCustomAlertVisible,
+    setMessageToDelete,
+  } = useHandleDeleteMessages(roomId as string);
 
   // HOOK FIRESTORE
   const { messages, sendMessage } = useMessages(roomId as string);
@@ -62,7 +71,7 @@ export default function RoomChat() {
     setInputText('');
   };
   // MAPPING ke format ChatMessage
-  const mappedMessages: Message[] = messages.map((m) => ({
+  const mappedMessages: UIMessage[] = messages.map((m) => ({
     id: m.id,
     text: m.isi,
     time: m.waktu?.toDate() || new Date(),
@@ -76,13 +85,8 @@ export default function RoomChat() {
       groups[dateKey].push(msg);
       return groups;
     },
-    {} as Record<string, Message[]>
+    {} as Record<string, UIMessage[]>
   );
-
-  const confirmDeleteMessage = (message: Message) => {
-    setMessageToDelete(message);
-    setCustomAlertVisible(true);
-  };
 
   const toggleExpandedR = (id: string) => {
     setExpandedIdR((prev: string | null) => (prev === id ? null : id));
@@ -180,7 +184,7 @@ export default function RoomChat() {
             placeholderTextColor="#999"
             value={inputText}
             onChangeText={setInputText}
-            onSubmitEditing={() => Alert.alert('Fitur kirim belum tersedia')}
+            onSubmitEditing={handleSendMessage}
             style={{
               fontFamily: 'LexRegular',
             }}
@@ -295,14 +299,15 @@ export default function RoomChat() {
         )}
 
         {/* SHOW ISI TOMBOL KETIKA MESSAGE DI TEKAN */}
+        {/* OPTION MESSAGE */}
         {selectedMessage && showOptionMessage && (
           <View className="flex-row items-center justify-center gap-12 p-4">
+            {/* SALIN */}
             <TouchableOpacity
               className="items-center gap-1"
               onPress={() => {
                 Clipboard.setStringAsync(selectedMessage.text);
                 setSelectedMessage(null);
-
                 if (Platform.OS === 'android') {
                   ToastAndroid.show('Pesan disalin', ToastAndroid.SHORT);
                 }
@@ -316,6 +321,7 @@ export default function RoomChat() {
               </Text>
             </TouchableOpacity>
 
+            {/* HAPUS */}
             {selectedMessage.sender === 'me' && (
               <TouchableOpacity
                 className="items-center gap-1"
@@ -337,6 +343,7 @@ export default function RoomChat() {
               </TouchableOpacity>
             )}
 
+            {/* BATAL */}
             <TouchableOpacity
               onPress={() => setSelectedMessage(null)}
               className="items-center gap-1"
@@ -370,7 +377,7 @@ export default function RoomChat() {
             </Text>
 
             <TouchableOpacity
-              onPress={() => Alert.alert('Fitur hapus belum tersedia')}
+              onPress={handleDeleteMessage}
               className="mt-2 rounded-lg bg-red-500 px-4 py-2"
             >
               <Text
