@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { db, firebaseAuth, serverTimestamp } from '@/lib/firebase';
+
+// OUR INTERFACES
 import { FirestoreMessage } from '@/interfaces/messagesProps';
 
 export const useMessages = (roomId: string) => {

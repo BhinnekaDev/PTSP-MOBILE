@@ -1,9 +1,11 @@
-export type UIMessage = {
+export interface UIMessage {
   id: string;
+  sender: 'me' | 'other';
   text: string;
   time: Date;
-  sender: 'me' | 'other';
-};
+  sudahDibaca: boolean;
+  
+}
 
 export interface ChatMessageProps {
   msg: UIMessage;

@@ -41,10 +41,12 @@ export default function ChatMessage({
         activeOpacity={0.85}
         className={`${messageBg} my-2 mb-2 w-auto max-w-[70%] rounded-lg px-4 py-2`}
       >
+        {/* TEXT PESAN */}
         <Text style={{ fontFamily: 'LexRegular' }} className="text-white">
           {isExpanded || !isLongText ? msg.text : previewText}
         </Text>
 
+        {/* FOOTER: BACA SELENGKAPNYA / WAKTU + STATUS */}
         <View
           className={`w-full ${
             isLongText
@@ -68,17 +70,31 @@ export default function ChatMessage({
               </Text>
             </TouchableOpacity>
           )}
-          <Text
-            style={{ fontFamily: 'LexRegular' }}
-            className="ml-auto rounded-full bg-white px-1.5 text-xs text-black"
-          >
-            <Text>
+
+          {/* Waktu + Status ✔/✔✔ */}
+          <View className="ml-auto flex-row items-center">
+            <Text
+              style={{ fontFamily: 'LexRegular' }}
+              className="px-1.5 text-xs text-white"
+            >
               {msg.time.toLocaleTimeString([], {
                 hour: '2-digit',
                 minute: '2-digit',
               })}
             </Text>
-          </Text>
+
+            {msg.sender === 'me' && (
+              <Text
+                className="ml-1 text-xs"
+                style={{
+                  fontFamily: 'LexRegular',
+                  color: msg.sudahDibaca ? '#1475BA' : 'white',
+                }}
+              >
+                {msg.sudahDibaca ? '✔✔' : '✔'}
+              </Text>
+            )}
+          </View>
         </View>
       </TouchableOpacity>
     </View>

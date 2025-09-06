@@ -20,6 +20,9 @@ import { dataStations } from '@/constants/dataStations';
 import { useChatRooms } from '@/hooks/Backend/useChatRooms';
 import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 
+// OUR UTILS
+import { formatLastMessageTime } from '@/utils/formatLastMessagesTime';
+
 export default function ChatScreen() {
   const router = useRouter();
   const [showMessages, setShowMessages] = useState(true);
@@ -125,8 +128,18 @@ export default function ChatScreen() {
                     <Text style={{ fontFamily: 'LexBold' }} className="text-lg">
                       {station.name}
                     </Text>
-                    <Text style={{ fontFamily: 'LexRegular' }}>
-                      {room?.pesanTerakhir || 'Belum ada chat di stasiun ini.'}
+                    <Text
+                      style={{ fontFamily: 'LexRegular' }}
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                    >
+                      <Text style={{ fontFamily: 'LexRegular' }}>
+                        {room?.pesanTerakhir
+                          ? room.pesanTerakhir.length > 50
+                            ? room.pesanTerakhir.slice(0, 50) + '...'
+                            : room.pesanTerakhir
+                          : 'Belum ada chat di stasiun ini.'}
+                      </Text>
                     </Text>
                   </View>
 
@@ -137,7 +150,9 @@ export default function ChatScreen() {
                       className="text-sm"
                     >
                       {room?.terakhirDiperbarui
-                        ? room.terakhirDiperbarui.toDate().toLocaleDateString()
+                        ? formatLastMessageTime(
+                            room.terakhirDiperbarui.toDate()
+                          )
                         : '-'}
                     </Text>
                     {room?.unreadCount && room.unreadCount > 0 ? (

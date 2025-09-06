@@ -31,7 +31,7 @@ import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 import { useHandleDeleteMessages } from '@/hooks/Backend/useHandleDeleteMessages';
 
 // UTILS
-import { formatDateLabel } from '@/utils/formalDateLabel';
+import { formatDateLabel } from '@/utils/formatDateLabel';
 
 // OUR INTERFACES
 import { UIMessage } from '@/interfaces/uiMessagesProps';
@@ -76,6 +76,8 @@ export default function RoomChat() {
     text: m.isi,
     time: m.waktu?.toDate() || new Date(),
     sender: m.idPengirim === currentUserId ? 'me' : 'other',
+    sudahDibaca: m.sudahDibaca,
+    sampaiKePenerima: false,
   }));
 
   const groupedMessages = mappedMessages.reduce(
@@ -277,22 +279,6 @@ export default function RoomChat() {
                 style={{ fontFamily: 'LexMedium' }}
               >
                 Galeri
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity className="gap-1">
-              <View className="items-center rounded-full border border-gray-300 bg-gray-200 p-4">
-                <MaterialCommunityIcons
-                  name="camera"
-                  size={30}
-                  color="#EF4444"
-                />
-              </View>
-              <Text
-                className="text-center text-sm text-black"
-                style={{ fontFamily: 'LexMedium' }}
-              >
-                Kamera
               </Text>
             </TouchableOpacity>
           </View>

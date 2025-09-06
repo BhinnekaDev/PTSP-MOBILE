@@ -51,6 +51,21 @@ export function useHandleDeleteMessages(roomId: string | undefined) {
         return;
       }
 
+      // ✅ Cek apakah pesan sudah lebih dari 5 menit
+      const pesanTime = data?.waktu?.toDate?.() || null;
+      if (pesanTime) {
+        const now = new Date();
+        const diffInMs = now.getTime() - pesanTime.getTime();
+        const diffInMinutes = diffInMs / (1000 * 60);
+
+        if (diffInMinutes > 5) {
+          showToast('Pesan hanya bisa dihapus dalam 5 menit setelah dikirim');
+          cleanup();
+          return;
+        }
+      }
+
+      // ✅ Hapus pesan jika masih dalam 5 menit
       await msgDocRef.delete();
       showToast('Pesan berhasil dihapus');
     } catch {
