@@ -9,6 +9,9 @@ import {
   ToastAndroid,
   Platform,
 } from 'react-native';
+import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
+
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
 import { firebaseAuth } from '@/lib/firebase';
@@ -29,14 +32,18 @@ import ChatMessage from '@/components/chatMessage';
 import { useMessages } from '@/hooks/Backend/useMessages';
 import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 import { useHandleDeleteMessages } from '@/hooks/Backend/useHandleDeleteMessages';
-
-// UTILS
-import { formatDateLabel } from '@/utils/formatDateLabel';
+import { useFilePreview } from '@/hooks/Frontend/filePreviewModalScreen/useFilePreview';
 
 // OUR INTERFACES
 import { UIMessage } from '@/interfaces/uiMessagesProps';
 
-export default function RoomChat() {
+// UTILS
+import { formatDateLabel } from '@/utils/formatDateLabel';
+import { FilePreviewModal } from '@/components/filePreviewModalAll';
+
+export default function RoomChatScreen() {
+  const { modalVisible, setModalVisible, currentFile, openPreview } =
+    useFilePreview();
   const router = useRouter();
   const { roomId } = useLocalSearchParams();
   const { profile } = useGetUserProfile();
@@ -49,6 +56,11 @@ export default function RoomChat() {
   const [selectedMessage, setSelectedMessage] = useState<UIMessage | null>(
     null
   );
+  const [pendingFile, setPendingFile] = useState<{
+    base64: string;
+    name: string;
+    mimeType: string;
+  } | null>(null);
 
   const {
     customAlertVisible,
@@ -59,25 +71,45 @@ export default function RoomChat() {
   } = useHandleDeleteMessages(roomId as string);
 
   // HOOK FIRESTORE
-  const { messages, sendMessage } = useMessages(roomId as string);
+  const { messages, sendMessage, sendMessageWithFile } = useMessages(
+    roomId as string
+  );
+
   const currentUserId = firebaseAuth.currentUser?.uid;
   const [inputText, setInputText] = useState('');
 
   const handleSendMessage = async () => {
-    if (!inputText.trim() || !roomId || !currentUserId || !profile) return;
+    if (!roomId || !currentUserId || !profile) return;
 
-    const tipePengirim = profile.tipe; // "perusahaan" | "perorangan" | "admin"
-    await sendMessage(inputText, currentUserId, tipePengirim);
+    const tipePengirim = profile.tipe;
+
+    if (pendingFile) {
+      // Kirim file + teks
+      await sendMessageWithFile(
+        pendingFile,
+        inputText || '', // bisa kosong kalau cuma file
+        currentUserId,
+        tipePengirim
+      );
+      setPendingFile(null); // reset file setelah dikirim
+    } else if (inputText.trim()) {
+      // Kirim teks saja
+      await sendMessage(inputText, currentUserId, tipePengirim);
+    }
+
     setInputText('');
   };
+
   // MAPPING ke format ChatMessage
   const mappedMessages: UIMessage[] = messages.map((m) => ({
     id: m.id,
     text: m.isi,
-    time: m.waktu?.toDate() || new Date(),
+    time: m.waktu?.toDate ? m.waktu.toDate() : new Date(),
     sender: m.idPengirim === currentUserId ? 'me' : 'other',
     sudahDibaca: m.sudahDibaca,
-    sampaiKePenerima: false,
+    namaFile: m.namaFile || null,
+    urlFile: m.urlFile || null,
+    // mimeType & base64 optional → isi manual kalau perlu preview saat upload
   }));
 
   const groupedMessages = mappedMessages.reduce(
@@ -101,6 +133,76 @@ export default function RoomChat() {
   useEffect(() => {
     scrollViewRef.current?.scrollToEnd({ animated: true });
   }, [mappedMessages]);
+
+  const handlePickDocument = async () => {
+    try {
+      const res = await DocumentPicker.getDocumentAsync({
+        type: '*/*',
+        copyToCacheDirectory: true,
+        multiple: false,
+      });
+
+      if (res.canceled || !res.assets?.[0]) return;
+
+      const file = res.assets[0];
+      const base64 = await fetch(file.uri)
+        .then((r) => r.blob())
+        .then(blobToBase64);
+
+      setPendingFile({
+        base64,
+        name: file.name || 'dokumen',
+        mimeType: file.mimeType || 'application/octet-stream',
+      });
+
+      setShowAttachmentOptions(false);
+    } catch (err) {
+      console.error('Error pick document:', err);
+    }
+  };
+
+  const handlePickImage = async () => {
+    try {
+      const res = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        base64: true,
+        quality: 0.8,
+      });
+
+      if (res.canceled || !res.assets?.[0]) return;
+
+      const img = res.assets[0];
+
+      setPendingFile({
+        base64: img.base64!,
+        name: img.fileName || 'image.jpg',
+        mimeType: img.mimeType || 'image/jpeg',
+      });
+
+      setShowAttachmentOptions(false);
+    } catch (err) {
+      console.error('Error pick image:', err);
+    }
+  };
+
+  // ✅ Helper untuk convert Blob ke base64 (tanpa prefix)
+  const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        let result = reader.result as string;
+        // result = "data:application/pdf;base64,JVBERi0xLjc..."
+        if (result.startsWith('data:')) {
+          const base64Data = result.split(',')[1]; // ambil setelah koma
+          resolve(base64Data);
+        } else {
+          resolve(result);
+        }
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  };
 
   return (
     <View className="flex-1">
@@ -145,7 +247,7 @@ export default function RoomChat() {
               {msgs.map((msg) => (
                 <ChatMessage
                   key={`${msg.id}-${msg.time.getTime()}`}
-                  msg={msg} // time tetap Date
+                  msg={msg}
                   expandedIdR={expandedIdR}
                   expandedIdL={expandedIdL}
                   toggleExpandedR={toggleExpandedR}
@@ -154,6 +256,7 @@ export default function RoomChat() {
                   setShowOptionMessage={setShowOptionMessage}
                   setShowEmojiPicker={setShowEmojiPicker}
                   setShowAttachmentOptions={setShowAttachmentOptions}
+                  openPreview={openPreview} // <-- pass dari RoomChat
                 />
               ))}
             </View>
@@ -162,6 +265,28 @@ export default function RoomChat() {
       </ScrollView>
       {/* INPUT KETIK PESAN, EMOJI, ATTACHMENT, SEND */}
       <View className="mb-5 px-5 pt-2">
+        {/* PREVIEW FILE SEBELUM KIRIM */}
+        {pendingFile && (
+          <View className="mb-2 flex-row flex-wrap items-center justify-between rounded border border-gray-300 p-2">
+            <Text
+              style={{ fontFamily: 'LexMedium', maxWidth: '80%' }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              📎{' '}
+              {pendingFile.name.length > 30
+                ? pendingFile.name.slice(0, 27) + '...'
+                : pendingFile.name}
+            </Text>
+
+            <TouchableOpacity onPress={() => setPendingFile(null)}>
+              <Text style={{ color: 'red', fontFamily: 'LexRegular' }}>
+                Hapus
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         <View className="flex-row items-center justify-center rounded-xl border border-gray-300 p-2">
           {/* BUTTON EMOJI */}
           <TouchableOpacity
@@ -250,7 +375,8 @@ export default function RoomChat() {
         {/* SHOW ISI FILE */}
         {showAttachmentOptions && (
           <View className="flex-row items-center justify-between p-4">
-            <TouchableOpacity className="gap-1">
+            {/* Dokumen */}
+            <TouchableOpacity className="gap-1" onPress={handlePickDocument}>
               <View className="items-center rounded-full border border-gray-300 bg-gray-200 p-4">
                 <MaterialCommunityIcons
                   name="file-document"
@@ -266,7 +392,8 @@ export default function RoomChat() {
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity className="gap-1">
+            {/* Galeri */}
+            <TouchableOpacity className="gap-1" onPress={handlePickImage}>
               <View className="items-center rounded-full border border-gray-300 bg-gray-200 p-4">
                 <MaterialCommunityIcons
                   name="image-multiple"
@@ -394,6 +521,14 @@ export default function RoomChat() {
       <View className="h-7 w-full items-center justify-center bg-[#1475BA]">
         <View className="h-1.5 w-32 rounded-full bg-white" />
       </View>
+
+      {/* MODAL PREVIEW */}
+      <FilePreviewModal
+        visible={modalVisible}
+        source={currentFile?.uri || null} // HARUS uri
+        mimeType={currentFile?.mimeType || null}
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 }

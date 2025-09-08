@@ -19,4 +19,6 @@ export interface FirestoreMessage {
   namaFile?: string | null;
   urlFile?: string | null;
   tipePengirim: string;
+  mimeType?: string | null;
+  base64?: string | null;
 }

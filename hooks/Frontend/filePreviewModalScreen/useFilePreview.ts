@@ -1,5 +1,7 @@
 import { useState, useMemo } from 'react';
 import * as Linking from 'expo-linking';
+
+// OUR INTERFACES
 import { UploadFileProps } from '@/interfaces/uploadFileProps';
 import { generatePdfViewerHtmlAllPages } from '@/utils/generatePdfViewerHtmlAllPages';
 
