@@ -3,7 +3,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { db, firebaseAuth, serverTimestamp } from '@/lib/firebase';
 
 // OUR INTERFACES
-import { ChatRoom } from '@/interfaces/messagesProps';
+import { ChatRoom, FirestoreMessage } from '@/interfaces/messagesProps';
+
+// OUT UTILS
+import { getLastMessage } from '@/utils/getLastMessage';
 
 export const useChatRooms = () => {
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
@@ -44,8 +47,9 @@ export const useChatRooms = () => {
               let unreadCount = 0;
 
               if (!pesanSnap.empty) {
-                pesanTerakhir =
-                  pesanSnap.docs[0].data().isi || 'Pesan tanpa teks';
+                const lastPesanData =
+                  pesanSnap.docs[0].data() as FirestoreMessage;
+                pesanTerakhir = getLastMessage(lastPesanData);
 
                 // ✅ Hitung unreadCount berdasarkan sudahDibaca
                 unreadCount = pesanSnap.docs.filter(

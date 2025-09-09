@@ -18,7 +18,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 // COMPONENTS
 import NavCartOrder from '@/components/navCartOrder';
-import { FilePreviewModal } from '@/components/filePreviewModalAll';
+import { FilePreviewModalAll } from '@/components/filePreviewModalAll';
 
 // OUR CONSTANTS
 import { invoiceTabs } from '@/constants/invoiceTabs';
@@ -396,7 +396,7 @@ export default function InvoiceScreen() {
         </TouchableOpacity>
       </View>
 
-      <FilePreviewModal
+      <FilePreviewModalAll
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         source={previewHtml}

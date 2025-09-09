@@ -9,7 +9,7 @@ import {
 // OUR INTERFACES
 import { FirestoreMessage } from '@/interfaces/messagesProps';
 
-export const useMessages = (roomId: string) => {
+export const useHandleMessages = (roomId: string) => {
   const [messages, setMessages] = useState<FirestoreMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const currentUserId = firebaseAuth.currentUser?.uid;
@@ -107,13 +107,34 @@ export const useMessages = (roomId: string) => {
       urlFile: downloadUrl,
     });
 
-    await db
-      .collection('chatRooms')
-      .doc(targetRoomId)
-      .update({
-        pesanTerakhir: isi || file.name,
-        terakhirDiperbarui: serverTimestamp(),
-      });
+    // Tentukan pesan terakhir untuk preview di list chat
+    let lastMessagePreview = '';
+
+    if (file.mimeType.startsWith('image/')) {
+      lastMessagePreview = '🖼️ IMG';
+    } else if (file.mimeType.includes('pdf')) {
+      lastMessagePreview = '📄 PDF';
+    } else if (
+      file.mimeType.includes('word') ||
+      file.mimeType.includes('excel') ||
+      file.mimeType.includes('powerpoint')
+    ) {
+      lastMessagePreview = '📎 Dokumen';
+    } else {
+      lastMessagePreview = '📎 File';
+    }
+
+    // kalau ada teks tambahan, gabungkan
+    if (isi) {
+      lastMessagePreview = `${lastMessagePreview} ${isi}`;
+    }
+
+    console.log('isi:', isi);
+    console.log('lastMessagePreview:', lastMessagePreview);
+    await db.collection('chatRooms').doc(targetRoomId).update({
+      pesanTerakhir: lastMessagePreview,
+      terakhirDiperbarui: serverTimestamp(),
+    });
   };
 
   return { messages, loading, sendMessage, sendMessageWithFile };

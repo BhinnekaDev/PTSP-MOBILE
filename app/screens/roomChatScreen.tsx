@@ -29,7 +29,7 @@ import { dataEmojis } from '@/constants/dataEmojis';
 import ChatMessage from '@/components/chatMessage';
 
 // OUR HOOKS
-import { useMessages } from '@/hooks/Backend/useMessages';
+import { useHandleMessages } from '@/hooks/Backend/useHandleMessages';
 import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 import { useHandleDeleteMessages } from '@/hooks/Backend/useHandleDeleteMessages';
 import { useFilePreview } from '@/hooks/Frontend/filePreviewModalScreen/useFilePreview';
@@ -39,7 +39,7 @@ import { UIMessage } from '@/interfaces/uiMessagesProps';
 
 // UTILS
 import { formatDateLabel } from '@/utils/formatDateLabel';
-import { FilePreviewModal } from '@/components/filePreviewModalAll';
+import { FilePreviewModalAll } from '@/components/filePreviewModalAll';
 
 export default function RoomChatScreen() {
   const { modalVisible, setModalVisible, currentFile, openPreview } =
@@ -71,7 +71,7 @@ export default function RoomChatScreen() {
   } = useHandleDeleteMessages(roomId as string);
 
   // HOOK FIRESTORE
-  const { messages, sendMessage, sendMessageWithFile } = useMessages(
+  const { messages, sendMessage, sendMessageWithFile } = useHandleMessages(
     roomId as string
   );
 
@@ -523,7 +523,7 @@ export default function RoomChatScreen() {
       </View>
 
       {/* MODAL PREVIEW */}
-      <FilePreviewModal
+      <FilePreviewModalAll
         visible={modalVisible}
         source={currentFile?.uri || null} // HARUS uri
         mimeType={currentFile?.mimeType || null}

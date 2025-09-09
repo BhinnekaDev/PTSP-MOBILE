@@ -9,7 +9,7 @@ export type FilePreviewModalProps = {
   mimeType?: string | null; // application/pdf, text/html, dll
 };
 
-export function FilePreviewModal({
+export function FilePreviewModalAll({
   visible,
   onClose,
   source,
