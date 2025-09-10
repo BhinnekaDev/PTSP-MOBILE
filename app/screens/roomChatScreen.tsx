@@ -9,9 +9,6 @@ import {
   ToastAndroid,
   Platform,
 } from 'react-native';
-import * as DocumentPicker from 'expo-document-picker';
-import * as ImagePicker from 'expo-image-picker';
-
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
 import { firebaseAuth } from '@/lib/firebase';
@@ -29,76 +26,61 @@ import { dataEmojis } from '@/constants/dataEmojis';
 import ChatMessage from '@/components/chatMessage';
 
 // OUR HOOKS
-import { useHandleMessages } from '@/hooks/Backend/useHandleMessages';
 import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 import { useHandleDeleteMessages } from '@/hooks/Backend/useHandleDeleteMessages';
-import { useFilePreview } from '@/hooks/Frontend/filePreviewModalScreen/useFilePreview';
+import { useDocumentPicker } from '@/hooks/Frontend/pickFiles/useDocumentPicker';
+import { useImagePicker } from '@/hooks/Frontend/pickFiles/useImagePicker';
+import { useMessagesWithPreview } from '@/hooks/Backend/useMessageWithPreview';
+import { useToggleExpandMessage } from '@/hooks/Frontend/expandMessages/useToggleExpand';
 
 // OUR INTERFACES
 import { UIMessage } from '@/interfaces/uiMessagesProps';
+import { UploadFileProps } from '@/interfaces/uploadFileProps';
 
 // UTILS
 import { formatDateLabel } from '@/utils/formatDateLabel';
 import { FilePreviewModalAll } from '@/components/filePreviewModalAll';
 
 export default function RoomChatScreen() {
-  const { modalVisible, setModalVisible, currentFile, openPreview } =
-    useFilePreview();
   const router = useRouter();
+  const currentUserId = firebaseAuth.currentUser?.uid;
   const { roomId } = useLocalSearchParams();
   const { profile } = useGetUserProfile();
   const scrollViewRef = useRef<ScrollView>(null);
-  const [expandedIdR, setExpandedIdR] = useState<string | null>(null);
-  const [expandedIdL, setExpandedIdL] = useState<string | null>(null);
+  const [inputText, setInputText] = useState('');
+
+  // EXPAND MESSAGE KIRI (BACA SELENGKAPNYA UNTUK ADMIN / USER LAIN)
+  const {
+    expandedMessageId: expandedMessageIdRight,
+    toggleExpandMessage: toggleExpandedMessageRight,
+  } = useToggleExpandMessage();
+
+  // EXPAND MESSAGE KANAN (BACA SELENGKAPNYA UNTUK ADMIN / USER LAIN)
+  const {
+    expandedMessageId: expandedMessageIdLeft,
+    toggleExpandMessage: toggleExpandedMessageLeft,
+  } = useToggleExpandMessage();
+
   const [showAttachmentOptions, setShowAttachmentOptions] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showOptionMessage, setShowOptionMessage] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<UIMessage | null>(
     null
   );
-  const [pendingFile, setPendingFile] = useState<{
-    base64: string;
-    name: string;
-    mimeType: string;
-  } | null>(null);
-
+  const [pendingFile, setPendingFile] = useState<UploadFileProps | null>(null);
+  const { pickDocument } = useDocumentPicker();
+  const { pickImage } = useImagePicker();
   const {
-    customAlertVisible,
-    confirmDeleteMessage,
-    handleDeleteMessage,
-    setCustomAlertVisible,
-    setMessageToDelete,
-  } = useHandleDeleteMessages(roomId as string);
-
-  // HOOK FIRESTORE
-  const { messages, sendMessage, sendMessageWithFile } = useHandleMessages(
-    roomId as string
-  );
-
-  const currentUserId = firebaseAuth.currentUser?.uid;
-  const [inputText, setInputText] = useState('');
-
-  const handleSendMessage = async () => {
-    if (!roomId || !currentUserId || !profile) return;
-
-    const tipePengirim = profile.tipe;
-
-    if (pendingFile) {
-      // Kirim file + teks
-      await sendMessageWithFile(
-        pendingFile,
-        inputText || '', // bisa kosong kalau cuma file
-        currentUserId,
-        tipePengirim
-      );
-      setPendingFile(null); // reset file setelah dikirim
-    } else if (inputText.trim()) {
-      // Kirim teks saja
-      await sendMessage(inputText, currentUserId, tipePengirim);
-    }
-
-    setInputText('');
-  };
+    messages,
+    sendMessage,
+    sendMessageWithFile,
+    modalVisible,
+    setModalVisible,
+    currentFile,
+    pdfViewerHtml,
+    openPreview,
+    openFileExternal,
+  } = useMessagesWithPreview(roomId as string);
 
   // MAPPING ke format ChatMessage
   const mappedMessages: UIMessage[] = messages.map((m) => ({
@@ -109,12 +91,11 @@ export default function RoomChatScreen() {
     sudahDibaca: m.sudahDibaca,
     namaFile: m.namaFile || null,
     urlFile: m.urlFile || null,
-    // mimeType & base64 optional → isi manual kalau perlu preview saat upload
   }));
 
   const groupedMessages = mappedMessages.reduce(
     (groups, msg) => {
-      const dateKey = formatDateLabel(msg.time); // msg.time sudah Date
+      const dateKey = formatDateLabel(msg.time);
       if (!groups[dateKey]) groups[dateKey] = [];
       groups[dateKey].push(msg);
       return groups;
@@ -122,88 +103,53 @@ export default function RoomChatScreen() {
     {} as Record<string, UIMessage[]>
   );
 
-  const toggleExpandedR = (id: string) => {
-    setExpandedIdR((prev: string | null) => (prev === id ? null : id));
+  // Dokumen
+  const handlePickDocument = async () => {
+    const file = await pickDocument();
+    if (file) {
+      setPendingFile(file);
+      setShowAttachmentOptions(false);
+    }
   };
 
-  const toggleExpandedL = (id: string) => {
-    setExpandedIdL((prev: string | null) => (prev === id ? null : id));
+  // Gambar
+  const handlePickImage = async () => {
+    const file = await pickImage();
+    if (file) {
+      setPendingFile(file);
+      setShowAttachmentOptions(false);
+    }
   };
+
+  // HANDLE SEND MESSAGE
+  const handleSendMessage = async () => {
+    if (!roomId || !currentUserId || !profile) return;
+    const tipePengirim = profile.tipe;
+
+    if (pendingFile) {
+      // Kirim file + teks
+      await sendMessageWithFile(pendingFile, inputText || '', tipePengirim);
+      setPendingFile(null); // reset file setelah dikirim
+    } else if (inputText.trim()) {
+      // Kirim teks saja
+      await sendMessage(inputText, tipePengirim);
+    }
+
+    setInputText('');
+  };
+
+  // HANDLE DELETE MESSAGE
+  const {
+    customAlertVisible,
+    confirmDeleteMessage,
+    handleDeleteMessage,
+    setCustomAlertVisible,
+    setMessageToDelete,
+  } = useHandleDeleteMessages(roomId as string);
 
   useEffect(() => {
     scrollViewRef.current?.scrollToEnd({ animated: true });
   }, [mappedMessages]);
-
-  const handlePickDocument = async () => {
-    try {
-      const res = await DocumentPicker.getDocumentAsync({
-        type: '*/*',
-        copyToCacheDirectory: true,
-        multiple: false,
-      });
-
-      if (res.canceled || !res.assets?.[0]) return;
-
-      const file = res.assets[0];
-      const base64 = await fetch(file.uri)
-        .then((r) => r.blob())
-        .then(blobToBase64);
-
-      setPendingFile({
-        base64,
-        name: file.name || 'dokumen',
-        mimeType: file.mimeType || 'application/octet-stream',
-      });
-
-      setShowAttachmentOptions(false);
-    } catch (err) {
-      console.error('Error pick document:', err);
-    }
-  };
-
-  const handlePickImage = async () => {
-    try {
-      const res = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        base64: true,
-        quality: 0.8,
-      });
-
-      if (res.canceled || !res.assets?.[0]) return;
-
-      const img = res.assets[0];
-
-      setPendingFile({
-        base64: img.base64!,
-        name: img.fileName || 'image.jpg',
-        mimeType: img.mimeType || 'image/jpeg',
-      });
-
-      setShowAttachmentOptions(false);
-    } catch (err) {
-      console.error('Error pick image:', err);
-    }
-  };
-
-  // ✅ Helper untuk convert Blob ke base64 (tanpa prefix)
-  const blobToBase64 = (blob: Blob): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        let result = reader.result as string;
-        // result = "data:application/pdf;base64,JVBERi0xLjc..."
-        if (result.startsWith('data:')) {
-          const base64Data = result.split(',')[1]; // ambil setelah koma
-          resolve(base64Data);
-        } else {
-          resolve(result);
-        }
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-  };
-
   return (
     <View className="flex-1">
       <View className="w-full flex-row items-center gap-4 rounded-b-[10px] bg-[#1475BA] px-4 py-4 shadow-md">
@@ -248,15 +194,15 @@ export default function RoomChatScreen() {
                 <ChatMessage
                   key={`${msg.id}-${msg.time.getTime()}`}
                   msg={msg}
-                  expandedIdR={expandedIdR}
-                  expandedIdL={expandedIdL}
-                  toggleExpandedR={toggleExpandedR}
-                  toggleExpandedL={toggleExpandedL}
+                  expandedMessageIdRight={expandedMessageIdRight}
+                  expandedMessageIdLeft={expandedMessageIdLeft}
+                  toggleExpandedMessageRight={toggleExpandedMessageRight}
+                  toggleExpandedMessageLeft={toggleExpandedMessageLeft}
                   setSelectedMessage={setSelectedMessage}
                   setShowOptionMessage={setShowOptionMessage}
                   setShowEmojiPicker={setShowEmojiPicker}
                   setShowAttachmentOptions={setShowAttachmentOptions}
-                  openPreview={openPreview} // <-- pass dari RoomChat
+                  openPreview={openPreview}
                 />
               ))}
             </View>
@@ -525,9 +471,11 @@ export default function RoomChatScreen() {
       {/* MODAL PREVIEW */}
       <FilePreviewModalAll
         visible={modalVisible}
-        source={currentFile?.uri || null} // HARUS uri
+        source={currentFile?.uri || null}
         mimeType={currentFile?.mimeType || null}
+        pdfHtml={pdfViewerHtml}
         onClose={() => setModalVisible(false)}
+        onOpenExternal={openFileExternal}
       />
     </View>
   );

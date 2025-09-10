@@ -2,11 +2,13 @@ import React from 'react';
 import { Text, TouchableOpacity, Modal, View, Image } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-export type FilePreviewModalProps = {
+export type FilePreviewModalPropsAll = {
   visible: boolean;
   onClose: () => void;
-  source: string | null; // bisa URL/filePath/HTML string
-  mimeType?: string | null; // application/pdf, text/html, dll
+  source: string | null;
+  mimeType?: string | null;
+  pdfHtml?: string | null;
+  onOpenExternal?: () => void;
 };
 
 export function FilePreviewModalAll({
@@ -14,8 +16,9 @@ export function FilePreviewModalAll({
   onClose,
   source,
   mimeType,
-}: FilePreviewModalProps) {
-  if (!source) return null;
+  pdfHtml,
+}: FilePreviewModalPropsAll) {
+  if (!source && !pdfHtml) return null;
 
   // IMAGE
   if (mimeType?.startsWith('image/')) {
@@ -23,7 +26,7 @@ export function FilePreviewModalAll({
       <Modal visible={visible} animationType="slide">
         <View style={{ flex: 1 }}>
           <Image
-            source={{ uri: source }}
+            source={{ uri: source! }}
             style={{ flex: 1 }}
             resizeMode="contain"
           />
@@ -41,17 +44,27 @@ export function FilePreviewModalAll({
   // PDF / Word / Excel
   let webSource: any = null;
 
-  if (mimeType === 'text/html') webSource = { html: source };
-  else if (mimeType === 'application/pdf') webSource = { uri: source };
-  else if (
+  if (mimeType === 'text/html') {
+    webSource = { html: source };
+  } else if (mimeType === 'application/pdf') {
+    if (pdfHtml) {
+      webSource = { html: pdfHtml }; // pakai HTML base64 pdf viewer
+    } else {
+      webSource = { uri: source };
+    }
+  } else if (
     mimeType?.includes('word') ||
     mimeType?.includes('excel') ||
     mimeType?.includes('powerpoint')
-  )
+  ) {
     webSource = {
-      uri: `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(source)}`,
+      uri: `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(
+        source!
+      )}`,
     };
-  else webSource = { uri: source };
+  } else {
+    webSource = { uri: source };
+  }
 
   return (
     <Modal visible={visible} animationType="slide">

@@ -14,10 +14,10 @@ export interface UIMessage {
 
 export interface ChatMessageProps {
   msg: UIMessage;
-  expandedIdR: string | null;
-  expandedIdL: string | null;
-  toggleExpandedR: (id: string) => void;
-  toggleExpandedL: (id: string) => void;
+  expandedMessageIdRight: string | null;
+  expandedMessageIdLeft: string | null;
+  toggleExpandedMessageRight: (id: string) => void;
+  toggleExpandedMessageLeft: (id: string) => void;
   setSelectedMessage: (msg: UIMessage) => void;
   setShowOptionMessage: (val: boolean) => void;
   setShowEmojiPicker: (val: boolean) => void;

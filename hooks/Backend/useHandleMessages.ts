@@ -1,4 +1,6 @@
+// hooks/useHandleMessages.ts
 import { useEffect, useState } from 'react';
+import { Alert, Platform, ToastAndroid } from 'react-native';
 import {
   db,
   firebaseAuth,
@@ -8,14 +10,18 @@ import {
 
 // OUR INTERFACES
 import { FirestoreMessage } from '@/interfaces/messagesProps';
+import { UploadFileProps } from '@/interfaces/uploadFileProps';
 
-export const useHandleMessages = (roomId: string) => {
+export const useHandleMessages = (roomId: string | undefined) => {
   const [messages, setMessages] = useState<FirestoreMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const currentUserId = firebaseAuth.currentUser?.uid;
+  const [messageToDelete, setMessageToDelete] =
+    useState<FirestoreMessage | null>(null);
 
+  // 🔹 Listener pesan
   useEffect(() => {
-    if (!roomId) return;
+    if (!roomId) return setLoading(false);
 
     const unsubscribe = db
       .collection('chatRooms')
@@ -23,19 +29,16 @@ export const useHandleMessages = (roomId: string) => {
       .collection('pesan')
       .orderBy('waktu', 'asc')
       .onSnapshot((snapshot) => {
-        const msgs: FirestoreMessage[] = snapshot.docs.map((doc) => {
-          const data = doc.data() as Omit<FirestoreMessage, 'id'>;
-          return { id: doc.id, ...data };
-        });
-
+        const msgs: FirestoreMessage[] = snapshot.docs.map(
+          (doc) => ({ id: doc.id, ...doc.data() }) as FirestoreMessage
+        );
         setMessages(msgs);
         setLoading(false);
 
-        // Tandai pesan sebagai sudah dibaca
-        msgs.forEach(async (msg) => {
-          if (msg.idPengirim !== currentUserId && msg.sudahDibaca !== true) {
-            await db
-              .collection('chatRooms')
+        // Tandai otomatis pesan sudah dibaca
+        msgs.forEach((msg) => {
+          if (msg.idPengirim !== currentUserId && !msg.sudahDibaca) {
+            db.collection('chatRooms')
               .doc(roomId)
               .collection('pesan')
               .doc(msg.id)
@@ -47,95 +50,131 @@ export const useHandleMessages = (roomId: string) => {
     return () => unsubscribe();
   }, [roomId, currentUserId]);
 
-  // ✅ Kirim pesan teks biasa
-  const sendMessage = async (
-    isi: string,
-    idPengirim: string,
-    tipePengirim: string,
-    roomIdOverride?: string
-  ) => {
-    const targetRoomId = roomIdOverride || roomId;
-    if (!targetRoomId) return;
-
-    await db.collection('chatRooms').doc(targetRoomId).collection('pesan').add({
+  // 🔹 Kirim pesan teks
+  const sendMessage = async (isi: string, tipePengirim: string) => {
+    if (!roomId || !currentUserId) return;
+    await db.collection('chatRooms').doc(roomId).collection('pesan').add({
       isi,
-      idPengirim,
+      idPengirim: currentUserId,
       tipePengirim,
       waktu: serverTimestamp(),
       sudahDibaca: false,
       namaFile: null,
       urlFile: null,
+      mimeType: null,
+      base64: null,
     });
 
-    await db.collection('chatRooms').doc(targetRoomId).update({
+    await db.collection('chatRooms').doc(roomId).update({
       pesanTerakhir: isi,
       terakhirDiperbarui: serverTimestamp(),
     });
   };
 
-  // ✅ Kirim pesan dengan file
+  // 🔹 Kirim pesan dengan file
   const sendMessageWithFile = async (
-    file: { base64: string; name: string; mimeType: string },
+    file: UploadFileProps,
     isi: string,
-    idPengirim: string,
-    tipePengirim: string,
-    roomIdOverride?: string
+    tipePengirim: string
   ) => {
-    const targetRoomId = roomIdOverride || roomId;
-    if (!targetRoomId) return;
+    if (!roomId || !currentUserId) return;
 
-    const folderPath = `Chat_Files/${idPengirim}`;
+    const folderPath = `Chat_Files/${currentUserId}`;
     const uniqueFileName = `${Date.now()}_${file.name}`;
     const filePath = `${folderPath}/${uniqueFileName}`;
     const fileRef = firebaseStorage.ref(filePath);
 
-    // Upload file ke Firebase Storage
+    // Upload file
     await fileRef.putString(file.base64, 'base64', {
       contentType: file.mimeType,
     });
-
     const downloadUrl = await fileRef.getDownloadURL();
 
-    // Simpan pesan di Firestore
-    await db.collection('chatRooms').doc(targetRoomId).collection('pesan').add({
+    await db.collection('chatRooms').doc(roomId).collection('pesan').add({
       isi,
-      idPengirim,
+      idPengirim: currentUserId,
       tipePengirim,
       waktu: serverTimestamp(),
       sudahDibaca: false,
       namaFile: file.name,
       urlFile: downloadUrl,
+      mimeType: file.mimeType,
+      base64: file.base64,
     });
 
-    // Tentukan pesan terakhir untuk preview di list chat
+    // Tentukan preview
     let lastMessagePreview = '';
-
-    if (file.mimeType.startsWith('image/')) {
-      lastMessagePreview = '🖼️ IMG';
-    } else if (file.mimeType.includes('pdf')) {
-      lastMessagePreview = '📄 PDF';
-    } else if (
+    if (file.mimeType.startsWith('image/')) lastMessagePreview = '🖼️ IMG';
+    else if (file.mimeType.includes('pdf')) lastMessagePreview = '📄 PDF';
+    else if (
       file.mimeType.includes('word') ||
       file.mimeType.includes('excel') ||
       file.mimeType.includes('powerpoint')
-    ) {
+    )
       lastMessagePreview = '📎 Dokumen';
-    } else {
-      lastMessagePreview = '📎 File';
-    }
+    else lastMessagePreview = '📎 File';
 
-    // kalau ada teks tambahan, gabungkan
-    if (isi) {
-      lastMessagePreview = `${lastMessagePreview} ${isi}`;
-    }
+    if (isi) lastMessagePreview += ` ${isi}`;
 
-    console.log('isi:', isi);
-    console.log('lastMessagePreview:', lastMessagePreview);
-    await db.collection('chatRooms').doc(targetRoomId).update({
+    await db.collection('chatRooms').doc(roomId).update({
       pesanTerakhir: lastMessagePreview,
       terakhirDiperbarui: serverTimestamp(),
     });
   };
 
-  return { messages, loading, sendMessage, sendMessageWithFile };
+  // 🔹 Hapus pesan
+  const confirmDeleteMessage = (msg: FirestoreMessage) =>
+    setMessageToDelete(msg);
+
+  const handleDeleteMessage = async () => {
+    if (!messageToDelete || !roomId) return cleanup();
+
+    try {
+      const docRef = db
+        .collection('chatRooms')
+        .doc(roomId)
+        .collection('pesan')
+        .doc(messageToDelete.id);
+      const docSnap = await docRef.get();
+
+      if (!docSnap.exists) return showToast('Pesan tidak ditemukan'), cleanup();
+
+      const data = docSnap.data();
+      if (data?.idPengirim !== currentUserId)
+        return showToast('Anda tidak berwenang menghapus pesan ini'), cleanup();
+
+      const pesanTime = data?.waktu?.toDate?.();
+      if (
+        pesanTime &&
+        (new Date().getTime() - pesanTime.getTime()) / 60000 > 5
+      ) {
+        return showToast('Pesan hanya bisa dihapus dalam 5 menit'), cleanup();
+      }
+
+      await docRef.delete();
+      showToast('Pesan berhasil dihapus');
+    } catch {
+      showToast('Gagal menghapus pesan');
+    } finally {
+      cleanup();
+    }
+  };
+
+  const cleanup = () => setMessageToDelete(null);
+
+  const showToast = (msg: string) => {
+    if (Platform.OS === 'android') ToastAndroid.show(msg, ToastAndroid.SHORT);
+    else Alert.alert(msg);
+  };
+
+  return {
+    messages,
+    loading,
+    sendMessage,
+    sendMessageWithFile,
+    messageToDelete,
+    confirmDeleteMessage,
+    handleDeleteMessage,
+    setMessageToDelete,
+  };
 };

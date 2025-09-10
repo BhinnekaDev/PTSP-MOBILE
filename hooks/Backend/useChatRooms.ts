@@ -1,104 +1,85 @@
-import { useEffect, useState, useRef } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from 'react';
 import { db, firebaseAuth, serverTimestamp } from '@/lib/firebase';
-
-// OUR INTERFACES
 import { ChatRoom, FirestoreMessage } from '@/interfaces/messagesProps';
-
-// OUT UTILS
 import { getLastMessage } from '@/utils/getLastMessage';
 
 export const useChatRooms = () => {
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
   const [loading, setLoading] = useState(true);
-  const [lastRead, setLastRead] = useState<
-    Record<string, Record<string, number>>
-  >({});
-  const lastReadRef = useRef<Record<string, Record<string, number>>>({});
   const userId = firebaseAuth.currentUser?.uid;
-
-  useEffect(() => {
-    AsyncStorage.getItem('lastRead').then((data) => {
-      if (data) {
-        const parsed = JSON.parse(data);
-        setLastRead(parsed);
-        lastReadRef.current = parsed;
-      }
-    });
-  }, []);
 
   useEffect(() => {
     if (!userId) return setLoading(false);
 
-    const unsubscribe = db
+    // Listener utama untuk chatRooms user
+    const unsubscribeRooms = db
       .collection('chatRooms')
       .where('peserta', 'array-contains', userId)
       .orderBy('terakhirDiperbarui', 'desc')
       .onSnapshot((snapshot) => {
-        snapshot.docs.forEach((doc) => {
-          const data = doc.data() as Omit<ChatRoom, 'id'>;
+        const roomsData: ChatRoom[] = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...(doc.data() as Omit<ChatRoom, 'id'>),
+          pesanTerakhir: '',
+          unreadCount: 0,
+        }));
+        setChatRooms(roomsData);
 
-          db.collection('chatRooms')
-            .doc(doc.id)
+        // Pasang listener untuk pesan setiap room
+        roomsData.forEach((room) => {
+          const unsubscribePesan = db
+            .collection('chatRooms')
+            .doc(room.id)
             .collection('pesan')
             .orderBy('waktu', 'desc')
             .onSnapshot((pesanSnap) => {
-              let pesanTerakhir = 'Belum ada chat di stasiun ini.';
-              let unreadCount = 0;
+              const pesanArr = pesanSnap.docs.map(
+                (d) => ({ id: d.id, ...d.data() }) as FirestoreMessage
+              );
+              const lastPesan = pesanArr[0];
+              const pesanTerakhir = lastPesan
+                ? getLastMessage(lastPesan)
+                : 'Belum ada chat di stasiun ini.';
+              const unreadCount = pesanArr.filter(
+                (p) => !p.sudahDibaca && p.idPengirim !== userId
+              ).length;
 
-              if (!pesanSnap.empty) {
-                const lastPesanData =
-                  pesanSnap.docs[0].data() as FirestoreMessage;
-                pesanTerakhir = getLastMessage(lastPesanData);
-
-                // ✅ Hitung unreadCount berdasarkan sudahDibaca
-                unreadCount = pesanSnap.docs.filter(
-                  (p) =>
-                    p.data().sudahDibaca === false &&
-                    p.data().idPengirim !== userId
-                ).length;
-              }
-
-              setChatRooms((prev) => {
-                const otherRooms = prev.filter((r) => r.id !== doc.id);
-                return [
-                  { id: doc.id, ...data, pesanTerakhir, unreadCount },
-                  ...otherRooms,
-                ];
-              });
+              setChatRooms((prev) =>
+                prev.map((r) =>
+                  r.id === room.id ? { ...r, pesanTerakhir, unreadCount } : r
+                )
+              );
             });
+
+          // Cleanup listener saat unmount
+          return () => unsubscribePesan();
         });
+
         setLoading(false);
       });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribeRooms();
+    };
   }, [userId]);
 
-  // ✅ Fungsi buat tandai semua pesan di room ini sudah dibaca
   const markMessagesAsRead = async (roomId: string) => {
     if (!userId) return;
-
     const pesanRef = db.collection('chatRooms').doc(roomId).collection('pesan');
-    const snapshot = await pesanRef.get(); // 🔥 ambil semua pesan
-
+    const snapshot = await pesanRef.get();
     const batch = db.batch();
     snapshot.forEach((doc) => {
       const data = doc.data();
-      // filter di client aja
-      if (data.idPengirim !== userId && data.sudahDibaca === false) {
+      if (data.idPengirim !== userId && !data.sudahDibaca) {
         batch.update(doc.ref, { sudahDibaca: true });
       }
     });
-
     await batch.commit();
-
-    // update state supaya unreadCount langsung 0
     setChatRooms((prev) =>
       prev.map((r) => (r.id === roomId ? { ...r, unreadCount: 0 } : r))
     );
   };
 
-  // ✅ Fungsi buat room baru
   const createRoomIfNotExist = async (
     station: { name: string; instansi: string },
     profileTipe: string
@@ -108,10 +89,11 @@ export const useChatRooms = () => {
       (r) => r.roomChat.toLowerCase() === station.name.toLowerCase()
     );
     if (existingRoom?.id) return existingRoom.id;
+
     const newRoomRef = db.collection('chatRooms').doc();
     await newRoomRef.set({
       roomChat: station.name,
-      Instansi: station.instansi,
+      instansi: station.instansi,
       peserta: [userId],
       tipePeserta: [profileTipe],
       pesanTerakhir: '',
@@ -120,11 +102,5 @@ export const useChatRooms = () => {
     return newRoomRef.id;
   };
 
-  return {
-    chatRooms,
-    loading,
-    markMessagesAsRead,
-    createRoomIfNotExist,
-    lastRead,
-  };
+  return { chatRooms, loading, markMessagesAsRead, createRoomIfNotExist };
 };

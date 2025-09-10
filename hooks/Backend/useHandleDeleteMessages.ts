@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { Alert, Platform, ToastAndroid } from 'react-native';
-import { db, firebaseAuth } from '@/lib/firebase';
-
-// OUR INTERFACES
+import { db, firebaseAuth, firebaseStorage } from '@/lib/firebase';
 import { UIMessage } from '@/interfaces/uiMessagesProps';
 
 export function useHandleDeleteMessages(roomId: string | undefined) {
@@ -18,8 +16,7 @@ export function useHandleDeleteMessages(roomId: string | undefined) {
 
   const handleDeleteMessage = async () => {
     if (!messageToDelete || !roomId) {
-      setCustomAlertVisible(false);
-      setMessageToDelete(null);
+      cleanup();
       return;
     }
 
@@ -40,6 +37,7 @@ export function useHandleDeleteMessages(roomId: string | undefined) {
       const currentUserId = firebaseAuth.currentUser?.uid;
       const data = docSnap.data();
 
+      // ✅ Cek kepemilikan pesan
       if (
         data &&
         data.idPengirim &&
@@ -55,8 +53,8 @@ export function useHandleDeleteMessages(roomId: string | undefined) {
       const pesanTime = data?.waktu?.toDate?.() || null;
       if (pesanTime) {
         const now = new Date();
-        const diffInMs = now.getTime() - pesanTime.getTime();
-        const diffInMinutes = diffInMs / (1000 * 60);
+        const diffInMinutes =
+          (now.getTime() - pesanTime.getTime()) / (1000 * 60);
 
         if (diffInMinutes > 5) {
           showToast('Pesan hanya bisa dihapus dalam 5 menit setelah dikirim');
@@ -65,10 +63,22 @@ export function useHandleDeleteMessages(roomId: string | undefined) {
         }
       }
 
-      // ✅ Hapus pesan jika masih dalam 5 menit
+      // ✅ Hapus file dari Firebase Storage jika ada
+      if (data?.urlFile) {
+        try {
+          const fileRef = firebaseStorage.refFromURL(data.urlFile);
+          await fileRef.delete();
+          // console.log('File dihapus dari Storage:', data.urlFile);
+        } catch (err) {
+          console.warn('Gagal menghapus file dari Storage:', err);
+        }
+      }
+
+      // ✅ Hapus pesan dari Firestore
       await msgDocRef.delete();
       showToast('Pesan berhasil dihapus');
-    } catch {
+    } catch (err) {
+      console.error(err);
       showToast('Gagal menghapus pesan');
     } finally {
       cleanup();

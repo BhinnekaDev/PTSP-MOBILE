@@ -1,4 +1,3 @@
-// components/ChatMessage.tsx
 import React from 'react';
 import {
   View,
@@ -11,15 +10,15 @@ import {
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 
-// PROPS
+// OUR INTERFACES
 import { ChatMessageProps } from '@/interfaces/uiMessagesProps';
 
 export default function ChatMessage({
   msg,
-  expandedIdR,
-  expandedIdL,
-  toggleExpandedR,
-  toggleExpandedL,
+  expandedMessageIdRight,
+  expandedMessageIdLeft,
+  toggleExpandedMessageRight,
+  toggleExpandedMessageLeft,
   setSelectedMessage,
   setShowOptionMessage,
   setShowEmojiPicker,
@@ -27,7 +26,7 @@ export default function ChatMessage({
   openPreview,
 }: ChatMessageProps) {
   const isExpanded =
-    msg.sender === 'me' ? expandedIdR === msg.id : expandedIdL === msg.id;
+    msg.sender === 'me' ? expandedMessageIdRight === msg.id : expandedMessageIdLeft === msg.id;
   const isLongText = msg.text?.length > 205;
   const previewText = msg.text?.slice(0, 205) + '...';
 
@@ -87,7 +86,7 @@ export default function ChatMessage({
             {isImage ? (
               // IMAGE PREVIEW
               <TouchableOpacity
-                activeOpacity={0.8}
+                activeOpacity={0.7}
                 onPress={() =>
                   openPreview({
                     uri: msg.urlFile || '',
@@ -200,8 +199,8 @@ export default function ChatMessage({
             <TouchableOpacity
               onPress={() =>
                 msg.sender === 'me'
-                  ? toggleExpandedR(msg.id)
-                  : toggleExpandedL(msg.id)
+                  ? toggleExpandedMessageRight(msg.id)
+                  : toggleExpandedMessageLeft(msg.id)
               }
             >
               <Text
