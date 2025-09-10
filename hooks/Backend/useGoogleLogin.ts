@@ -6,7 +6,6 @@ import {
   GoogleSignin,
   statusCodes,
 } from '@/lib/firebase';
-
 import '@/lib/auth/googleConfig';
 
 export const useGoogleLogin = () => {

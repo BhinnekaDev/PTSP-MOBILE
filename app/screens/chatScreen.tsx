@@ -8,17 +8,30 @@ import Animated, {
   FadeInUp,
 } from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
+
 // OUR ICONS
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Entypo from '@expo/vector-icons/Entypo';
 
+// OUR CONSTANT
 import { dataStations } from '@/constants/dataStations';
 
+// OUR HOOKS
+import { useChatRooms } from '@/hooks/Backend/useChatRooms';
+import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 
-export default function Chat() {
+// OUR UTILS
+import { formatLastMessageTime } from '@/utils/formatLastMessagesTime';
+
+export default function ChatScreen() {
   const router = useRouter();
   const [showMessages, setShowMessages] = useState(true);
   const rotateChevron = useSharedValue(0);
+
+  // 🔥 Ambil UID user yang login
+  const { chatRooms, markMessagesAsRead, loading, createRoomIfNotExist } =
+    useChatRooms();
+  const { profile, loading: loadingProfile } = useGetUserProfile();
 
   const chevronStyle = useAnimatedStyle(() => {
     return {
@@ -37,6 +50,25 @@ export default function Chat() {
     });
   };
 
+  const handlePressStation = async (station: (typeof dataStations)[0]) => {
+    if (!profile) return;
+    const roomId = await createRoomIfNotExist(station, profile.tipe);
+    if (!roomId) return;
+
+    // Jalankan update pesan tapi jangan tunggu selesai
+    markMessagesAsRead(roomId).catch(console.error);
+
+    // Langsung navigasi
+    router.push({ pathname: '/screens/roomChatScreen', params: { roomId } });
+  };
+
+  if (loading || loadingProfile) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <Text>Loading chat...</Text>
+      </View>
+    );
+  }
   return (
     <View className="flex-1">
       <View className="w-full flex-row items-center rounded-b-[10px] bg-[#1475BA] px-4 py-4 shadow-md">
@@ -67,47 +99,71 @@ export default function Chat() {
             Pesan Saya
           </Text>
           <Text style={{ fontFamily: 'LexBold' }} className="text-xl">
-            ({dataStations.length})
+            ({chatRooms.length})
           </Text>
         </TouchableOpacity>
 
         {showMessages && (
           <Animated.View entering={FadeInUp.duration(400)}>
-            {dataStations.map((station, idx) => (
-              <TouchableOpacity
-                key={idx}
-                className="mt-2 flex-row items-center gap-4 rounded-xl bg-white p-2 shadow"
-                activeOpacity={0.5}
-                onPress={() => router.push('/screens/roomChatScreen')}
-              >
-                <View className="rounded-full bg-gray-300 p-4">
-                  {station.icon}
-                </View>
-                <View className="flex-1">
-                  <Text style={{ fontFamily: 'LexBold' }} className="text-lg">
-                    {station.name}
-                  </Text>
-                  <Text style={{ fontFamily: 'LexRegular' }}>
-                    {'Lorem ipsum dolor sit amet consectetur...'.slice(0, 30) +
-                      '...'}
-                  </Text>
-                </View>
-                <View className="flex-col items-center justify-center">
-                  <Text
-                    style={{ fontFamily: 'LexRegular' }}
-                    className="text-sm"
-                  >
-                    {station.date}
-                  </Text>
-                  <Text
-                    className="rounded-full bg-red-500 px-2 py-px text-sm text-white"
-                    style={{ fontFamily: 'LexRegular' }}
-                  >
-                    {station.unread}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ))}
+            {dataStations.map((station) => {
+              // cari apakah station ini sudah ada di chatRooms
+              const room = chatRooms.find(
+                (r) => r.roomChat.toLowerCase() === station.name.toLowerCase()
+              );
+
+              return (
+                <TouchableOpacity
+                  key={station.name}
+                  className="mt-2 flex-row items-center gap-4 rounded-xl bg-white p-2 shadow"
+                  activeOpacity={0.5}
+                  onPress={() => handlePressStation(station)}
+                >
+                  {/* ICON */}
+                  <View className="rounded-full bg-gray-300 p-4">
+                    {station.icon}
+                  </View>
+
+                  {/* NAMA + PESAN */}
+                  <View className="flex-1">
+                    <Text style={{ fontFamily: 'LexBold' }} className="text-lg">
+                      {station.name}
+                    </Text>
+                    <Text
+                      style={{ fontFamily: 'LexRegular' }}
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                    >
+                      <Text style={{ fontFamily: 'LexRegular' }}>
+                        {room?.pesanTerakhir
+                          ? room.pesanTerakhir.length > 50
+                            ? room.pesanTerakhir.slice(0, 50) + '...'
+                            : room.pesanTerakhir
+                          : 'Belum ada chat di stasiun ini.'}
+                      </Text>
+                    </Text>
+                  </View>
+
+                  {/* DATE + UNREAD */}
+                  <View className="flex-col items-center justify-center">
+                    <Text
+                      style={{ fontFamily: 'LexRegular' }}
+                      className="text-sm"
+                    >
+                      {room?.terakhirDiperbarui
+                        ? formatLastMessageTime(
+                            room.terakhirDiperbarui.toDate()
+                          )
+                        : '-'}
+                    </Text>
+                    {room?.unreadCount && room.unreadCount > 0 ? (
+                      <Text className="rounded-full bg-red-500 px-2 py-px text-sm text-white">
+                        {room.unreadCount}
+                      </Text>
+                    ) : null}
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
           </Animated.View>
         )}
       </ScrollView>

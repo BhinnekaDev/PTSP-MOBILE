@@ -9,8 +9,9 @@ import {
   ToastAndroid,
   Platform,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
+import { firebaseAuth } from '@/lib/firebase';
 
 // OUR ICONS
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -24,91 +25,131 @@ import { dataEmojis } from '@/constants/dataEmojis';
 // OUR COMPONENTS
 import ChatMessage from '@/components/chatMessage';
 
-type Message = {
-  id: number;
-  text: string;
-  time: string;
-  sender: 'me' | 'other';
-};
+// OUR HOOKS
+import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
+import { useHandleDeleteMessages } from '@/hooks/Backend/useHandleDeleteMessages';
+import { useDocumentPicker } from '@/hooks/Frontend/pickFiles/useDocumentPicker';
+import { useImagePicker } from '@/hooks/Frontend/pickFiles/useImagePicker';
+import { useMessagesWithPreview } from '@/hooks/Backend/useMessageWithPreview';
+import { useToggleExpandMessage } from '@/hooks/Frontend/expandMessages/useToggleExpand';
 
-export default function RoomChat() {
+// OUR INTERFACES
+import { UIMessage } from '@/interfaces/uiMessagesProps';
+import { UploadFileProps } from '@/interfaces/uploadFileProps';
+
+// UTILS
+import { formatDateLabel } from '@/utils/formatDateLabel';
+import { FilePreviewModalAll } from '@/components/filePreviewModalAll';
+
+export default function RoomChatScreen() {
   const router = useRouter();
+  const currentUserId = firebaseAuth.currentUser?.uid;
+  const { roomId } = useLocalSearchParams();
+  const { profile } = useGetUserProfile();
   const scrollViewRef = useRef<ScrollView>(null);
-  const [expandedIdR, setExpandedIdR] = useState<number | null>(null);
-  const [expandedIdL, setExpandedIdL] = useState<number | null>(null);
+  const [inputText, setInputText] = useState('');
+
+  // EXPAND MESSAGE KIRI (BACA SELENGKAPNYA UNTUK ADMIN / USER LAIN)
+  const {
+    expandedMessageId: expandedMessageIdRight,
+    toggleExpandMessage: toggleExpandedMessageRight,
+  } = useToggleExpandMessage();
+
+  // EXPAND MESSAGE KANAN (BACA SELENGKAPNYA UNTUK ADMIN / USER LAIN)
+  const {
+    expandedMessageId: expandedMessageIdLeft,
+    toggleExpandMessage: toggleExpandedMessageLeft,
+  } = useToggleExpandMessage();
+
   const [showAttachmentOptions, setShowAttachmentOptions] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showOptionMessage, setShowOptionMessage] = useState(false);
-  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
-  const [messageToDelete, setMessageToDelete] = useState<Message | null>(null);
-  const [customAlertVisible, setCustomAlertVisible] = useState(false);
+  const [selectedMessage, setSelectedMessage] = useState<UIMessage | null>(
+    null
+  );
+  const [pendingFile, setPendingFile] = useState<UploadFileProps | null>(null);
+  const { pickDocument } = useDocumentPicker();
+  const { pickImage } = useImagePicker();
+  const {
+    messages,
+    sendMessage,
+    sendMessageWithFile,
+    modalVisible,
+    setModalVisible,
+    currentFile,
+    pdfViewerHtml,
+    openPreview,
+    openFileExternal,
+  } = useMessagesWithPreview(roomId as string);
 
-  const confirmDeleteMessage = (message: Message) => {
-    setMessageToDelete(message);
-    setCustomAlertVisible(true);
+  // MAPPING ke format ChatMessage
+  const mappedMessages: UIMessage[] = messages.map((m) => ({
+    id: m.id,
+    text: m.isi,
+    time: m.waktu?.toDate ? m.waktu.toDate() : new Date(),
+    sender: m.idPengirim === currentUserId ? 'me' : 'other',
+    sudahDibaca: m.sudahDibaca,
+    namaFile: m.namaFile || null,
+    urlFile: m.urlFile || null,
+  }));
+
+  const groupedMessages = mappedMessages.reduce(
+    (groups, msg) => {
+      const dateKey = formatDateLabel(msg.time);
+      if (!groups[dateKey]) groups[dateKey] = [];
+      groups[dateKey].push(msg);
+      return groups;
+    },
+    {} as Record<string, UIMessage[]>
+  );
+
+  // Dokumen
+  const handlePickDocument = async () => {
+    const file = await pickDocument();
+    if (file) {
+      setPendingFile(file);
+      setShowAttachmentOptions(false);
+    }
   };
 
-  const [messagesToday, setMessagesToday] = useState<Message[]>([
-    {
-      id: 1,
-      text: 'Ini adalah pesan pendek.',
-      time: '10:00',
-      sender: 'me',
-    },
-    {
-      id: 2,
-      text: 'Ini adalah pesan yang lebih panjang untuk melihat apakah box akan mengikuti panjang teks namun tetap memiliki batas maksimal lebar tertentu seperti yang diminta. Ini adalah pesan yang lebih panjang untuk melihat apakah box akan mengikuti panjang teks namun tetap memiliki batas maksimal lebar tertentu seperti yang diminta.',
-      time: '10:05',
-      sender: 'other',
-    },
-    {
-      id: 3,
-      text: 'Pesan lainnya yang sedang diuji.',
-      time: '10:10',
-      sender: 'me',
-    },
-  ]);
-  const [inputText, setInputText] = useState('');
-
-  const toggleExpandedR = (id: number) => {
-    setExpandedIdR((prev: number | null) => (prev === id ? null : id));
+  // Gambar
+  const handlePickImage = async () => {
+    const file = await pickImage();
+    if (file) {
+      setPendingFile(file);
+      setShowAttachmentOptions(false);
+    }
   };
 
-  const toggleExpandedL = (id: number) => {
-    setExpandedIdL((prev: number | null) => (prev === id ? null : id));
-  };
+  // HANDLE SEND MESSAGE
+  const handleSendMessage = async () => {
+    if (!roomId || !currentUserId || !profile) return;
+    const tipePengirim = profile.tipe;
 
-  const handleSendMessage = () => {
-    if (!inputText.trim()) return;
+    if (pendingFile) {
+      // Kirim file + teks
+      await sendMessageWithFile(pendingFile, inputText || '', tipePengirim);
+      setPendingFile(null); // reset file setelah dikirim
+    } else if (inputText.trim()) {
+      // Kirim teks saja
+      await sendMessage(inputText, tipePengirim);
+    }
 
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-
-    const myMessage: Message = {
-      id: Date.now(),
-      text: inputText,
-      time: timeStr,
-      sender: 'me',
-    };
-
-    const replyMessage: Message = {
-      id: Date.now() + 1,
-      text: 'Terima kasih atas pesan Anda. Kami akan segera menindaklanjuti.',
-      time: timeStr,
-      sender: 'other',
-    };
-
-    setMessagesToday((prev) => [...prev, myMessage, replyMessage]);
     setInputText('');
   };
 
+  // HANDLE DELETE MESSAGE
+  const {
+    customAlertVisible,
+    confirmDeleteMessage,
+    handleDeleteMessage,
+    setCustomAlertVisible,
+    setMessageToDelete,
+  } = useHandleDeleteMessages(roomId as string);
+
   useEffect(() => {
     scrollViewRef.current?.scrollToEnd({ animated: true });
-  }, [messagesToday]);
-
+  }, [mappedMessages]);
   return (
     <View className="flex-1">
       <View className="w-full flex-row items-center gap-4 rounded-b-[10px] bg-[#1475BA] px-4 py-4 shadow-md">
@@ -139,31 +180,59 @@ export default function RoomChat() {
         showsVerticalScrollIndicator={false}
       >
         <View className="mt-4">
-          <Text
-            style={{ fontFamily: 'LexRegular' }}
-            className="mb-2 self-center rounded-lg bg-gray-300 px-2 py-1 text-gray-700"
-          >
-            Kemarin
-          </Text>
           {/* MESSAGE */}
-          {messagesToday.map((msg) => (
-            <ChatMessage
-              key={msg.id}
-              msg={msg}
-              expandedIdR={expandedIdR}
-              expandedIdL={expandedIdL}
-              toggleExpandedR={toggleExpandedR}
-              toggleExpandedL={toggleExpandedL}
-              setSelectedMessage={setSelectedMessage}
-              setShowOptionMessage={setShowOptionMessage}
-              setShowEmojiPicker={setShowEmojiPicker}
-              setShowAttachmentOptions={setShowAttachmentOptions}
-            />
+          {Object.entries(groupedMessages).map(([dateLabel, msgs]) => (
+            <View key={dateLabel} className="mt-4">
+              <Text
+                style={{ fontFamily: 'LexRegular' }}
+                className="mb-2 self-center rounded-lg bg-gray-300 px-2 py-1 text-gray-700"
+              >
+                {dateLabel} {/* Hari ini / Kemarin / dd MMM yyyy */}
+              </Text>
+
+              {msgs.map((msg) => (
+                <ChatMessage
+                  key={`${msg.id}-${msg.time.getTime()}`}
+                  msg={msg}
+                  expandedMessageIdRight={expandedMessageIdRight}
+                  expandedMessageIdLeft={expandedMessageIdLeft}
+                  toggleExpandedMessageRight={toggleExpandedMessageRight}
+                  toggleExpandedMessageLeft={toggleExpandedMessageLeft}
+                  setSelectedMessage={setSelectedMessage}
+                  setShowOptionMessage={setShowOptionMessage}
+                  setShowEmojiPicker={setShowEmojiPicker}
+                  setShowAttachmentOptions={setShowAttachmentOptions}
+                  openPreview={openPreview}
+                />
+              ))}
+            </View>
           ))}
         </View>
       </ScrollView>
       {/* INPUT KETIK PESAN, EMOJI, ATTACHMENT, SEND */}
       <View className="mb-5 px-5 pt-2">
+        {/* PREVIEW FILE SEBELUM KIRIM */}
+        {pendingFile && (
+          <View className="mb-2 flex-row flex-wrap items-center justify-between rounded border border-gray-300 p-2">
+            <Text
+              style={{ fontFamily: 'LexMedium', maxWidth: '80%' }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              📎{' '}
+              {pendingFile.name.length > 30
+                ? pendingFile.name.slice(0, 27) + '...'
+                : pendingFile.name}
+            </Text>
+
+            <TouchableOpacity onPress={() => setPendingFile(null)}>
+              <Text style={{ color: 'red', fontFamily: 'LexRegular' }}>
+                Hapus
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         <View className="flex-row items-center justify-center rounded-xl border border-gray-300 p-2">
           {/* BUTTON EMOJI */}
           <TouchableOpacity
@@ -252,7 +321,8 @@ export default function RoomChat() {
         {/* SHOW ISI FILE */}
         {showAttachmentOptions && (
           <View className="flex-row items-center justify-between p-4">
-            <TouchableOpacity className="gap-1">
+            {/* Dokumen */}
+            <TouchableOpacity className="gap-1" onPress={handlePickDocument}>
               <View className="items-center rounded-full border border-gray-300 bg-gray-200 p-4">
                 <MaterialCommunityIcons
                   name="file-document"
@@ -268,7 +338,8 @@ export default function RoomChat() {
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity className="gap-1">
+            {/* Galeri */}
+            <TouchableOpacity className="gap-1" onPress={handlePickImage}>
               <View className="items-center rounded-full border border-gray-300 bg-gray-200 p-4">
                 <MaterialCommunityIcons
                   name="image-multiple"
@@ -283,34 +354,19 @@ export default function RoomChat() {
                 Galeri
               </Text>
             </TouchableOpacity>
-
-            <TouchableOpacity className="gap-1">
-              <View className="items-center rounded-full border border-gray-300 bg-gray-200 p-4">
-                <MaterialCommunityIcons
-                  name="camera"
-                  size={30}
-                  color="#EF4444"
-                />
-              </View>
-              <Text
-                className="text-center text-sm text-black"
-                style={{ fontFamily: 'LexMedium' }}
-              >
-                Kamera
-              </Text>
-            </TouchableOpacity>
           </View>
         )}
 
         {/* SHOW ISI TOMBOL KETIKA MESSAGE DI TEKAN */}
+        {/* OPTION MESSAGE */}
         {selectedMessage && showOptionMessage && (
           <View className="flex-row items-center justify-center gap-12 p-4">
+            {/* SALIN */}
             <TouchableOpacity
               className="items-center gap-1"
               onPress={() => {
                 Clipboard.setStringAsync(selectedMessage.text);
                 setSelectedMessage(null);
-
                 if (Platform.OS === 'android') {
                   ToastAndroid.show('Pesan disalin', ToastAndroid.SHORT);
                 }
@@ -324,6 +380,7 @@ export default function RoomChat() {
               </Text>
             </TouchableOpacity>
 
+            {/* HAPUS */}
             {selectedMessage.sender === 'me' && (
               <TouchableOpacity
                 className="items-center gap-1"
@@ -345,6 +402,7 @@ export default function RoomChat() {
               </TouchableOpacity>
             )}
 
+            {/* BATAL */}
             <TouchableOpacity
               onPress={() => setSelectedMessage(null)}
               className="items-center gap-1"
@@ -378,15 +436,7 @@ export default function RoomChat() {
             </Text>
 
             <TouchableOpacity
-              onPress={() => {
-                if (messageToDelete) {
-                  setMessagesToday((prev) =>
-                    prev.filter((m) => m.id !== messageToDelete.id)
-                  );
-                }
-                setCustomAlertVisible(false);
-                setMessageToDelete(null);
-              }}
+              onPress={handleDeleteMessage}
               className="mt-2 rounded-lg bg-red-500 px-4 py-2"
             >
               <Text
@@ -417,6 +467,16 @@ export default function RoomChat() {
       <View className="h-7 w-full items-center justify-center bg-[#1475BA]">
         <View className="h-1.5 w-32 rounded-full bg-white" />
       </View>
+
+      {/* MODAL PREVIEW */}
+      <FilePreviewModalAll
+        visible={modalVisible}
+        source={currentFile?.uri || null}
+        mimeType={currentFile?.mimeType || null}
+        pdfHtml={pdfViewerHtml}
+        onClose={() => setModalVisible(false)}
+        onOpenExternal={openFileExternal}
+      />
     </View>
   );
 }

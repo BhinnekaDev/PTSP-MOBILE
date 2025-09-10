@@ -1,6 +1,5 @@
 import '@/global.css';
 import { useLoadFont } from '@/hooks/Frontend/useLoadFonts';
-import 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Stack } from 'expo-router';
 import {
