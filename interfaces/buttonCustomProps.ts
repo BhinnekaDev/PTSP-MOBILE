@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import { ViewStyle, TextStyle } from "react-native";
+import { ReactNode } from 'react';
+import { ViewStyle, TextStyle } from 'react-native';
 
 export interface ButtonCustomProps {
   classNameContainer?: string;
@@ -14,10 +14,11 @@ export interface ButtonCustomProps {
   styleButtonIconRight?: ViewStyle;
   textStyle?: TextStyle;
   text?: string;
-  FontLexBold?: object;
+  FontCustom?: object;
   onLayout?: (event: any) => void;
   isTouchable?: boolean;
   activeOpacity?: number;
   containerStyle?: ViewStyle;
   disabled?: boolean;
+  vertical?: boolean;
 }
