@@ -33,7 +33,7 @@ export default function TabNavigator() {
 
   useEffect(() => {
     runBounceAnimation();
-  }, [ ]);
+  }, []);
 
   const tabConfig: Record<
     string,

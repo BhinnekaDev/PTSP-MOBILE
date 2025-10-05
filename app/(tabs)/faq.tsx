@@ -3,7 +3,6 @@ import {
   View,
   ScrollView,
   Text,
-  Image,
   TouchableOpacity,
   Animated,
 } from 'react-native';
@@ -12,7 +11,7 @@ import {
 import { AntDesign } from '@expo/vector-icons';
 
 // OUR COMPONENTS
-import ButtonShopAndChat from '@/components/buttonShopAndChat';
+import Navbar from '@/components/Navbar';
 
 // OUR HOOKS
 import useDropdownAnimation from '@/hooks/Frontend/faqScreen/useAnimationFaq';
@@ -23,12 +22,7 @@ import dataFaq from '@/constants/dataFaq';
 // OUR INTERFACES
 import { ButtonCustomProps } from '@/interfaces/buttonCustomProps';
 
-// OUR UTILS
-import { getHeaderPaddingVertical } from '@/utils/platformStyleAndroidIos';
-
 export default function FAQ({ count = 1 }: ButtonCustomProps) {
-  const headerPaddingVertical = getHeaderPaddingVertical();
-
   const {
     openIndex,
     animatedValues,
@@ -39,18 +33,8 @@ export default function FAQ({ count = 1 }: ButtonCustomProps) {
 
   return (
     <View className="flex-1 gap-4 bg-[#A7CBE5]">
-      {/* HEADER */}
-      <View
-        className={`w-full flex-row items-center justify-between rounded-b-[10px] bg-[#1475BA] px-6 shadow-md ${headerPaddingVertical}`}
-      >
-        <Image
-          source={require('@/assets/images/HomeScreen/logo.png')}
-          className="h-12 w-44 object-cover"
-        />
-        <View className="flex-row items-center gap-6">
-          <ButtonShopAndChat />
-        </View>
-      </View>
+      {/* NAVBAR */}
+      <Navbar />
 
       {/* BODY */}
       <View className="flex-1 px-4">

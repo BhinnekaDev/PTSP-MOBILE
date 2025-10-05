@@ -12,14 +12,10 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Feather from '@expo/vector-icons/Feather';
 
 // OUR COMPONENTS
-import ButtonShopAndChat from '@/components/buttonShopAndChat';
 import ButtonCustom from '@/components/buttonCustom';
-
-// OUR UTILS
-import { getHeaderPaddingVertical } from '@/utils/platformStyleAndroidIos';
+import Navbar from '@/components/Navbar';
 
 export default function ProfileTabs() {
-  const headerPaddingVertical = getHeaderPaddingVertical();
   const router = useRouter();
   const { profile, loading } = useGetUserProfile();
   const [modalVisible, setModalVisible] = useState(false);
@@ -34,19 +30,9 @@ export default function ProfileTabs() {
       end={{ x: 1, y: 1 }}
       style={{ flex: 1 }}
     >
-      <View
-        className={`w-full flex-row items-center justify-between rounded-xl bg-[#1475BA] px-6 pt-12 shadow-md ${headerPaddingVertical}`}
-      >
-        <View>
-          <Image
-            source={require('@/assets/images/HomeScreen/logo.png')}
-            className="h-12 w-44 object-cover"
-          />
-        </View>
-        <View className="flex-row items-center gap-6">
-          <ButtonShopAndChat />
-        </View>
-      </View>
+      {/* NAVBAR */}
+      <Navbar />
+
       <ScrollView
         contentContainerStyle={{ paddingHorizontal: 15, paddingBottom: 30 }}
         showsVerticalScrollIndicator={false}
@@ -65,7 +51,7 @@ export default function ProfileTabs() {
         <View className="w-full items-center py-4">
           <Image
             source={require('@/assets/images/HomeScreen/banner.png')}
-            className="h-40 w-full rounded-lg object-cover"
+            className="h-40 w-full rounded-lg object-cover" 
           />
         </View>
 
