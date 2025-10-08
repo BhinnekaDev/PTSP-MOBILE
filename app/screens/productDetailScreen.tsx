@@ -10,6 +10,10 @@ import {
   Image,
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 // OUR ICONS
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -22,9 +26,6 @@ import Button from '@/components/button';
 import ButtonShopAndChat from '@/components/buttonShopAndChat';
 import { ProductCardInfoButton } from '@/components/productCardInfoButton';
 
-// OUR UTILS
-import { getHeaderPaddingVertical } from '@/utils/platformStyleAndroidIos';
-
 // OUR HOOKS
 import { useGetProductsByCategory } from '@/hooks/Backend/useGetProductsByCategory';
 import { usePopupAnimation } from '@/hooks/Frontend/popUpInfoCard/usePopupAnimation';
@@ -34,7 +35,6 @@ import { useAddToCart } from '@/hooks/Backend/useAddToCart';
 import { ProductType } from '@/interfaces/productDataProps';
 
 export default function ProductDetailScreen() {
-  const headerPaddingVertical = getHeaderPaddingVertical();
   const params = useLocalSearchParams();
   const compositeCategory = params.category as string;
 
@@ -66,8 +66,14 @@ export default function ProductDetailScreen() {
 
   return (
     <View className="flex-1 bg-[#A7CBE5]">
+      {/* NAVBAR */}
       <View
-        className={`z-20 w-full flex-row items-center justify-between rounded-b-[10px] bg-[#1475BA] px-4 pt-12 ${headerPaddingVertical}`}
+        className="z-20 w-full flex-row items-center justify-between rounded-b-[10px] bg-[#1475BA]"
+        style={{
+          paddingHorizontal: wp(4),
+          paddingTop: hp(6),
+          paddingBottom: hp(1.5),
+        }}
       >
         <TouchableOpacity
           onPress={() => router.back()}
@@ -75,17 +81,45 @@ export default function ProductDetailScreen() {
         >
           <Ionicons name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
-        <View className="flex-1 flex-row items-center justify-between rounded-full bg-white pl-3">
+        {/* Input Pencarian */}
+        <View
+          className="flex-1 flex-row items-center justify-between rounded-full bg-white"
+          style={{
+            paddingLeft: wp(3),
+            height: hp(5.5),
+          }}
+        >
           <TextInput
-            className="flex-1 py-1"
+            className="flex-1"
             placeholder="Cari"
-            style={{ fontFamily: 'LexRegular' }}
+            placeholderTextColor={'gray'}
+            style={{
+              fontFamily: 'LexRegular',
+              fontSize: wp(3.8),
+              paddingVertical: 0,
+            }}
           />
-          <TouchableOpacity className="rounded-full bg-[#72C02C] px-3 py-2">
-            <Octicons name="search" size={20} color="white" />
+          <TouchableOpacity
+            activeOpacity={0.5}
+            className="rounded-full bg-[#72C02C]"
+            style={{
+              paddingVertical: hp(1),
+              paddingHorizontal: wp(3.5),
+              marginRight: wp(1.5),
+            }}
+          >
+            <Octicons name="search" size={wp(5)} color="white" />
           </TouchableOpacity>
         </View>
-        <View className="ml-12 flex-row items-center gap-4">
+
+        {/* Button Shop & Chat */}
+        <View
+          className="flex-row"
+          style={{
+            marginLeft: wp(6),
+            gap: wp(3),
+          }}
+        >
           <ButtonShopAndChat />
         </View>
       </View>

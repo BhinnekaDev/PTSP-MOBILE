@@ -37,6 +37,7 @@ export default function Product() {
 
   return (
     <View className="flex-1">
+      {/* NAVBAR */}
       <View
         className="z-20 w-full flex-row items-center justify-between rounded-b-[10px] bg-[#1475BA]"
         style={{

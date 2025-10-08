@@ -1,5 +1,5 @@
 import { db, firebaseAuth } from '@/lib/firebase';
-import { showMessage } from 'react-native-flash-message';
+import { showAppMessage } from '@/utils/showAppMessage';
 
 export const useDeleteCartOrderScreen = () => {
   const removeFromCart = async (
@@ -27,17 +27,20 @@ export const useDeleteCartOrderScreen = () => {
         [type]: updatedArray,
       });
 
-      showMessage({
-        message: 'Produk dihapus',
-        type: 'success',
-      });
+      // ✅ Reusable & Responsive Success Message
+      showAppMessage(
+        'Produk dihapus',
+        'Produk berhasil dihapus dari keranjang.',
+        'success'
+      );
     } catch (error: any) {
       console.error('Gagal hapus item:', error);
-      showMessage({
-        message: 'Error',
-        description: 'Tidak dapat menghapus produk. Silakan coba lagi.',
-        type: 'danger',
-      });
+
+      // ✅ Reusable & Responsive Error Message
+      showAppMessage(
+        'Error',
+        'Tidak dapat menghapus produk. Silakan coba lagi.'
+      );
     }
   };
 
