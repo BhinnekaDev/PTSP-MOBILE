@@ -66,7 +66,7 @@ export const useUpdateCartQuantityScreen = () => {
       showAppMessage(
         'Error',
         'Tidak bisa update kuantitas. Silakan coba lagi.',
-        'danger'
+        'error'
       );
     }
   };

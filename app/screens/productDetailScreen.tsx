@@ -28,7 +28,7 @@ import { ProductCardInfoButton } from '@/components/productCardInfoButton';
 
 // OUR HOOKS
 import { useGetProductsByCategory } from '@/hooks/Backend/useGetProductsByCategory';
-import { usePopupAnimation } from '@/hooks/Frontend/popUpInfoCard/usePopupAnimation';
+import { usePopupDetailProductAnimation } from '@/hooks/Frontend/popUpInfoCard/usePopupDetailProductAnimation';
 import { useAddToCart } from '@/hooks/Backend/useAddToCart';
 
 // OUT INTERFACES
@@ -37,17 +37,15 @@ import { ProductType } from '@/interfaces/productDataProps';
 export default function ProductDetailScreen() {
   const params = useLocalSearchParams();
   const compositeCategory = params.category as string;
-
   const informationOrService = compositeCategory
     ? compositeCategory.split('_')
     : ['', ''];
   const productType = informationOrService[0];
   const categoryForIcon = informationOrService.slice(1).join('_');
-
   const { products, ownerName, loading, error } =
     useGetProductsByCategory(compositeCategory);
   const { activePopupIndex, togglePopup, closePopup, fadeAnim } =
-    usePopupAnimation();
+    usePopupDetailProductAnimation();
 
   const { loadingAddToCart, addToCart } = useAddToCart();
 
