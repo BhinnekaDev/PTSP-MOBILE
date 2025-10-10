@@ -70,9 +70,13 @@ export default function InvoiceScreen() {
           <Text className="text-center text-sm text-gray-500">
             Nomor Pesanan
           </Text>
-          <Text className="text-center text-2xl font-semibold">
-            {invoiceDetail?.idPemesanan || 'Null'}
-          </Text>
+          <View className="mb-5">
+            <View className="self-center rounded-full border border-gray-300 bg-gray-200 px-4 py-1">
+              <Text className="font-mono text-xl font-bold tracking-wide text-gray-800">
+                {invoiceDetail?.idPemesanan || 'Null'}
+              </Text>
+            </View>
+          </View>
 
           {invoiceDetail?.Status_Pembayaran && (
             <Text
@@ -162,6 +166,7 @@ export default function InvoiceScreen() {
                   <Text className="mb-1 text-sm text-gray-500">
                     Nomor Pesanan
                   </Text>
+
                   <Text className="text-base font-medium text-gray-800">
                     {invoiceDetail?.idPemesanan || 'Null'}
                   </Text>
