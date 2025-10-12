@@ -31,10 +31,10 @@ export const useGetUserDetailOrderInfo = (idPemesanan?: string) => {
         }
 
         const pemesananData = docSnap.data();
-        console.log(
-          '🔥 Dokumen pemesanan snapshot (raw):',
-          JSON.stringify(pemesananData, null, 2)
-        );
+        // console.log(
+        //   '🔥 Dokumen pemesanan snapshot (raw):',
+        //   JSON.stringify(pemesananData, null, 2)
+        // );
         const idAjukan = pemesananData?.ID_Ajukan;
 
         const buildDetail = (ajukanData: AjukanDetail | null) => {
@@ -58,10 +58,10 @@ export const useGetUserDetailOrderInfo = (idPemesanan?: string) => {
           });
           setLoading(false);
         };
-        console.log('🎯 DETAIL YANG DI SET :', {
-          idPemesanan: docSnap.id,
-          ID_Transaksi: pemesananData?.ID_Transaksi,
-        });
+        // console.log('🎯 DETAIL YANG DI SET :', {
+        //   idPemesanan: docSnap.id,
+        //   ID_Transaksi: pemesananData?.ID_Transaksi,
+        // });
 
         if (idAjukan) {
           if (unsubscribeAjukan) unsubscribeAjukan();

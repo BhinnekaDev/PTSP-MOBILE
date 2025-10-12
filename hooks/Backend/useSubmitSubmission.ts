@@ -1,16 +1,12 @@
-import { showMessage } from 'react-native-flash-message';
 import {
   db,
   firebaseAuth,
   serverTimestamp,
   firebaseStorage,
 } from '@/lib/firebase';
-
-// OUR CONSTANTS
 import { submissionOptions } from '@/constants/submissionOptions';
-
-// OUR PROPS
 import CartItemProps from '@/interfaces/cartItemProps';
+import { showAppMessage } from '@/utils/showAppMessage'; // 🔹 pakai utils
 
 interface SubmitSubmissionOptions {
   selectedJenis: string;
@@ -47,11 +43,11 @@ export const useSubmitSubmission = () => {
   }: SubmitSubmissionOptions) => {
     const user = firebaseAuth.currentUser;
     if (!user) {
-      showMessage({
-        message: 'Login Diperlukan',
-        description: 'Silakan login untuk melakukan pengajuan.',
-        type: 'warning',
-      });
+      showAppMessage(
+        'Login Diperlukan',
+        'Silakan login untuk melakukan pengajuan.',
+        'warning'
+      );
       return;
     }
 
@@ -62,11 +58,11 @@ export const useSubmitSubmission = () => {
       );
 
       if (!selectedData) {
-        showMessage({
-          message: 'Data Tidak Valid',
-          description: 'Jenis kegiatan yang dipilih tidak dikenali.',
-          type: 'danger',
-        });
+        showAppMessage(
+          'Data Tidak Valid',
+          'Jenis kegiatan yang dipilih tidak dikenali.',
+          'warning'
+        );
         return;
       }
 
@@ -119,9 +115,10 @@ export const useSubmitSubmission = () => {
       }
 
       // 🔽 Hitung total harga
-      const totalHarga = cartData.reduce((total, item) => {
-        return total + (item.Total_Harga || 0);
-      }, 0);
+      const totalHarga = cartData.reduce(
+        (total, item) => total + (item.Total_Harga || 0),
+        0
+      );
 
       const sanitizedCartData = cartData.map((item) => {
         const baseItem = {
@@ -136,11 +133,11 @@ export const useSubmitSubmission = () => {
         if (jenisAjukan === 'Berbayar') {
           return {
             ...baseItem,
-            Nomor_VA: '', // hanya kalau berbayar
+            Nomor_VA: '',
           };
         }
 
-        return baseItem; // kalau gratis, tidak ada Nomor_VA
+        return baseItem;
       });
 
       // 🔽 Siapkan data pemesanan
@@ -155,27 +152,30 @@ export const useSubmitSubmission = () => {
         Total_Harga_Pesanan: totalHarga,
       };
 
-      // 🔽 Tambahkan ID_Transaksi jika jenisAjukan adalah 'Berbayar'
       if (jenisAjukan === 'Berbayar') {
         pemesananData.ID_Transaksi = generateIdTransaksi();
       }
 
-      // 🔽 Buat dokumen di koleksi "pemesanan"
       await db.collection('pemesanan').add(pemesananData);
 
-      // 🔽 Hapus data keranjang setelah submit
+      // 🔽 Hapus keranjang setelah submit
       await db.collection('keranjang').doc(user.uid).update({
         Informasi: [],
         Jasa: [],
       });
 
+      showAppMessage(
+        'Pengajuan Berhasil',
+        'Pengajuan Anda telah dikirim dan sedang ditinjau.',
+        'success'
+      );
     } catch (error: any) {
       console.error('❌ Error saat submit pengajuan:', error);
-      showMessage({
-        message: 'Terjadi Kesalahan',
-        description: error.message || 'Gagal submit pengajuan.',
-        type: 'danger',
-      });
+      showAppMessage(
+        'Terjadi Kesalahan',
+        error.message || 'Gagal submit pengajuan.',
+        'error'
+      );
     }
   };
 

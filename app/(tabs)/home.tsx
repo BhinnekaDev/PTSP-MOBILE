@@ -1,13 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  Modal,
-  Pressable,
-} from 'react-native';
+import { View, Text, Image, ScrollView, Modal, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Video, ResizeMode } from 'expo-av';
@@ -16,22 +8,17 @@ import { Video, ResizeMode } from 'expo-av';
 import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 
 // OUR ICONS
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Feather from '@expo/vector-icons/Feather';
 
 // OUR COMPONENTS
-import ButtonShopAndChat from '@/components/buttonShopAndChat';
-
-// OUR UTILS
-import { getHeaderPaddingVertical } from '@/utils/platformStyleAndroidIos';
+import ButtonCustom from '@/components/buttonCustom';
+import Navbar from '@/components/Navbar';
 
 export default function ProfileTabs() {
-  const headerPaddingVertical = getHeaderPaddingVertical();
   const router = useRouter();
   const { profile, loading } = useGetUserProfile();
   const [modalVisible, setModalVisible] = useState(false);
-
   if (loading) return <Text>Loading...</Text>;
 
   return (
@@ -43,19 +30,9 @@ export default function ProfileTabs() {
       end={{ x: 1, y: 1 }}
       style={{ flex: 1 }}
     >
-      <View
-        className={`w-full flex-row items-center justify-between rounded-xl bg-[#1475BA] px-6 pt-12 shadow-md ${headerPaddingVertical}`}
-      >
-        <View>
-          <Image
-            source={require('@/assets/images/HomeScreen/logo.png')}
-            className="h-12 w-44 object-cover"
-          />
-        </View>
-        <View className="flex-row items-center gap-6">
-          <ButtonShopAndChat />
-        </View>
-      </View>
+      {/* NAVBAR */}
+      <Navbar />
+
       <ScrollView
         contentContainerStyle={{ paddingHorizontal: 15, paddingBottom: 30 }}
         showsVerticalScrollIndicator={false}
@@ -74,127 +51,94 @@ export default function ProfileTabs() {
         <View className="w-full items-center py-4">
           <Image
             source={require('@/assets/images/HomeScreen/banner.png')}
-            className="h-40 w-full rounded-lg object-cover"
+            className="h-40 w-full rounded-lg object-cover" 
           />
         </View>
+
+        {/* KE SATU */}
         <View className="flex-row items-center justify-evenly gap-10 py-3">
-          <TouchableOpacity
-            activeOpacity={0.4}
+          <ButtonCustom
+            vertical
             onPress={() => router.push('/(tabs)/product')}
-            className="flex-col items-center justify-center gap-1"
-          >
-            <Image
-              source={require('@/assets/images/HomeScreen/catalog-icon.png')}
-              className="h-10 w-10 object-cover"
-            />
-            <Text
-              style={{ fontFamily: 'LexRegular' }}
-              className="text-center text-white"
-            >
-              Katalog{'\n'}Produk
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.4}
-            className="flex-col items-center justify-center gap-1"
-          >
-            <Image
-              source={require('@/assets/images/HomeScreen/monitoring-icon.png')}
-              className="h-10 w-10 object-cover"
-            />
-            <Text
-              style={{ fontFamily: 'LexRegular' }}
-              className="text-center text-white"
-            >
-              Monitoring{'\n'}Pesanan
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.4}
-            className="flex-col items-center justify-center gap-1"
+            classNameContainer="items-center justify-center gap-1 bg-transparent w-20"
+            textClassName="text-center text-white text-sm"
+            text="Katalog Produk"
+            containerStyle={{ width: 100 }} // cukup untuk teks
+            FontCustom={{ fontFamily: 'LexRegular' }}
+            iconLeft={
+              <Image
+                source={require('@/assets/images/HomeScreen/catalog-icon.png')}
+                style={{ width: 40, height: 40 }}
+              />
+            }
+          />
+          <ButtonCustom
+            vertical
+            onPress={() => router.push('/(tabs)/product')}
+            classNameContainer="items-center justify-center gap-1 bg-transparent"
+            textClassName="text-center text-white text-sm"
+            text="Monitoring Pesanan"
+            containerStyle={{ width: 100 }}
+            FontCustom={{ fontFamily: 'LexRegular' }}
+            iconLeft={
+              <Image
+                source={require('@/assets/images/HomeScreen/monitoring-icon.png')}
+                className="h-10 w-10 object-cover"
+              />
+            }
+          />
+          <ButtonCustom
+            vertical
             onPress={() => router.push('/(tabs)/regulation')}
-          >
-            <Image
-              source={require('@/assets/images/HomeScreen/rates-icon.png')}
-              className="h-10 w-10 object-cover"
-            />
-            <Text
-              style={{ fontFamily: 'LexRegular' }}
-              className="text-center text-white"
-            >
-              Tarif{'\n'}Pelayanan
-            </Text>
-          </TouchableOpacity>
+            classNameContainer="items-center justify-center gap-1 bg-transparent"
+            textClassName="text-center text-white text-sm"
+            text="Tarif Pelayanan"
+            containerStyle={{ width: 100 }}
+            FontCustom={{ fontFamily: 'LexRegular' }}
+            iconLeft={
+              <Image
+                source={require('@/assets/images/HomeScreen/rates-icon.png')}
+                className="h-10 w-10 object-cover"
+              />
+            }
+          />
         </View>
+        {/* KE DUA */}
         <View className="flex-row items-center justify-evenly gap-10 py-3">
-          <TouchableOpacity
-            activeOpacity={0.4}
+          <ButtonCustom
+            vertical
             onPress={() => setModalVisible(true)}
-            className="flex-col items-center justify-center gap-1"
-          >
-            <Image
-              source={require('@/assets/images/HomeScreen/guide-icon.png')}
-              className="h-10 w-10 object-cover"
-            />
-            <Text
-              style={{ fontFamily: 'LexRegular' }}
-              className="text-center text-white"
-            >
-              Panduan{'\n'}Pelayanan
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.4}
-            className="flex-col items-center justify-center gap-1"
+            classNameContainer="items-center justify-center gap-1 bg-transparent"
+            textClassName="text-center text-white text-sm"
+            text="Panduan Pelayanan"
+            containerStyle={{ width: 100 }}
+            FontCustom={{ fontFamily: 'LexRegular' }}
+            iconLeft={
+              <Image
+                source={require('@/assets/images/HomeScreen/guide-icon.png')}
+                className="h-10 w-10 object-cover"
+              />
+            }
+          />
+          <ButtonCustom
+            vertical
             onPress={() => router.push('/screens/suggestionsAndComplaints')}
-          >
-            <Image
-              source={require('@/assets/images/HomeScreen/faq-icon.png')}
-              className="h-10 w-10 object-cover"
-            />
-            <Text
-              style={{ fontFamily: 'LexRegular' }}
-              className="text-center text-white"
-            >
-              Saran &{'\n'}Pengaduan
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.4}
-            className="flex-col items-center justify-center gap-1"
-          >
-            <MaterialCommunityIcons
-              name="email-fast-outline"
-              size={30}
-              color="white"
-            />
-            <Text
-              style={{ fontFamily: 'LexRegular' }}
-              className="text-center text-white"
-            >
-              Test{'\n'}Keamanan
-            </Text>
-          </TouchableOpacity>
+            classNameContainer="items-center justify-center gap-1 bg-transparent"
+            textClassName="text-center text-white text-sm"
+            text="Saran & Pengaduan"
+            containerStyle={{ width: 100 }}
+            FontCustom={{ fontFamily: 'LexRegular' }}
+            iconLeft={
+              <Image
+                source={require('@/assets/images/HomeScreen/faq-icon.png')}
+                className="h-10 w-10 object-cover"
+              />
+            }
+          />
         </View>
-        <View className="flex-row items-center justify-evenly gap-10 py-3">
-          <TouchableOpacity
-            activeOpacity={0.4}
-            onPress={() => router.push('/screens/invoiceScreen')}
-            className="flex-col items-center justify-center gap-1"
-          >
-            <Image
-              source={require('@/assets/images/HomeScreen/guide-icon.png')}
-              className="h-10 w-10 object-cover"
-            />
-            <Text
-              style={{ fontFamily: 'LexRegular' }}
-              className="text-center text-white"
-            >
-              KE INVOICE
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <View className="mt-6">
+
+        {/* LAYANAN INFORMASI */}
+        <View className="mt-3">
           <Text
             style={{ fontFamily: 'LexBold' }}
             className="text-xl text-white"
@@ -206,64 +150,56 @@ export default function ProfileTabs() {
             contentContainerStyle={{ padding: 6 }}
             showsHorizontalScrollIndicator={false}
           >
-            <TouchableOpacity
-              activeOpacity={0.8}
+            <ButtonCustom
+              vertical
               onPress={() =>
                 router.push({
                   pathname: '/screens/productDetailScreen',
                   params: { category: 'Informasi_Meteorologi' },
                 })
               }
-              className="mr-4 h-32 w-36 items-center justify-center gap-2 rounded-lg border-2 border-[#3498DB] bg-white shadow-md shadow-[#3498DB]"
-            >
-              <FontAwesome6 name="mountain" size={40} color="#3498DB" />
-              <Text
-                style={{ fontFamily: 'LexBold' }}
-                className="text-center text-sm text-black"
-              >
-                Informasi Stasiun{'\n'}Meteorologi
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              activeOpacity={0.8}
+              classNameContainer="mr-4 h-32 w-36 items-center justify-center gap-2 rounded-lg border-2 border-[#3498DB] bg-white shadow-md shadow-[#3498DB]"
+              textClassName="text-center text-sm text-black"
+              text="Informasi Stasiun Meteorologi"
+              FontCustom={{ fontFamily: 'LexBold' }}
+              iconLeft={
+                <FontAwesome6 name="mountain" size={40} color="#3498DB" />
+              }
+            />
+            <ButtonCustom
+              vertical
               onPress={() =>
                 router.push({
                   pathname: '/screens/productDetailScreen',
                   params: { category: 'Informasi_Klimatologi' },
                 })
               }
-              className="mr-4 h-32 w-36 items-center justify-center gap-2 rounded-lg border-2 border-[#3498DB] bg-white shadow-md shadow-[#3498DB]"
-            >
-              <FontAwesome6 name="cloud-bolt" size={40} color="#3498DB" />
-              <Text
-                style={{ fontFamily: 'LexBold' }}
-                className="text-center text-sm text-black"
-              >
-                Informasi Stasiun{'\n'}Klimatologi
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              activeOpacity={0.8}
+              classNameContainer="mr-4 h-32 w-36 items-center justify-center gap-2 rounded-lg border-2 border-[#3498DB] bg-white shadow-md shadow-[#3498DB]"
+              textClassName="text-center text-sm text-black"
+              text="Informasi Stasiun Klimatologi"
+              FontCustom={{ fontFamily: 'LexBold' }}
+              iconLeft={
+                <FontAwesome6 name="cloud-bolt" size={40} color="#3498DB" />
+              }
+            />
+            <ButtonCustom
+              vertical
               onPress={() =>
                 router.push({
                   pathname: '/screens/productDetailScreen',
                   params: { category: 'Informasi_Geofisika' },
                 })
               }
-              className="h-32 w-36 items-center justify-center gap-2 rounded-lg border-2 border-[#3498DB] bg-white shadow-md shadow-[#3498DB]"
-            >
-              <Feather name="wind" size={40} color="#3498DB" />
-              <Text
-                style={{ fontFamily: 'LexBold' }}
-                className="text-center text-sm text-black"
-              >
-                Informasi Stasiun{'\n'}Geofisika
-              </Text>
-            </TouchableOpacity>
+              classNameContainer="mr-4 h-32 w-36 items-center justify-center gap-2 rounded-lg border-2 border-[#3498DB] bg-white shadow-md shadow-[#3498DB]"
+              textClassName="text-center text-sm text-black"
+              text="Informasi Stasiun Geofisika"
+              FontCustom={{ fontFamily: 'LexBold' }}
+              iconLeft={<Feather name="wind" size={40} color="#3498DB" />}
+            />
           </ScrollView>
         </View>
+
+        {/* LAYANAN JASA */}
         <View className="mt-3">
           <Text
             style={{ fontFamily: 'LexBold' }}
@@ -276,62 +212,54 @@ export default function ProfileTabs() {
             contentContainerStyle={{ padding: 6 }}
             showsHorizontalScrollIndicator={false}
           >
-            <TouchableOpacity
-              activeOpacity={0.8}
+            <ButtonCustom
+              vertical
               onPress={() =>
                 router.push({
                   pathname: '/screens/productDetailScreen',
                   params: { category: 'Jasa_Meteorologi' },
                 })
               }
-              className="mr-4 h-32 w-36 items-center justify-center gap-2 rounded-lg border-2 border-[#3498DB] bg-white shadow-md shadow-[#3498DB]"
-            >
-              <FontAwesome6 name="mountain" size={40} color="#3498DB" />
-              <Text
-                style={{ fontFamily: 'LexBold' }}
-                className="text-center text-sm text-black"
-              >
-                Jasa Stasiun{'\n'}Meteorologi
-              </Text>
-            </TouchableOpacity>
+              classNameContainer="mr-4 h-32 w-36 items-center justify-center gap-2 rounded-lg border-2 border-[#3498DB] bg-white shadow-md shadow-[#3498DB]"
+              textClassName="text-center text-sm text-black"
+              text="Jasa Stasiun Meteorologi"
+              FontCustom={{ fontFamily: 'LexBold' }}
+              iconLeft={
+                <FontAwesome6 name="mountain" size={40} color="#3498DB" />
+              }
+            />
 
-            <TouchableOpacity
-              activeOpacity={0.8}
+            <ButtonCustom
+              vertical
               onPress={() =>
                 router.push({
                   pathname: '/screens/productDetailScreen',
                   params: { category: 'Jasa_Klimatologi' },
                 })
               }
-              className="mr-4 h-32 w-36 items-center justify-center gap-2 rounded-lg border-2 border-[#3498DB] bg-white shadow-md shadow-[#3498DB]"
-            >
-              <FontAwesome6 name="cloud-bolt" size={40} color="#3498DB" />
-              <Text
-                style={{ fontFamily: 'LexBold' }}
-                className="text-center text-sm text-black"
-              >
-                Jasa Stasiun{'\n'}Klimatologi
-              </Text>
-            </TouchableOpacity>
+              classNameContainer="mr-4 h-32 w-36 items-center justify-center gap-2 rounded-lg border-2 border-[#3498DB] bg-white shadow-md shadow-[#3498DB]"
+              textClassName="text-center text-sm text-black"
+              text="Jasa Stasiun Klimatologi"
+              FontCustom={{ fontFamily: 'LexBold' }}
+              iconLeft={
+                <FontAwesome6 name="cloud-bolt" size={40} color="#3498DB" />
+              }
+            />
 
-            <TouchableOpacity
-              activeOpacity={0.8}
+            <ButtonCustom
+              vertical
               onPress={() =>
                 router.push({
                   pathname: '/screens/productDetailScreen',
                   params: { category: 'Jasa_Geofisika' },
                 })
               }
-              className="h-32 w-36 items-center justify-center gap-2 rounded-lg border-2 border-[#3498DB] bg-white shadow-md shadow-[#3498DB]"
-            >
-              <Feather name="wind" size={40} color="#3498DB" />
-              <Text
-                style={{ fontFamily: 'LexBold' }}
-                className="text-center text-sm text-black"
-              >
-                Jasa Stasiun{'\n'}Geofisika
-              </Text>
-            </TouchableOpacity>
+              classNameContainer="h-32 w-36 items-center justify-center gap-2 rounded-lg border-2 border-[#3498DB] bg-white shadow-md shadow-[#3498DB]"
+              textClassName="text-center text-sm text-black"
+              text="Jasa Stasiun Geofisika"
+              FontCustom={{ fontFamily: 'LexBold' }}
+              iconLeft={<Feather name="wind" size={40} color="#3498DB" />}
+            />
           </ScrollView>
         </View>
         <Modal

@@ -1,52 +1,108 @@
+import React from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
 import { router } from 'expo-router';
-
-// OUR ICONS
 import { AntDesign, Ionicons } from '@expo/vector-icons';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
-// OUR COMPONENTS
+// OUR COMPONENT
 import ButtonCustom from '@/components/buttonCustom';
+
+// OUR HOOKS
+import { useUnreadMessagesCount } from '@/hooks/Backend/useUnreadMessagesCount';
 
 // OUR INTERFACES
 import { ButtonCustomProps } from '@/interfaces/buttonCustomProps';
 
+type NavCartOrderProps = ButtonCustomProps & {
+  showChatIcon?: boolean; // ✅ tambahan: untuk show/hide icon chat
+};
+
 export default function NavCartOrder({
-  count = 1,
   text,
   textClassName,
   onPressLeftIcon,
   onPressRightIcon,
   isTouchable = true,
-}: ButtonCustomProps) {
+  showChatIcon = true, // default: ditampilkan
+}: NavCartOrderProps) {
+  // ambil jumlah pesan belum dibaca dari hook
+  const { unreadCount } = useUnreadMessagesCount();
+
   return (
-    <View className="relative flex-row items-center rounded-b-[10px] bg-[#1475BA] py-10 pb-4 pr-4">
-      {/* TOMBOL UTAMA*/}
+    <View
+      className="relative flex-row items-center bg-[#1475BA]"
+      style={{
+        paddingTop: hp(5),
+        borderBottomLeftRadius: hp(1.2),
+        borderBottomRightRadius: hp(1.2),
+        paddingVertical: hp(2),
+        paddingBottom: hp(1),
+        paddingRight: wp(4),
+      }}
+    >
+      {/* Tombol Utama */}
       <ButtonCustom
-        classNameContainer="py-0 w-[90%]"
+        classNameContainer="py-0"
         isTouchable={isTouchable}
         text={text}
-        iconLeft={<AntDesign name="arrowleft" size={24} color="white" />}
+        iconLeft={
+          <AntDesign
+            name="arrowleft"
+            size={wp(6)} // responsive icon size
+            color="white"
+          />
+        }
         onPressLeftIcon={onPressLeftIcon}
-        textClassName={`text-[20px] text-white ${textClassName}`}
+        textClassName={`text-white pl-5 ${textClassName}`}
+        textStyle={{
+          fontFamily: 'LexBold',
+          fontSize: wp(4.5), // responsive font
+        }}
+        containerStyle={{
+          width: showChatIcon ? wp(85) : wp(92), // lebih lebar kalau chat disembunyikan
+        }}
       />
-      {/* ICON KANAN - Dibuat sejajar secara vertikal dengan parent flex-row */}
-      <TouchableOpacity
-        activeOpacity={0.7}
-        onPress={onPressRightIcon ?? (() => router.push('/screens/chatScreen'))}
-      >
-        <Ionicons name="chatbubbles-outline" size={28} color="white" />
-        {/* NOTIFIKASI PESAN */}
-        {count > 0 && (
-          <View className="absolute -right-2 -top-1 z-10 h-5 w-5 items-center justify-center rounded-full bg-red-600">
-            <Text
-              className="text-[10px] text-white"
-              style={{ fontFamily: 'LexBold' }}
+
+      {/* ✅ Icon Chat (optional) */}
+      {showChatIcon && (
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={
+            onPressRightIcon ?? (() => router.push('/screens/chatScreen'))
+          }
+          style={{ marginLeft: wp(3) }}
+        >
+          <Ionicons name="chatbubbles-outline" size={wp(7)} color="white" />
+          {unreadCount > 0 && (
+            <View
+              style={{
+                position: 'absolute',
+                right: -wp(1.5),
+                top: -hp(0.5),
+                height: hp(2.2),
+                width: hp(2.2),
+                borderRadius: hp(1.1),
+                backgroundColor: 'red',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
             >
-              {count}
-            </Text>
-          </View>
-        )}
-      </TouchableOpacity>
+              <Text
+                style={{
+                  fontFamily: 'LexBold',
+                  fontSize: wp(2.5),
+                  color: 'white',
+                }}
+              >
+                {unreadCount}
+              </Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      )}
     </View>
   );
 }

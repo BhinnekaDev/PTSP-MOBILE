@@ -1,10 +1,12 @@
-// hooks/Backend/useAddToCart.ts
-
 import { useState } from 'react';
 import { db, firebaseAuth } from '@/lib/firebase';
 import { router } from 'expo-router';
+
+// OUR INTERFACES
 import { ProductData, ProductType } from '@/interfaces/productDataProps';
-import { showMessage } from 'react-native-flash-message';
+
+// OUR UTILS
+import { showAppMessage } from '@/utils/showAppMessage';
 
 type ProductDataForCart = ProductData;
 
@@ -16,18 +18,14 @@ export const useAddToCart = () => {
     receivedProductType: ProductType
   ) => {
     setLoadingAddToCart(true);
-
     const user = firebaseAuth.currentUser;
+
     if (!user) {
-      showMessage({
-        message: 'Login Diperlukan',
-        description: 'Anda harus login untuk menambahkan produk ke keranjang.',
-        type: 'warning',
-        position: 'bottom',
-        icon: 'auto',
-        autoHide: true,
-        duration: 3000,
-      });
+      showAppMessage(
+        'Login Diperlukan',
+        'Anda harus login untuk menambahkan produk ke keranjang.',
+        'warning'
+      );
       router.push('/screens/loginScreen');
       setLoadingAddToCart(false);
       return;
@@ -40,30 +38,23 @@ export const useAddToCart = () => {
     try {
       const collectionName =
         lowercasedProductType === 'informasi' ? 'informasi' : 'jasa';
-
       const productRef = db.collection(collectionName).doc(product.id);
       const productSnap = await productRef.get();
 
       if (!productSnap.exists()) {
-        showMessage({
-          message: 'Produk Tidak Ditemukan',
-          description:
-            'Maaf, produk ini tidak lagi tersedia di database atau ID-nya salah.',
-          type: 'danger',
-        });
-        setLoadingAddToCart(false);
+        showAppMessage(
+          'Produk Tidak Ditemukan',
+          'Maaf, produk ini tidak lagi tersedia di database atau ID-nya salah.'
+        );
         return;
       }
 
       const productRawData = productSnap.data();
-
       if (!productRawData) {
-        showMessage({
-          message: 'Error',
-          description: 'Data produk tidak ditemukan, meskipun produk ada.',
-          type: 'danger',
-        });
-        setLoadingAddToCart(false);
+        showAppMessage(
+          'Error',
+          'Data produk tidak ditemukan, meskipun produk ada.'
+        );
         return;
       }
 
@@ -116,40 +107,39 @@ export const useAddToCart = () => {
             [typeField]: updatedTypeArray,
           });
 
-          showMessage({
-            message: 'Berhasil',
-            description: 'Kuantitas produk di keranjang telah diperbarui!',
-            type: 'success',
-          });
+          showAppMessage(
+            'Berhasil',
+            'Kuantitas produk di keranjang telah diperbarui!',
+            'success'
+          );
         } else {
           await userCartDocRef.update({
             [typeField]: [...currentTypeArray, newItemPayload],
           });
-          showMessage({
-            message: 'Berhasil',
-            description: 'Produk berhasil ditambahkan ke keranjang!',
-            type: 'success',
-          });
+          showAppMessage(
+            'Berhasil',
+            'Produk berhasil ditambahkan ke keranjang!',
+            'success'
+          );
         }
       } else {
         await userCartDocRef.set({
           [typeField]: [newItemPayload],
         });
-        showMessage({
-          message: 'Berhasil',
-          description: 'Produk berhasil ditambahkan ke keranjang baru!',
-          type: 'success',
-        });
+        showAppMessage(
+          'Berhasil',
+          'Produk berhasil ditambahkan ke keranjang baru!',
+          'success'
+        );
       }
     } catch (error: any) {
       console.error('Gagal menambahkan ke keranjang:', error);
-      showMessage({
-        message: 'Error',
-        description: `Gagal menambahkan produk ke keranjang. Silakan coba lagi. ${
+      showAppMessage(
+        'Error',
+        `Gagal menambahkan produk ke keranjang. Silakan coba lagi. ${
           error.message || ''
-        }`,
-        type: 'danger',
-      });
+        }`
+      );
     } finally {
       setLoadingAddToCart(false);
     }

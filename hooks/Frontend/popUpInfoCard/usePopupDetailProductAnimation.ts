@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Animated } from 'react-native';
 
-export const usePopupAnimation = () => {
+export const usePopupDetailProductAnimation = () => {
   const [activePopupIndex, setActivePopupIndex] = useState<number | null>(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 

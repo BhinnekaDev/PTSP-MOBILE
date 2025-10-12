@@ -4,6 +4,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 
 // OUR ICONS
+import Ionicons from '@expo/vector-icons/Ionicons';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Entypo from '@expo/vector-icons/Entypo';
 
 // COMPONENTS
@@ -28,7 +30,7 @@ export default function OrderTrackingScreen() {
   if (!detail) return <Text>Data tidak ditemukan</Text>;
 
   return (
-    <View className="flex-1 gap-4 bg-white">
+    <View className="flex-1 bg-gray-50">
       <NavCartOrder
         text="Pesanan"
         textClassName="ml-4 text-left"
@@ -36,247 +38,374 @@ export default function OrderTrackingScreen() {
         isTouchable={false}
       />
 
-      <View className="flex-1 px-4">
+      <ScrollView
+        className="flex-1 px-4 py-3"
+        showsVerticalScrollIndicator={false}
+      >
         <LinearGradient
           colors={['#1475BA', '#FFFFFF', '#6BBC3F']}
-          style={{ flex: 1, borderRadius: 12 }}
+          className="overflow-hidden rounded-xl"
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
         >
-          <View className="w-full flex-1 py-6">
-            <Text>Detail untuk ID Pesanan: {id}</Text>
-
-            {/* TITLE TRACKING PESANAN ANDA */}
+          <View className="w-full p-5">
+            {/* Judul Utama */}
             <Text
-              className="self-center text-[20px]"
+              className="mb-1 text-center text-lg text-white"
               style={{ fontFamily: 'LexBold' }}
             >
               Tracking Pesanan Anda
             </Text>
+            <View className="mb-5">
+              <View className="self-center rounded-full border border-white/30 bg-white/20 px-3 py-1 backdrop-blur-sm">
+                <Text className="text-sm font-medium tracking-wide text-white">
+                  ID: {id}
+                </Text>
+              </View>
+            </View>
 
-            {/* TANGGAL PEMESANAN */}
-            <View className="flex-row items-center gap-2 self-center">
+            {/* Tanggal Pemesanan */}
+            <View className="mb-6 flex-row items-center justify-center gap-1">
               <Text
-                className="text-[13px]"
+                className="text-sm text-white/80"
                 style={{ fontFamily: 'LexRegular' }}
               >
-                Dipesan pada tanggal :{' '}
+                Dipesan pada:
               </Text>
               <Text
-                className="text-[13px]"
+                className="text-sm font-medium text-white"
                 style={{ fontFamily: 'LexRegular' }}
               >
                 {detail.Tanggal_Pemesanan.toDate().toLocaleString()}
               </Text>
             </View>
 
-            <ScrollView
-              contentContainerStyle={{ width: '100%', padding: 10 }}
-              showsVerticalScrollIndicator={false}
-            >
-              {/* TRACKING PESANAN */}
-              <View>
-                <View className="relative mb-10 flex-col py-6">
-                  {/* garis vertikal di tengah ikon */}
-                  <View
-                    className="absolute w-[2px] bg-black"
-                    style={{
-                      left: 25,
-                      top: '10%', // contoh: 10% dari tinggi parent container
-                      height: '80%', // contoh: garis vertikal tinggi 70% dari parent
-                    }}
-                  />
+            {/* Timeline Status */}
+            <View className="relative mb-10 flex-col py-6">
+              <View
+                className="absolute left-8 w-px rounded-sm bg-yellow-400"
+                style={{
+                  top: '12%',
+                  height: '76%',
+                  shadowColor: '#FBBF24',
+                  shadowOffset: { width: 0, height: 0 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 2,
+                  elevation: 2,
+                }}
+              />
 
-                  {/* PEMBUNGKUS SEMUA ITEM */}
-                  <View className="flex-col">
-                    {/* STATUS PENGAJUAN */}
-                    <SubmissionStatusSection detail={detail} />
+              {/* Pembungkus Semua Item */}
+              <View className="flex-col space-y-6 pl-2">
+                {/* STATUS PENGAJUAN */}
+                <SubmissionStatusSection detail={detail} />
 
-                    {/* STATUS PEMBAYARAN */}
-                    <PaymentStatusSection detail={detail} />
+                {/* STATUS PEMBAYARAN */}
+                <PaymentStatusSection detail={detail} />
 
-                    {/* STATUS PEMBUATAN */}
-                    <CreationStatusSection detail={detail} />
+                {/* STATUS PEMBUATAN */}
+                <CreationStatusSection detail={detail} />
 
-                    {/* STATUS PESANAN SELESAI */}
-                    <OrderCompletionStatusSection detail={detail} />
+                {/* STATUS PESANAN SELESAI */}
+                <OrderCompletionStatusSection detail={detail} />
+              </View>
+            </View>
+
+            {/* Alamat Pengiriman */}
+            <View className="mb-5 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+              <View className="mb-3 flex-row items-center gap-2">
+                <Ionicons name="location-outline" size={18} color="#1475BA" />
+                <Text className="font-semibold text-gray-800">
+                  Alamat Pengiriman
+                </Text>
+              </View>
+
+              {detail.user?.tipe === 'perorangan' && (
+                <View className="mt-4 space-y-3">
+                  {/* Nama Lengkap */}
+                  <View className="flex-row items-center rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+                    <View className="mr-3 flex h-10 w-10 items-center justify-center rounded-full bg-blue-50">
+                      <FontAwesome6 name="user" size={16} color="#1475BA" />
+                    </View>
+                    <View>
+                      <Text className="text-xs text-gray-500">
+                        Nama Lengkap
+                      </Text>
+                      <Text className="text-sm font-medium text-gray-800">
+                        {detail.user.Nama_Lengkap}
+                      </Text>
+                    </View>
+                  </View>
+
+                  {/* Nomor HP */}
+                  <View className="flex-row items-center rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+                    <View className="mr-3 flex h-10 w-10 items-center justify-center rounded-full bg-green-50">
+                      <FontAwesome6 name="phone" size={16} color="#0A7F3F" />
+                    </View>
+                    <View>
+                      <Text className="text-xs text-gray-500">Nomor HP</Text>
+                      <Text className="text-sm text-gray-800">
+                        {detail.user.No_Hp}
+                      </Text>
+                    </View>
+                  </View>
+
+                  {/* Email */}
+                  <View className="flex-row items-center rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+                    <View className="mr-3 flex h-10 w-10 items-center justify-center rounded-full bg-amber-50">
+                      <FontAwesome6 name="envelope" size={16} color="#D97706" />
+                    </View>
+                    <View>
+                      <Text className="text-xs text-gray-500">Email</Text>
+                      <Text className="text-sm text-gray-800">
+                        {detail.user.Email}
+                      </Text>
+                    </View>
                   </View>
                 </View>
+              )}
 
-                <View className="flex-col">
-                  {/* Baris 1: Alamat Pengiriman dan Ringkasan Pesanan sejajar horizontal */}
-                  <View className="mb-10 flex flex-row gap-2">
-                    {/* Alamat Pengiriman - lebar lebih besar */}
-                    <View
-                      className="gap-2 rounded-[10px] border-2 border-[#73BF40] bg-white p-4"
-                      style={{ flex: 2 }}
-                    >
-                      <Text className="mb-2 font-bold">Alamat Pengiriman</Text>
-                      {detail.user?.tipe === 'perorangan' && (
-                        <>
-                          <Text>{detail.user.Nama_Lengkap}</Text>
-                          <Text>{detail.user.No_Hp}</Text>
-                          <Text>{detail.user.Email}</Text>
-                        </>
-                      )}
-
-                      {detail.user?.tipe === 'perusahaan' && (
-                        <>
-                          <Text>{detail.user.Nama_Perusahaan}</Text>
-                          <Text>{detail.user.No_Hp_Perusahaan}</Text>
-                          <Text>{detail.user.Email}</Text>
-                          <Text>{detail.user.Email_Perusahaan}</Text>
-                          <Text>{detail.user.Alamat_Perusahaan}</Text>
-                        </>
-                      )}
+              {detail.user?.tipe === 'perusahaan' && (
+                <View className="mt-4 space-y-3">
+                  {/* Nama Perusahaan */}
+                  <View className="flex-row items-center rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+                    <View className="mr-3 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50">
+                      <FontAwesome6 name="building" size={16} color="#0A7F3F" />
                     </View>
+                    <View>
+                      <Text className="text-xs text-gray-500">
+                        Nama Perusahaan
+                      </Text>
+                      <Text className="text-sm font-medium text-gray-800">
+                        {detail.user.Nama_Perusahaan}
+                      </Text>
+                    </View>
+                  </View>
 
-                    {/* Ringkasan Pesanan - lebar lebih kecil */}
-                    <View
-                      className="gap-2 rounded-[10px] border-2 border-[#73BF40] bg-white p-4"
-                      style={{ flex: 1 }}
-                    >
-                      <Text className="mb-2 font-bold">Ringkasan Pesanan</Text>
-                      <View className="flex-row flex-wrap justify-between">
-                        <Text>Total Pesanan:</Text>
-                        <Text className="font-bold">
-                          Rp
-                          {detail?.Total_Harga_Pesanan?.toLocaleString('id-ID')}
+                  {/* No HP Perusahaan */}
+                  <View className="flex-row items-center rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+                    <View className="mr-3 flex h-10 w-10 items-center justify-center rounded-full bg-green-50">
+                      <FontAwesome6 name="phone" size={16} color="#0A7F3F" />
+                    </View>
+                    <View>
+                      <Text className="text-xs text-gray-500">
+                        Nomor HP Perusahaan
+                      </Text>
+                      <Text className="text-sm text-gray-800">
+                        {detail.user.No_Hp_Perusahaan}
+                      </Text>
+                    </View>
+                  </View>
+
+                  {/* Email Pribadi */}
+                  <View className="flex-row items-center rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+                    <View className="mr-3 flex h-10 w-10 items-center justify-center rounded-full bg-blue-50">
+                      <FontAwesome6 name="user" size={16} color="#1475BA" />
+                    </View>
+                    <View>
+                      <Text className="text-xs text-gray-500">
+                        Email Pribadi
+                      </Text>
+                      <Text className="text-sm text-gray-800">
+                        {detail.user.Email}
+                      </Text>
+                    </View>
+                  </View>
+
+                  {/* Email Perusahaan (jika ada) */}
+                  {detail.user.Email_Perusahaan && (
+                    <View className="flex-row items-center rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+                      <View className="mr-3 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50">
+                        <FontAwesome6
+                          name="building"
+                          size={16}
+                          color="#0A7F3F"
+                        />
+                      </View>
+                      <View>
+                        <Text className="text-xs text-gray-500">
+                          Email Perusahaan
+                        </Text>
+                        <Text className="text-sm text-gray-800">
+                          {detail.user.Email_Perusahaan}
                         </Text>
                       </View>
                     </View>
-                  </View>
+                  )}
 
-                  {/* Baris 2: Nomor Pesanan full lebar */}
-                  <View className="mb-10 rounded-[10px] border-2 border-[#73BF40] bg-white p-4">
-                    <View
-                      className="flex-row items-center"
-                      style={{ flexWrap: 'wrap' }}
-                    >
-                      {/* NOMOR PESANAN */}
-                      <Text style={{ fontFamily: 'LexRegular', flexShrink: 1 }}>
-                        Nomor Pesanan :
-                      </Text>
-                      <Text style={{ fontFamily: 'LexRegular', flexShrink: 1 }}>
-                        {id}
-                      </Text>
-
-                      {/* TANGGAL PEMESANAN */}
-                      <Text style={{ fontFamily: 'LexRegular', flexShrink: 1 }}>
-                        Dipesan pada tanggal :{' '}
-                      </Text>
-                      <Text style={{ fontFamily: 'LexRegular', flexShrink: 1 }}>
-                        {detail.Tanggal_Pemesanan.toDate().toLocaleString()}
-                      </Text>
+                  {/* Alamat Perusahaan */}
+                  <View className="flex-row items-start rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+                    <View className="mr-3 mt-1 flex h-10 w-10 items-center justify-center rounded-full bg-rose-50">
+                      <FontAwesome6 name="map-pin" size={16} color="#BE123C" />
                     </View>
-
-                    {/* DATA PEMESANAN DARI DETAIL KERAN*/}
                     <View>
-                      {detail.keranjang.map((item, index) => (
-                        <View
-                          key={index}
-                          className="mb-2 border-b border-gray-200 pb-2"
-                          style={{ flexDirection: 'column' }}
-                        >
-                          {/* Nomor VA di baris terpisah */}
-                          {detail.ajukan?.Jenis_Ajukan !== 'Gratis' &&
-                            item.Nomor_VA && (
-                              <Text
-                                style={{
-                                  fontSize: 12,
-                                  color: 'gray',
-                                  flexWrap: 'wrap',
-                                }}
-                              >
-                                Nomor VA: {item.Nomor_VA}
-                              </Text>
-                            )}
-
-                          {/* Baris utama */}
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                            }}
-                          >
-                            <View style={{ flex: 2 }}>
-                              <Text className="font-semibold">{item.Nama}</Text>
-                              <Text className="text-xs text-gray-600">
-                                Pemilik: {item.Pemilik}
-                              </Text>
-                            </View>
-                            <Text style={{ flex: 1, textAlign: 'center' }}>
-                              x{item.Kuantitas}
-                            </Text>
-                            <Text style={{ flex: 1, textAlign: 'right' }}>
-                              Rp{item.Total_Harga.toLocaleString('id-ID')}
-                            </Text>
-                          </View>
-                        </View>
-                      ))}
+                      <Text className="text-xs text-gray-500">
+                        Alamat Perusahaan
+                      </Text>
+                      <Text className="text-sm text-gray-800">
+                        {detail.user.Alamat_Perusahaan}
+                      </Text>
                     </View>
-
-                    <ButtonCustom
-                      classNameContainer="bg-[#1475BA] rounded-[10px] py-1 w-[160px] self-end"
-                      text="CEK INVOICE"
-                      textClassName="text-[13px] text-center text-white"
-                      textStyle={{ fontFamily: 'LexSemiBold' }}
-                      onPress={() => {
-                        router.push({
-                          pathname: '/screens/invoiceScreen',
-                          params: {
-                            idPemesanan: detail.idPemesanan,
-                          },
-                        });
-                      }}
-                      isTouchable={true}
-                      containerStyle={{
-                        shadowColor: '#000',
-                        shadowOffset: { width: 0, height: 4 },
-                        shadowOpacity: 0.3,
-                        shadowRadius: 3,
-                        elevation: 4,
-                      }}
-                    />
                   </View>
                 </View>
+              )}
+            </View>
+
+            {/* Ringkasan Pesanan */}
+            <View className="mb-5 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+              <View className="mb-3 flex-row items-center gap-2">
+                <Ionicons name="receipt-outline" size={18} color="#0A7F3F" />
+                <Text className="font-semibold text-gray-800">
+                  Ringkasan Pesanan
+                </Text>
               </View>
-            </ScrollView>
+              <View className="flex-row justify-between">
+                <Text className="text-gray-600">Total Pesanan</Text>
+                <Text className="font-bold text-emerald-600">
+                  Rp{detail.Total_Harga_Pesanan?.toLocaleString('id-ID')}
+                </Text>
+              </View>
+            </View>
 
-            {/* TOMBOL AJUKAN SEKARANG */}
+            {/* Detail Pesanan Lengkap */}
+            <View className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+              <View className="mb-5 flex-row items-center justify-between">
+                <View className="flex-row items-center gap-2">
+                  <Ionicons name="receipt-outline" size={18} color="#0A7F3F" />
+                  <Text className="font-semibold text-gray-800">
+                    Detail Pesanan
+                  </Text>
+                </View>
+                <View className="flex-row items-center gap-1">
+                  <Text className="text-xs text-gray-500">ID:</Text>
+                  <Text className="font-mono text-xs font-medium text-gray-700">
+                    {id}
+                  </Text>
+                </View>
+              </View>
 
-            {showButtonPlus && (
-              <Animated.View
-                style={{
-                  transform: [{ translateX: animatedValue }],
-                  alignSelf: 'flex-end',
-                  marginHorizontal: 16,
-                }}
-              >
+              <View className="space-y-4">
+                {detail.keranjang.map((item, index) => (
+                  <View
+                    key={index}
+                    className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm"
+                  >
+                    {/* Nomor VA (jika berbayar) */}
+                    {detail.ajukan?.Jenis_Ajukan !== 'Gratis' &&
+                      item.Nomor_VA && (
+                        <View className="mb-3 w-fit flex-row items-center gap-2 rounded-lg bg-blue-50 px-3 py-2">
+                          <FontAwesome6
+                            name="barcode"
+                            size={12}
+                            color="#1475BA"
+                          />
+                          <Text className="font-mono text-xs font-medium text-blue-700">
+                            VA: {item.Nomor_VA}
+                          </Text>
+                        </View>
+                      )}
+
+                    {/* Nama Produk */}
+                    <Text className="mb-1 text-base font-semibold text-gray-800">
+                      {item.Nama}
+                    </Text>
+
+                    {/* Pemilik */}
+                    <View className="mb-3 flex-row items-center gap-1.5">
+                      <Entypo name="user" size={12} color="#6B7280" />
+                      <Text className="text-xs text-gray-600">
+                        Pemilik: {item.Pemilik}
+                      </Text>
+                    </View>
+
+                    {/* Garis pemisah halus */}
+                    <View className="mb-3 h-px w-full bg-gray-100" />
+
+                    {/* Qty & Harga dalam baris bawah yang rapi */}
+                    <View className="flex-row items-center justify-between">
+                      <View className="flex-row items-center gap-1.5">
+                        <Ionicons
+                          name="cube-outline"
+                          size={14}
+                          color="#6B7280"
+                        />
+                        <Text className="text-sm text-gray-700">
+                          Qty:{' '}
+                          <Text className="font-medium">x{item.Kuantitas}</Text>
+                        </Text>
+                      </View>
+
+                      <Text className="text-base font-bold text-emerald-600">
+                        Rp{item.Total_Harga.toLocaleString('id-ID')}
+                      </Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+
+              {/* Tombol Cek Invoice – diperbarui agar lebih menyatu */}
+              <View className="mt-6 flex-row justify-end">
                 <ButtonCustom
-                  classNameContainer="bg-[#1475BA] rounded-[10px] py-1 w-[160px]"
-                  iconLeft={<Entypo name="plus" size={32} color="white" />}
-                  text="Tambah"
-                  textClassName="text-[20px] text-center text-white"
+                  classNameContainer="bg-[#1475BA] rounded-xl py-2.5 px-5"
+                  text="CEK INVOICE"
+                  textClassName="text-sm font-semibold text-white"
                   textStyle={{ fontFamily: 'LexSemiBold' }}
-                  onPress={() => alert('Tambah')}
+                  iconRight={
+                    <Ionicons name="arrow-forward" size={16} color="white" />
+                  }
+                  onPress={() => {
+                    router.push({
+                      pathname: '/screens/invoiceScreen',
+                      params: { idPemesanan: detail.idPemesanan },
+                    });
+                  }}
                   isTouchable={true}
                   containerStyle={{
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 4 },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 3,
-                    elevation: 4,
+                    shadowColor: '#1475BA',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.15,
+                    shadowRadius: 4,
+                    elevation: 3,
                   }}
                 />
-              </Animated.View>
-            )}
+              </View>
+            </View>
           </View>
         </LinearGradient>
-      </View>
 
-      {/* BAR BAWAH */}
-      <View className="h-[4%] w-full bg-[#1475BA]" />
+        {/* Tombol Animasi (Tetap di bawah, tapi tidak di dalam ScrollView) */}
+        {showButtonPlus && (
+          <Animated.View
+            style={{
+              transform: [{ translateX: animatedValue }],
+              position: 'absolute',
+              bottom: 20,
+              right: 20,
+              zIndex: 10,
+            }}
+          >
+            <ButtonCustom
+              classNameContainer="bg-[#1475BA] rounded-full py-3 px-6"
+              iconLeft={<Entypo name="plus" size={20} color="white" />}
+              text="Tambah"
+              textClassName="text-base text-white ml-1"
+              textStyle={{ fontFamily: 'LexSemiBold' }}
+              onPress={() => alert('Tambah')}
+              isTouchable={true}
+              containerStyle={{
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 5,
+              }}
+            />
+          </Animated.View>
+        )}
+      </ScrollView>
+
+      {/* Footer Bar */}
+      <View className="h-2 w-full bg-[#1475BA]" />
     </View>
   );
 }

@@ -1,5 +1,3 @@
-// app/screens/Product.tsx
-
 import React, { useState } from 'react';
 import {
   View,
@@ -10,6 +8,10 @@ import {
   Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 // OUR ICONS
 import Octicons from '@expo/vector-icons/Octicons';
@@ -18,9 +20,6 @@ import Octicons from '@expo/vector-icons/Octicons';
 import Button from '@/components/button';
 import ButtonShopAndChat from '@/components/buttonShopAndChat';
 
-// OUR UTILS
-import { getHeaderPaddingVertical } from '@/utils/platformStyleAndroidIos';
-
 // OUR PROPS
 import { ProductType } from '@/interfaces/productDataProps';
 
@@ -28,8 +27,6 @@ import { ProductType } from '@/interfaces/productDataProps';
 import { allProducts } from '@/lib/data/productList';
 
 export default function Product() {
-  const headerPaddingVertical = getHeaderPaddingVertical();
-
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState('Semua');
 
@@ -40,24 +37,54 @@ export default function Product() {
 
   return (
     <View className="flex-1">
+      {/* NAVBAR */}
       <View
-        className={`z-20 w-full flex-row items-center justify-between rounded-b-[10px] bg-[#1475BA] px-6 pt-12 ${headerPaddingVertical}`}
+        className="z-20 w-full flex-row items-center justify-between rounded-b-[10px] bg-[#1475BA]"
+        style={{
+          paddingHorizontal: wp(4),
+          paddingTop: hp(6),
+          paddingBottom: hp(1.5),
+        }}
       >
-        <View className="flex-1 flex-row items-center justify-between rounded-full bg-white pl-3">
+        {/* Input Pencarian */}
+        <View
+          className="flex-1 flex-row items-center justify-between rounded-full bg-white"
+          style={{
+            paddingLeft: wp(3),
+            height: hp(5.5),
+          }}
+        >
           <TextInput
-            className="flex-1 py-1"
+            className="flex-1"
             placeholder="Cari"
             placeholderTextColor={'gray'}
-            style={{ fontFamily: 'LexRegular' }}
+            style={{
+              fontFamily: 'LexRegular',
+              fontSize: wp(3.8),
+              paddingVertical: 0,
+            }}
           />
           <TouchableOpacity
             activeOpacity={0.5}
-            className="rounded-full bg-[#72C02C] px-3 py-2"
+            className="rounded-full bg-[#72C02C]"
+            style={{
+              paddingVertical: hp(1),
+              paddingHorizontal: wp(3.5),
+              marginRight: wp(1.5),
+            }}
           >
-            <Octicons name="search" size={20} color="white" />
+            <Octicons name="search" size={wp(5)} color="white" />
           </TouchableOpacity>
         </View>
-        <View className="ml-12 flex-row gap-4">
+
+        {/* Button Shop & Chat */}
+        <View
+          className="flex-row"
+          style={{
+            marginLeft: wp(6),
+            gap: wp(3),
+          }}
+        >
           <ButtonShopAndChat />
         </View>
       </View>
@@ -201,10 +228,7 @@ export default function Product() {
         ) : (
           <>
             <View className="self-center py-1 pt-3">
-              <Text
-                style={{ fontFamily: 'LexBold' }}
-                className="text-[20px]"
-              >
+              <Text style={{ fontFamily: 'LexBold' }} className="text-[20px]">
                 Produk {activeCategory}
               </Text>
             </View>

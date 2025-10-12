@@ -10,11 +10,13 @@ import Animated, {
 import { useRouter } from 'expo-router';
 
 // OUR ICONS
-import Ionicons from '@expo/vector-icons/Ionicons';
 import Entypo from '@expo/vector-icons/Entypo';
 
 // OUR CONSTANT
 import { dataStations } from '@/constants/dataStations';
+
+// OUR COMPONENTS
+import NavCartOrder from '@/components/navCartOrder';
 
 // OUR HOOKS
 import { useChatRooms } from '@/hooks/Backend/useChatRooms';
@@ -28,7 +30,7 @@ export default function ChatScreen() {
   const [showMessages, setShowMessages] = useState(true);
   const rotateChevron = useSharedValue(0);
 
-  // 🔥 Ambil UID user yang login
+  //  Ambil UID user yang login
   const { chatRooms, markMessagesAsRead, loading, createRoomIfNotExist } =
     useChatRooms();
   const { profile, loading: loadingProfile } = useGetUserProfile();
@@ -71,17 +73,7 @@ export default function ChatScreen() {
   }
   return (
     <View className="flex-1">
-      <View className="w-full flex-row items-center rounded-b-[10px] bg-[#1475BA] px-4 py-4 shadow-md">
-        <TouchableOpacity
-          onPress={() => router.back()}
-          className="mr-3 rounded-full p-1"
-        >
-          <Ionicons name="arrow-back" size={24} color="white" />
-        </TouchableOpacity>
-        <Text style={{ fontFamily: 'LexBold' }} className="text-2xl text-white">
-          Pesan
-        </Text>
-      </View>
+      <NavCartOrder text="Pesan" showChatIcon={false} />
 
       <ScrollView
         contentContainerStyle={{ paddingBottom: 140, paddingHorizontal: 10 }}

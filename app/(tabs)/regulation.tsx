@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Text,
   View,
@@ -16,16 +16,11 @@ import ImageZoom from 'react-native-image-pan-zoom';
 import Entypo from '@expo/vector-icons/Entypo';
 
 // OUR COMPONENTS
-import ButtonShopAndChat from '@/components/buttonShopAndChat';
-
-// OUR UTILS
-import { getHeaderPaddingVertical } from '@/utils/platformStyleAndroidIos';
+import Navbar from '@/components/Navbar';
 
 const { width, height } = Dimensions.get('window');
 
 export default function Regulation() {
-  const headerPaddingVertical = getHeaderPaddingVertical();
-
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImages, setSelectedImages] = useState<any[]>([]);
   const ZoomAny = ImageZoom as unknown as React.ComponentType<any>;
@@ -56,19 +51,8 @@ export default function Regulation() {
 
   return (
     <View className="flex-1 bg-[#A7CBE5]">
-      <View
-        className={`w-full flex-row items-center justify-between rounded-b-[10px] bg-[#1475BA] px-6 shadow-md ${headerPaddingVertical}`}
-      >
-        <View>
-          <Image
-            source={require('@/assets/images/HomeScreen/logo.png')}
-            className="h-12 w-44 object-cover"
-          />
-        </View>
-        <View className="flex-row items-center gap-6">
-          <ButtonShopAndChat />
-        </View>
-      </View>
+      {/* NAVBAR */}
+      <Navbar />
 
       <ScrollView
         contentContainerStyle={{ paddingBottom: 140, paddingHorizontal: 15 }}

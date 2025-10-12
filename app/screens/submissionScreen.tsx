@@ -72,6 +72,7 @@ export default function SubmissionScreen() {
     }
   };
 
+  // HANDLE REMOVE
   const handleRemoveFile = (field: string) => {
     setFileMap((prev) => {
       const updated = { ...prev };
@@ -80,6 +81,7 @@ export default function SubmissionScreen() {
     });
   };
 
+  // SIMULATE UPLOAD PROGRESS
   const simulateUploadProgress = (field: string) => {
     const steps = [0, 20, 35, 50, 70, 85, 100];
     let index = 0;
@@ -140,7 +142,10 @@ export default function SubmissionScreen() {
                 (item) => `${item.label} (${item.jenisAjukan})`
               )}
               selected={selectedJenisKegiatan}
-              onSelect={setSelectedJenisKegiatan}
+              onSelect={(value) => {
+                setSelectedJenisKegiatan(value);
+                setFileMap({}); // reset otomatis file tiap ganti kegiatan
+              }}
             />
           </View>
         </View>
