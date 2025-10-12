@@ -61,7 +61,10 @@ export default function ChatScreen() {
     markMessagesAsRead(roomId).catch(console.error);
 
     // Langsung navigasi
-    router.push({ pathname: '/screens/roomChatScreen', params: { roomId } });
+    router.push({
+      pathname: '/screens/roomChatScreen',
+      params: { roomId, stationName: station.name },
+    });
   };
 
   if (loading || loadingProfile) {
@@ -73,7 +76,11 @@ export default function ChatScreen() {
   }
   return (
     <View className="flex-1">
-      <NavCartOrder text="Pesan" showChatIcon={false} />
+      <NavCartOrder
+        onPressLeftIcon={() => router.back()}
+        text="Pesan"
+        showChatIcon={false}
+      />
 
       <ScrollView
         contentContainerStyle={{ paddingBottom: 140, paddingHorizontal: 10 }}

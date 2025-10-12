@@ -121,7 +121,7 @@ export default function OrderTrackingScreen() {
               </View>
 
               {detail.user?.tipe === 'perorangan' && (
-                <View className="mt-4 space-y-3">
+                <View className="mt-4 gap-3 space-y-3">
                   {/* Nama Lengkap */}
                   <View className="flex-row items-center rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
                     <View className="mr-3 flex h-10 w-10 items-center justify-center rounded-full bg-blue-50">
@@ -166,7 +166,7 @@ export default function OrderTrackingScreen() {
               )}
 
               {detail.user?.tipe === 'perusahaan' && (
-                <View className="mt-4 space-y-3">
+                <View className="mt-4 gap-3 space-y-3">
                   {/* Nama Perusahaan */}
                   <View className="flex-row items-center rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
                     <View className="mr-3 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50">
@@ -284,7 +284,7 @@ export default function OrderTrackingScreen() {
                 </View>
               </View>
 
-              <View className="space-y-4">
+              <View className="gap-3 space-y-4">
                 {detail.keranjang.map((item, index) => (
                   <View
                     key={index}

@@ -13,7 +13,8 @@ export interface ButtonCustomProps {
   styleButtonIconLeft?: ViewStyle;
   styleButtonIconRight?: ViewStyle;
   textStyle?: TextStyle;
-  text?: string;
+  text?: string | string[];
+  subText?: string;
   FontCustom?: object;
   onLayout?: (event: any) => void;
   isTouchable?: boolean;

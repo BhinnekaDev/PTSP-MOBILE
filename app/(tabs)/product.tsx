@@ -51,7 +51,7 @@ export default function Product() {
           className="flex-1 flex-row items-center justify-between rounded-full bg-white"
           style={{
             paddingLeft: wp(3),
-            height: hp(5.5),
+            height: hp(5.2),
           }}
         >
           <TextInput
@@ -60,20 +60,21 @@ export default function Product() {
             placeholderTextColor={'gray'}
             style={{
               fontFamily: 'LexRegular',
-              fontSize: wp(3.8),
+              fontSize: wp(3.6),
               paddingVertical: 0,
             }}
           />
+
           <TouchableOpacity
-            activeOpacity={0.5}
+            activeOpacity={0.6}
             className="rounded-full bg-[#72C02C]"
             style={{
-              paddingVertical: hp(1),
-              paddingHorizontal: wp(3.5),
+              paddingVertical: hp(0.8),
+              paddingHorizontal: wp(3),
               marginRight: wp(1.5),
             }}
           >
-            <Octicons name="search" size={wp(5)} color="white" />
+            <Octicons name="search" size={wp(4.8)} color="white" />
           </TouchableOpacity>
         </View>
 
