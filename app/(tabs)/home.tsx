@@ -1,40 +1,42 @@
 import React, { useState } from 'react';
-import { View, Text, Image, ScrollView, Modal, Pressable } from 'react-native';
+// import { useFocusEffect } from '@react-navigation/native';
+import { View, Text, ScrollView, Image, Modal, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Video, ResizeMode } from 'expo-av';
 
-// OUR HOOKS
-import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
-
-// OUR ICONS
+// OUR ICON
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Feather from '@expo/vector-icons/Feather';
 
 // OUR COMPONENTS
 import ButtonCustom from '@/components/buttonCustom';
-import Navbar from '@/components/Navbar';
+import { WrapperSkeletonHome } from '@/components/skeletons/wrapperSkeletonHome';
 
-export default function ProfileTabs() {
+// OUR HOOKS
+import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
+import { useSkeletonForTab } from '@/hooks/Frontend/skeletons/useSkeletonForTab';
+
+export default function HomeTabs() {
   const router = useRouter();
-  const { profile, loading } = useGetUserProfile();
+  const { profile } = useGetUserProfile();
   const [modalVisible, setModalVisible] = useState(false);
-  if (loading) return <Text>Loading...</Text>;
+  const showSkeleton = useSkeletonForTab();
 
+  if (showSkeleton) return <WrapperSkeletonHome />;
   return (
     <LinearGradient
       colors={['#1475BA', '#399385', '#6BBC3F']} //
-      className="flex-1 items-center justify-start pb-[75px]"
+      className="flex-1 items-center justify-start"
       locations={[0, 0.5, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
-      style={{ flex: 1 }}
     >
-      {/* NAVBAR */}
-      <Navbar />
-
       <ScrollView
-        contentContainerStyle={{ paddingHorizontal: 15, paddingBottom: 30 }}
+        contentContainerStyle={{
+          paddingHorizontal: 15,
+          paddingBottom: 100,
+        }}
         showsVerticalScrollIndicator={false}
       >
         <View className="gap-1 py-4">
@@ -51,7 +53,7 @@ export default function ProfileTabs() {
         <View className="w-full items-center py-4">
           <Image
             source={require('@/assets/images/HomeScreen/banner.png')}
-            className="h-40 w-full rounded-lg object-cover" 
+            className="h-40 w-full rounded-lg object-cover"
           />
         </View>
 

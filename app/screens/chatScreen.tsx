@@ -25,7 +25,7 @@ import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 // OUR UTILS
 import { formatLastMessageTime } from '@/utils/formatLastMessagesTime';
 
-export default function ChatScreen() {
+function ChatScreen() {
   const router = useRouter();
   const [showMessages, setShowMessages] = useState(true);
   const rotateChevron = useSharedValue(0);
@@ -76,11 +76,7 @@ export default function ChatScreen() {
   }
   return (
     <View className="flex-1">
-      <NavCartOrder
-        onPressLeftIcon={() => router.back()}
-        text="Pesan"
-        showChatIcon={false}
-      />
+      <NavCartOrder onPressLeftIcon={() => router.back()} text="Pesan" />
 
       <ScrollView
         contentContainerStyle={{ paddingBottom: 140, paddingHorizontal: 10 }}
@@ -174,3 +170,4 @@ export default function ChatScreen() {
     </View>
   );
 }
+export default ChatScreen;

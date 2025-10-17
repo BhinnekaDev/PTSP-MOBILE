@@ -15,9 +15,6 @@ import ImageZoom from 'react-native-image-pan-zoom';
 // OUR ICONS
 import Entypo from '@expo/vector-icons/Entypo';
 
-// OUR COMPONENTS
-import Navbar from '@/components/Navbar';
-
 const { width, height } = Dimensions.get('window');
 
 export default function Regulation() {
@@ -51,9 +48,6 @@ export default function Regulation() {
 
   return (
     <View className="flex-1 bg-[#A7CBE5]">
-      {/* NAVBAR */}
-      <Navbar />
-
       <ScrollView
         contentContainerStyle={{ paddingBottom: 140, paddingHorizontal: 15 }}
         showsVerticalScrollIndicator={false}
