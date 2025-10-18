@@ -1,7 +1,7 @@
 // hooks/useInternetStatus.ts
 import { useEffect, useState, useRef } from 'react';
 import * as Network from 'expo-network';
-import { showAppMessage } from '@/utils/showAppMessage';
+import { showAppMessage } from '@/utils/showAlertMessage';
 
 interface InternetStatus {
   isConnected: boolean;

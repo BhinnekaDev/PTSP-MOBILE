@@ -28,7 +28,7 @@ const FormInput = ({
   errorMessage,
 }: FormInputProps) => {
   return (
-    <View className="mt-4 px-6 py-1">
+    <View className="px-6 py-1">
       <Text className="mb-2" style={[fontLexBold]}>
         {label}
       </Text>
@@ -36,7 +36,7 @@ const FormInput = ({
         className={`rounded-[10px] border p-4 ${textClassName}`}
         style={{
           fontFamily: 'LexRegular',
-          borderColor: errorMessage ? 'red' : undefined,
+          borderColor: errorMessage ? 'red' : '#6BBC3F',
           borderWidth: errorMessage ? 2 : 1,
         }}
         value={value}

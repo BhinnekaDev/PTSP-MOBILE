@@ -1,13 +1,14 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
-  Animated,
-  Easing,
   ScrollView,
+  Animated,
+  Pressable,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
+import { useDropdownAnimation } from '@/hooks/Frontend/dropdownAnimation/useDropdownAnimation';
 
 type DropdownSelectProps = {
   label: string;
@@ -22,10 +23,15 @@ type DropdownSelectProps = {
   selectedTextStyle?: object;
   FontLexSemiBold?: object;
   labelStyle?: object;
+  maxVisibleOptions?: number;
+
+  // Controlled props
+  open: boolean;
+  setOpen: (value: boolean) => void;
 };
 
 export default function FormDropdownSelect({
-  FontLexSemiBold = { fontFamily: 'LexSemiBold' }, //
+  FontLexSemiBold = { fontFamily: 'LexSemiBold' },
   toggleDropdownClassName,
   DropdownSelectClassName,
   labelClassName,
@@ -37,111 +43,80 @@ export default function FormDropdownSelect({
   iconColor,
   selectedTextStyle,
   labelStyle,
+  maxVisibleOptions = 3, // default maksimal visible
+  open,
+  setOpen,
 }: DropdownSelectProps) {
-  const [open, setOpen] = useState(false);
-  const animatedHeight = useRef(new Animated.Value(0)).current;
-  const animatedOpacity = useRef(new Animated.Value(0)).current;
-
   const optionHeight = 42;
-  const maxVisibleOptions = 5;
-  const maxHeight = optionHeight * maxVisibleOptions;
 
-  const toggleDropdown = () => {
-    if (open) {
-      Animated.parallel([
-        Animated.timing(animatedHeight, {
-          toValue: 0,
-          duration: 250,
-          easing: Easing.out(Easing.ease),
-          useNativeDriver: false,
-        }),
-        Animated.timing(animatedOpacity, {
-          toValue: 0,
-          duration: 200,
-          useNativeDriver: false,
-        }),
-      ]).start(() => setOpen(false));
-    } else {
-      setOpen(true);
-      Animated.parallel([
-        Animated.timing(animatedHeight, {
-          toValue: Math.min(options.length * optionHeight, maxHeight),
-          duration: 300,
-          easing: Easing.out(Easing.cubic),
-          useNativeDriver: false,
-        }),
-        Animated.timing(animatedOpacity, {
-          toValue: 1,
-          duration: 250,
-          useNativeDriver: false,
-        }),
-      ]).start();
-    }
-  };
+  // Hitung maxHeight sesuai jumlah opsi tapi dibatasi maxVisibleOptions
+  const maxHeight = Math.min(
+    options.length * optionHeight,
+    maxVisibleOptions * optionHeight
+  );
+
+  // Hook animasi
+  const { animatedHeight, animatedOpacity } = useDropdownAnimation(
+    open,
+    maxHeight
+  );
 
   return (
-    <View>
+    <View className="px-6">
       {showLabel && (
         <Text
-          className={`text-black ${labelClassName}`}
+          className={`text-md mb-2 ${labelClassName}`}
           style={[FontLexSemiBold, labelStyle]}
         >
           {label}
         </Text>
       )}
+
       <TouchableOpacity
-        onPress={toggleDropdown} //
-        className={`flex-row items-center justify-between self-center border p-3 ${toggleDropdownClassName}`}
+        onPress={() => setOpen(!open)}
+        className={`flex-row items-center justify-between rounded-xl border border-[#6BBC3F] bg-white px-4 py-3 ${toggleDropdownClassName}`}
         activeOpacity={0.8}
       >
         <Text
-          className="text-black"
-          style={[FontLexSemiBold, selectedTextStyle]}
+          style={[FontLexSemiBold, selectedTextStyle, { color: '#6BBC3F' }]}
         >
           {selected || `Pilih ${label.toLowerCase()}`}
         </Text>
-        <Ionicons
-          name="chevron-forward"
-          size={20}
-          color={iconColor || 'black'}
-          style={{
-            transform: [{ rotate: open ? '90deg' : '0deg' }],
-            transitionDuration: '800ms', 
-          }}
+        <Entypo
+          name={open ? 'chevron-small-up' : 'chevron-small-down'}
+          size={24}
+          color={iconColor || '#6BBC3F'}
         />
       </TouchableOpacity>
 
-      {open && (
-        <Animated.View
-          style={{
-            height: animatedHeight,
-            opacity: animatedOpacity,
-          }}
-          className={`self-center overflow-hidden border border-t-0 bg-white py-2 ${DropdownSelectClassName}`}
+      <Animated.View
+        style={{ height: animatedHeight, opacity: animatedOpacity }}
+        className={`mt-2 overflow-hidden rounded-xl border border-[#6BBC3F] bg-white shadow-md ${DropdownSelectClassName}`}
+      >
+        <ScrollView
+          nestedScrollEnabled
+          showsVerticalScrollIndicator
+          style={{ maxHeight }}
         >
-          <ScrollView
-            nestedScrollEnabled
-            showsVerticalScrollIndicator={true}
-            style={{ flexGrow: 0 }}
-          >
-            {options.map((option, index) => (
-              <TouchableOpacity
-                key={index}
-                style={{
-                  paddingVertical: 12,
-                  paddingHorizontal: 16,
-                }}
-                onPress={() => {
-                  onSelect(option);
-                  toggleDropdown();
-                }}
+          {options.map((option) => (
+            <Pressable
+              key={option}
+              onPress={() => {
+                onSelect(option);
+                setOpen(false);
+              }}
+              className="px-4 py-3"
+            >
+              <Text
+                className="text-[#6BBC3F]"
+                style={{ fontFamily: 'LexRegular' }}
               >
-                <Text style={{ fontFamily: 'LexMedium' }}>{option}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </Animated.View>
-      )}
+                {option}
+              </Text>
+            </Pressable>
+          ))}
+        </ScrollView>
+      </Animated.View>
     </View>
   );
 }

@@ -20,10 +20,7 @@ import AccountCloseAlert from '@/components/accountCloseAlert';
 import { useEditSecurityProfile } from '@/hooks/Backend/useEditSecurityProfile';
 
 // OUT UTILS
-import {
-  isValidPhoneNumber,
-  isValidEmail,
-} from '@/utils/validationStringNumber';
+import { isValidPhoneNumber, isValidEmail } from '@/utils/validationNumberOnly';
 
 export default function SecurityProfile({ onClose }: { onClose: () => void }) {
   const [modalVisible, setModalVisible] = useState(false);

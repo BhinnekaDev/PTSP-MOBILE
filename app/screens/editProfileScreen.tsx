@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -16,7 +16,7 @@ import InputField from '@/components/formInput';
 
 // UTILS
 import { validationFullString } from '@/utils/validationFullString';
-import { validationStringNumber } from '@/utils/validationStringNumber';
+import { validationNumberOnly } from '@/utils/validationNumberOnly';
 
 // HOOKS
 import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
@@ -27,7 +27,6 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
   const { profile, loading } = useGetUserProfile();
   const individualHook = useEditIndividualProfile(onClose);
   const companyHook = useEditCompanyProfile(onClose);
-
   const isIndividual = profile?.tipe === 'perorangan';
   const isCompany = profile?.tipe === 'perusahaan';
   const selected = isIndividual
@@ -35,6 +34,8 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
     : isCompany
       ? companyHook
       : null;
+
+  const [isGenderDropdownOpen, setIsGenderDropdownOpen] = useState(false);
 
   // Fungsi untuk cek perubahan data
   const isDataChanged = useMemo(() => {
@@ -98,7 +99,7 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
     }
 
     return false;
-  }, [selected, isIndividual, isCompany]);
+  }, [selected, isIndividual]);
 
   const canSave = isDataChanged && isAllFieldsFilled;
 
@@ -142,8 +143,7 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
               />
 
               <FormDropdownSelect
-                labelClassName="px-6 mt-4 mb-2"
-                toggleDropdownClassName="w-[87%] border-[#6BBC3F] rounded-[10px]"
+                toggleDropdownClassName=" border-[#6BBC3F] rounded-[10px]"
                 label="Jenis Kelamin"
                 labelStyle={{ fontFamily: 'LexBold' }}
                 DropdownSelectClassName="w-[87%] border-[#6BBC3F] rounded-[10px]"
@@ -152,6 +152,8 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
                 iconColor="#6BBC3F"
                 selected={selected.selectGender}
                 onSelect={selected.setSelectGender}
+                open={isGenderDropdownOpen} // <- kontrol open
+                setOpen={setIsGenderDropdownOpen} // <- setter open
               />
 
               <InputField
@@ -169,7 +171,7 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
                 textClassName="border-[#6BBC3F]"
                 value={selected.lastEducation}
                 onChangeText={(input) =>
-                  selected.setLastEducation(validationStringNumber(input, 30))
+                  selected.setLastEducation(validationNumberOnly(input, 30))
                 }
                 placeholder="Pendidikan Terakhir"
               />

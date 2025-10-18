@@ -18,7 +18,7 @@ const playNotificationSound = async () => {
 };
 
 // Fungsi utama untuk menampilkan pesan responsif
-export const showAppMessage = async (
+export const showAlertMessage = async (
   message: string,
   description?: string,
   type: 'success' | 'error' | 'delete' | 'warning' = 'success'
