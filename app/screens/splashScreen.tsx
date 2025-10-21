@@ -1,7 +1,11 @@
-import { Image, View, Animated, Easing } from "react-native";
-import { useEffect, useRef, useState } from "react";
+import { Image, View, Animated, Easing } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
 
-export default function SplashScreen({ onAnimationEnd }: { onAnimationEnd: () => void }) {
+export default function SplashScreen({
+  onAnimationEnd,
+}: {
+  onAnimationEnd: () => void;
+}) {
   const [showMask, setShowMask] = useState(false);
   const [showLogoPTSP, setShowLogoPTSP] = useState(false);
 
@@ -69,31 +73,54 @@ export default function SplashScreen({ onAnimationEnd }: { onAnimationEnd: () =>
         });
       }, 300);
     });
-  }, [logoScale, logoTranslateX, logoTranslateY, onAnimationEnd, ptspRevealAnim, scaleAnim]);
+  }, [
+    logoScale,
+    logoTranslateX,
+    logoTranslateY,
+    onAnimationEnd,
+    ptspRevealAnim,
+    scaleAnim,
+  ]);
 
   const maskWidth = ptspRevealAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["100%", "0%"],
+    outputRange: ['100%', '0%'],
   });
 
   return (
     <View className="flex-1 items-center justify-center bg-[#1475BA]">
-      <View className="items-center justify-center w-full h-full p-32">
-        <Animated.Image source={require("@/assets/images/SplashScreen/circle.png")} className="w-[324px] h-[75px]" style={{ transform: [{ scale: scaleAnim }] }} />
+      <View className="h-full w-full items-center justify-center p-32">
+        <Animated.Image
+          source={require('@/assets/images/SplashScreen/circle.png')}
+          className="h-[75px] w-[324px]"
+          style={{ transform: [{ scale: scaleAnim }] }}
+        />
       </View>
 
       <Animated.Image
-        source={require("@/assets/images/logo-bmkg.png")}
-        className="absolute w-[76px] h-[95px]"
+        source={require('@/assets/images/logo-bmkg.png')}
+        className="absolute h-[95px] w-[76px]"
         style={{
-          transform: [{ translateY: logoTranslateY }, { translateX: logoTranslateX }, { scale: logoScale }],
+          transform: [
+            { translateY: logoTranslateY },
+            { translateX: logoTranslateX },
+            { scale: logoScale },
+          ],
         }}
       />
 
       {showLogoPTSP && (
-        <View className="absolute w-80 h-20 -right-1 overflow-hidden">
-          <Image source={require("@/assets/images/logo-ptsp.png")} className="w-72 h-20 absolute" />
-          {showMask && <Animated.View className="absolute h-full bg-[#1475BA]" style={{ width: maskWidth, right: 0 }} />}
+        <View className="absolute -right-1 h-20 w-80 overflow-hidden">
+          <Image
+            source={require('@/assets/images/logo-ptsp.png')}
+            className="absolute h-20 w-72"
+          />
+          {showMask && (
+            <Animated.View
+              className="absolute h-full bg-[#1475BA]"
+              style={{ width: maskWidth, right: 0 }}
+            />
+          )}
         </View>
       )}
     </View>

@@ -15,7 +15,6 @@ import { firebaseAuth } from '@/lib/firebase';
 
 // OUR ICONS
 import Ionicons from '@expo/vector-icons/Ionicons';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Entypo from '@expo/vector-icons/Entypo';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
@@ -24,6 +23,7 @@ import { dataEmojis } from '@/constants/dataEmojis';
 
 // OUR COMPONENTS
 import ChatMessage from '@/components/chatMessage';
+import NavCartOrder from '@/components/navCartOrder';
 
 // OUR HOOKS
 import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
@@ -44,7 +44,7 @@ import { FilePreviewModalAll } from '@/components/filePreviewModalAll';
 export default function RoomChatScreen() {
   const router = useRouter();
   const currentUserId = firebaseAuth.currentUser?.uid;
-  const { roomId } = useLocalSearchParams();
+  const { roomId, stationName } = useLocalSearchParams();
   const { profile } = useGetUserProfile();
   const scrollViewRef = useRef<ScrollView>(null);
   const [inputText, setInputText] = useState('');
@@ -152,28 +152,14 @@ export default function RoomChatScreen() {
   }, [mappedMessages]);
   return (
     <View className="flex-1">
-      <View className="w-full flex-row items-center gap-4 rounded-b-[10px] bg-[#1475BA] px-4 py-4 shadow-md">
-        <TouchableOpacity
-          onPress={() => router.back()}
-          className="rounded-full p-1"
-        >
-          <Ionicons name="arrow-back" size={24} color="white" />
-        </TouchableOpacity>
-        <View className="rounded-full bg-gray-300 p-2">
-          <FontAwesome6 name="mountain" size={24} color="#3498DB" />
-        </View>
-        <View className="flex-1">
-          <Text
-            style={{ fontFamily: 'LexBold' }}
-            className="text-lg text-white"
-          >
-            Stasiun Meteorologi
-          </Text>
-          <Text style={{ fontFamily: 'LexRegular' }} className="text-white">
-            Online
-          </Text>
-        </View>
-      </View>
+      {/* HEADER */}
+      <NavCartOrder
+        text={stationName || 'Null'}
+        onPressLeftIcon={() => router.back()}
+        showChatIcon={false}
+        subText="Online"
+      />
+
       <ScrollView
         ref={scrollViewRef}
         contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 10 }}

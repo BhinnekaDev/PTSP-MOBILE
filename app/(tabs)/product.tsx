@@ -1,24 +1,13 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-} from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-
-// OUR ICONS
-import Octicons from '@expo/vector-icons/Octicons';
 
 // OUR COMPONENTS
 import Button from '@/components/button';
-import ButtonShopAndChat from '@/components/buttonShopAndChat';
+import { WrapperProductSkeleton } from '@/components/skeletons/wrapperSkeletonProduct';
+
+// OUR HOOKS
+import { useSkeletonForTab } from '@/hooks/Frontend/skeletons/useSkeletonForTab';
 
 // OUR PROPS
 import { ProductType } from '@/interfaces/productDataProps';
@@ -29,6 +18,8 @@ import { allProducts } from '@/lib/data/productList';
 export default function Product() {
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState('Semua');
+  const showSkeleton = useSkeletonForTab();
+  if (showSkeleton) return <WrapperProductSkeleton />;
 
   const filteredProducts =
     activeCategory === 'Semua'
@@ -37,58 +28,6 @@ export default function Product() {
 
   return (
     <View className="flex-1">
-      {/* NAVBAR */}
-      <View
-        className="z-20 w-full flex-row items-center justify-between rounded-b-[10px] bg-[#1475BA]"
-        style={{
-          paddingHorizontal: wp(4),
-          paddingTop: hp(6),
-          paddingBottom: hp(1.5),
-        }}
-      >
-        {/* Input Pencarian */}
-        <View
-          className="flex-1 flex-row items-center justify-between rounded-full bg-white"
-          style={{
-            paddingLeft: wp(3),
-            height: hp(5.5),
-          }}
-        >
-          <TextInput
-            className="flex-1"
-            placeholder="Cari"
-            placeholderTextColor={'gray'}
-            style={{
-              fontFamily: 'LexRegular',
-              fontSize: wp(3.8),
-              paddingVertical: 0,
-            }}
-          />
-          <TouchableOpacity
-            activeOpacity={0.5}
-            className="rounded-full bg-[#72C02C]"
-            style={{
-              paddingVertical: hp(1),
-              paddingHorizontal: wp(3.5),
-              marginRight: wp(1.5),
-            }}
-          >
-            <Octicons name="search" size={wp(5)} color="white" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Button Shop & Chat */}
-        <View
-          className="flex-row"
-          style={{
-            marginLeft: wp(6),
-            gap: wp(3),
-          }}
-        >
-          <ButtonShopAndChat />
-        </View>
-      </View>
-
       <View className="-mt-2 flex-row items-center justify-center gap-4 bg-[#A7CBE5] pb-2 pt-4">
         {['Semua', 'Informasi', 'Jasa'].map((buttonCategory) => (
           <TouchableOpacity

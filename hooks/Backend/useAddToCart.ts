@@ -6,7 +6,7 @@ import { router } from 'expo-router';
 import { ProductData, ProductType } from '@/interfaces/productDataProps';
 
 // OUR UTILS
-import { showAppMessage } from '@/utils/showAppMessage';
+import { showAppMessage } from '@/utils/showAlertMessage';
 
 type ProductDataForCart = ProductData;
 

@@ -12,6 +12,7 @@ export default {
     newArchEnabled: true,
     ios: {
       supportsTablet: true,
+      jsEngine: 'jsc',
     },
     android: {
       googleServicesFile: './google-services.json',
@@ -21,6 +22,7 @@ export default {
         backgroundColor: '#ffffff',
       },
       edgeToEdgeEnabled: true,
+      jsEngine: 'jsc',
     },
     web: {
       bundler: 'metro',
@@ -51,6 +53,7 @@ export default {
         },
       ],
     ],
+
     experiments: {
       typedRoutes: true,
     },

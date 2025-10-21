@@ -25,7 +25,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
-export default function CartOrderScreen() {
+function CartOrderScreen() {
   const router = useRouter();
   const { cartItems, totalHarga, loading } = useGetCartOrderScreen();
   const { removeFromCart } = useDeleteCartOrderScreen();
@@ -60,6 +60,7 @@ export default function CartOrderScreen() {
         onPressLeftIcon={() => router.back()}
         isTouchable={false}
       />
+
       <View className="flex-1 bg-[#A7CBE5] px-4">
         <ScrollView
           contentContainerStyle={{
@@ -173,7 +174,6 @@ export default function CartOrderScreen() {
                     </TouchableOpacity>
                   </View>
 
-                  {/* Kuantitas dan Harga */}
                   <View className="mt-2 flex-row items-center justify-between">
                     <View className="flex-row items-center gap-5">
                       <MaterialIcons
@@ -239,7 +239,6 @@ export default function CartOrderScreen() {
           )}
         </ScrollView>
 
-        {/* Total dan Button */}
         <View className="bottom-6 flex w-full flex-row justify-between gap-2 px-2">
           <View className="flex flex-1 flex-row items-center justify-between rounded-[10px] bg-[#1475BA] px-4 py-3">
             <Text className="text-white" style={{ fontFamily: 'LexSemiBold' }}>
@@ -270,7 +269,10 @@ export default function CartOrderScreen() {
           />
         </View>
       </View>
+
       <View className="h-[4%] w-full bg-[#1475BA]" />
     </View>
   );
 }
+
+export default CartOrderScreen;

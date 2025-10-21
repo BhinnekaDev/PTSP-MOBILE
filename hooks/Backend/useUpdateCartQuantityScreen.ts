@@ -1,7 +1,7 @@
 // hooks/Backend/useUpdateCartQuantityScreen.ts
 
 import { db, firebaseAuth } from '@/lib/firebase';
-import { showAppMessage } from '@/utils/showAppMessage';
+import { showAppMessage } from '@/utils/showAlertMessage';
 
 export const useUpdateCartQuantityScreen = () => {
   const updateQuantity = async (

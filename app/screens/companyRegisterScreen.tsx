@@ -1,15 +1,7 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  Pressable,
-  Alert,
-} from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { showMessage } from 'react-native-flash-message';
 
 // OUR ICONS
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -17,9 +9,21 @@ import Entypo from '@expo/vector-icons/Entypo';
 
 // OUR COMPONENTS
 import Button from '@/components/button';
+import FormInput from '@/components/formInput';
+import FormDropdownSelect from '@/components/formDropdownSelect';
+
+// OUR CONSTANT
+import { educationOptions } from '@/constants/educationOptions';
 
 // OUR HOOKS
 import { useCompanyRegister } from '@/hooks/Backend/useCompanyRegister';
+
+// OUR UTILS
+import { showAlertMessage } from '@/utils/showAlertMessage';
+import { validationFullString } from '@/utils/validationFullString';
+import { validationNumber } from '@/utils/validationNumber';
+import { validationNPWP } from '@/utils/validationNPWP';
+import { validationEmail } from '@/utils/validationEmail';
 
 export default function CompanyRegisterScreen() {
   const router = useRouter();
@@ -29,9 +33,12 @@ export default function CompanyRegisterScreen() {
 
   const [fullName, setFullName] = useState('');
   const [selectedGender, setSelectedGender] = useState('');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDropdowGendernOpen, setIsDropdownGenderOpen] = useState(false);
   const [job, setJob] = useState('');
   const [lastEducation, setLastEducation] = useState('');
+  const [isLastEducationDropdownOpen, setIsLastEducationDropdownOpen] =
+    useState(false);
+
   const [numberPhone, setNumberPhone] = useState('');
   const [npwpCompany, setNpwpCompany] = useState('');
   const [companyName, setCompanyName] = useState('');
@@ -56,12 +63,11 @@ export default function CompanyRegisterScreen() {
       !emailCompany ||
       !companyNumberPhone
     ) {
-      showMessage({
-        message: 'Mohon lengkapi semua data terlebih dahulu.',
-        type: 'danger',
-        backgroundColor: '#FF3B30', // merah terang
-        color: '#fff',
-      });
+      await showAlertMessage(
+        'Mohon lengkapi semua data terlebih dahulu.',
+        undefined,
+        'error'
+      );
       return;
     }
 
@@ -81,56 +87,50 @@ export default function CompanyRegisterScreen() {
         No_Hp_Perusahaan: companyNumberPhone,
       });
 
-      showMessage({
-        message: 'Registrasi berhasil disimpan!',
-        type: 'success',
-        backgroundColor: '#72C02C', // hijau
-        color: '#fff',
-      });
+      await showAlertMessage(
+        'Registrasi berhasil disimpan!',
+        undefined,
+        'success'
+      );
 
       setTimeout(() => {
         router.push('/(tabs)/home');
       }, 1200);
     } catch {
-      showMessage({
-        message: 'Terjadi kesalahan saat menyimpan data.',
-        type: 'danger',
-        backgroundColor: '#FF3B30',
-        color: '#fff',
-      });
+      await showAlertMessage(
+        'Terjadi kesalahan saat menyimpan data.',
+        undefined,
+        'error'
+      );
     }
   };
 
-  const validateStep = (currentStep: number) => {
+  const validateStep = async (currentStep: number) => {
     if (currentStep === 1) {
       if (!fullName || !selectedGender || !job) {
-        showMessage({
-          message: 'Mohon lengkapi semua data diri terlebih dahulu.',
-          type: 'danger',
-          backgroundColor: '#FF3B30',
-          color: '#fff',
-        });
+        await showAlertMessage(
+          'Mohon lengkapi semua data diri terlebih dahulu.',
+          undefined,
+          'error'
+        );
         return false;
       }
     } else if (currentStep === 2) {
       if (!lastEducation || !numberPhone) {
-        showMessage({
-          message: 'Mohon lengkapi pendidikan terakhir dan nomor telepon.',
-          type: 'danger',
-          backgroundColor: '#FF3B30',
-          color: '#fff',
-        });
+        await showAlertMessage(
+          'Mohon lengkapi pendidikan terakhir dan nomor telepon.',
+          undefined,
+          'error'
+        );
         return false;
       }
     } else if (currentStep === 3) {
       if (!npwpCompany || !companyName || !companyAddress || !provinceCompany) {
-        showMessage({
-          message:
-            'Mohon lengkapi data badan usaha (NPWP, nama, alamat, provinsi).',
-          type: 'danger',
-          backgroundColor: '#FF3B30',
-          color: '#fff',
-        });
+        await showAlertMessage(
+          'Mohon lengkapi data badan usaha (NPWP, nama, alamat, provinsi).',
+          undefined,
+          'error'
+        );
         return false;
       }
     } else if (currentStep === 4) {
@@ -140,13 +140,11 @@ export default function CompanyRegisterScreen() {
         !companyNumberPhone ||
         !isChecked
       ) {
-        showMessage({
-          message:
-            'Mohon lengkapi data perusahaan dan setujui syarat & ketentuan.',
-          type: 'danger',
-          backgroundColor: '#FF3B30',
-          color: '#fff',
-        });
+        await showAlertMessage(
+          'Mohon lengkapi data perusahaan dan setujui syarat & ketentuan.',
+          undefined,
+          'error'
+        );
         return false;
       }
     }
@@ -176,7 +174,7 @@ export default function CompanyRegisterScreen() {
 
       <View className="relative items-center rounded-lg bg-white px-6 py-8">
         <TouchableOpacity
-          onPress={() => {
+          onPress={async () => {
             if (step === 1) {
               router.back();
             } else {
@@ -197,106 +195,72 @@ export default function CompanyRegisterScreen() {
         {step === 1 && (
           <View className="mt-3 gap-6">
             {/* NAMA LENGKAP */}
-            <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
-                Nama Lengkap
-              </Text>
-              <TextInput
-                value={fullName}
-                onChangeText={setFullName}
-                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
-                style={{ fontFamily: 'LexRegular' }}
-              />
-            </View>
+            <FormInput
+              label="Nama Lengkap"
+              value={fullName}
+              onChangeText={(text) =>
+                setFullName(validationFullString(text, 50))
+              }
+              placeholder="Masukkan nama lengkap"
+              textClassName="w-80"
+              fontLexBold={{ fontFamily: 'LexBold' }}
+            />
 
             {/* JENIS KELAMIN */}
-            <View className="relative w-80 gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
-                Jenis Kelamin
-              </Text>
-              <TouchableOpacity
-                onPress={() => setIsDropdownOpen((prev) => !prev)}
-                className="flex-row items-center justify-between rounded-xl border border-[#6BBC3F] bg-white px-4 py-3"
-              >
-                <Text
-                  className="text-[#6BBC3F]"
-                  style={{ fontFamily: 'LexRegular' }}
-                >
-                  {selectedGender || 'Pilih jenis kelamin'}
-                </Text>
-                {isDropdownOpen ? (
-                  <Entypo name="chevron-small-up" size={24} color="#6BBC3F" />
-                ) : (
-                  <Entypo name="chevron-small-down" size={24} color="#6BBC3F" />
-                )}
-              </TouchableOpacity>
-
-              {isDropdownOpen && (
-                <View className="absolute top-[75px] z-10 w-full rounded-xl border border-[#6BBC3F] bg-white shadow-md">
-                  {['Laki-laki', 'Perempuan'].map((item) => (
-                    <Pressable
-                      key={item}
-                      onPress={() => {
-                        setSelectedGender(item);
-                        setIsDropdownOpen(false);
-                      }}
-                      className="px-4 py-3"
-                    >
-                      <Text
-                        style={{ fontFamily: 'LexRegular' }}
-                        className="text-[#6BBC3F]"
-                      >
-                        {item}
-                      </Text>
-                    </Pressable>
-                  ))}
-                </View>
-              )}
-            </View>
+            <FormDropdownSelect
+              label="Jenis Kelamin"
+              options={['Laki-laki', 'Perempuan']}
+              selected={selectedGender}
+              onSelect={setSelectedGender}
+              open={isDropdowGendernOpen} // kontrol open/close
+              setOpen={setIsDropdownGenderOpen}
+              toggleDropdownClassName="w-80 border-[#6BBC3F] rounded-xl"
+              DropdownSelectClassName="w-80 border-[#6BBC3F] rounded-xl"
+              selectedTextStyle={{ fontFamily: 'LexRegular', color: '#6BBC3F' }}
+              iconColor="#6BBC3F"
+            />
 
             {/* PEKERJAAN */}
-            <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
-                Pekerjaan
-              </Text>
-              <TextInput
-                value={job}
-                onChangeText={setJob}
-                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
-                style={{ fontFamily: 'LexRegular' }}
-              />
-            </View>
+            <FormInput
+              label="Pekerjaan"
+              value={job}
+              onChangeText={(text) => setJob(validationFullString(text, 50))}
+              placeholder="Masukkan pekerjaan"
+              textClassName="w-80"
+              fontLexBold={{ fontFamily: 'LexBold' }}
+            />
           </View>
         )}
 
         {step === 2 && (
           <View className="mt-2 gap-6 pb-5">
             {/* PENDIDIKAN TERAKHIR */}
-            <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
-                Pendidikan Terakhir
-              </Text>
-              <TextInput
-                value={lastEducation}
-                onChangeText={setLastEducation}
-                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
-                style={{ fontFamily: 'LexRegular' }}
-              />
-            </View>
+            <FormDropdownSelect
+              label="Pendidikan Terakhir"
+              options={educationOptions}
+              selected={lastEducation}
+              onSelect={setLastEducation}
+              open={isLastEducationDropdownOpen}
+              setOpen={setIsLastEducationDropdownOpen}
+              maxVisibleOptions={5}
+              toggleDropdownClassName="w-80 border-[#6BBC3F] rounded-xl"
+              DropdownSelectClassName="w-80 border-[#6BBC3F] rounded-xl"
+              selectedTextStyle={{ fontFamily: 'LexRegular', color: '#6BBC3F' }}
+              iconColor="#6BBC3F"
+            />
 
             {/* NO HP / NO TELP */}
-            <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
-                No HP / No Telp
-              </Text>
-              <TextInput
-                value={numberPhone}
-                onChangeText={setNumberPhone}
-                keyboardType="phone-pad"
-                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
-                style={{ fontFamily: 'LexRegular' }}
-              />
-            </View>
+            <FormInput
+              label="No HP / No Telp (Pribadi)"
+              value={numberPhone}
+              onChangeText={(text) =>
+                setNumberPhone(validationNumber(text, 15))
+              }
+              placeholder="Masukkan nomor HP / Telp"
+              keyboardType="phone-pad"
+              textClassName="w-80"
+              fontLexBold={{ fontFamily: 'LexBold' }}
+            />
 
             <View>
               <Text className="text-sm" style={{ fontFamily: 'LexBold' }}>
@@ -333,92 +297,92 @@ export default function CompanyRegisterScreen() {
 
         {step === 3 && (
           <View className="mt-2 gap-6 pb-2">
-            <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
-                NPWP Perusahaan
-              </Text>
-              <TextInput
-                value={npwpCompany}
-                onChangeText={setNpwpCompany}
-                keyboardType="phone-pad"
-                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
-                style={{ fontFamily: 'LexRegular' }}
-              />
-            </View>
-            <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
-                Nama Perusahaan
-              </Text>
-              <TextInput
-                value={companyName}
-                onChangeText={setCompanyName}
-                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
-                style={{ fontFamily: 'LexRegular' }}
-              />
-            </View>
-            <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
-                Alamat Perusahaan
-              </Text>
-              <TextInput
-                value={companyAddress}
-                onChangeText={setCompanyAddress}
-                multiline={true}
-                numberOfLines={4}
-                textAlignVertical="top"
-                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
-                style={{ fontFamily: 'LexRegular' }}
-              />
-            </View>
-            <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
-                Provinsi
-              </Text>
-              <TextInput
-                value={provinceCompany}
-                onChangeText={setProvinceCompany}
-                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
-                style={{ fontFamily: 'LexRegular' }}
-              />
-            </View>
+            {/* NPWP */}
+            <FormInput
+              label="NPWP Perusahaan"
+              value={npwpCompany}
+              onChangeText={(text) => setNpwpCompany(validationNPWP(text))}
+              placeholder="Masukkan NPWP Perusahaan"
+              keyboardType="phone-pad"
+              textClassName="w-80"
+              fontLexBold={{ fontFamily: 'LexBold' }}
+            />
+
+            {/* NAMA PERUSAHAAN */}
+            <FormInput
+              label="Nama Perusahaan"
+              value={companyName}
+              onChangeText={(text) =>
+                setCompanyName(validationFullString(text, 50))
+              }
+              placeholder="Masukkan Nama Perusahaan"
+              textClassName="w-80"
+              fontLexBold={{ fontFamily: 'LexBold' }}
+            />
+
+            {/* ALAMAT PERUSAHAAN */}
+            <FormInput
+              label="Alamat Perusahaan"
+              value={companyAddress}
+              onChangeText={setCompanyAddress}
+              placeholder="Masukkan Alamat Perusahaan"
+              textClassName="w-80"
+              fontLexBold={{ fontFamily: 'LexBold' }}
+              multiline
+              textAlignVertical="top"
+              maxLength={70}
+            />
+
+            {/* PROVINSI */}
+            <FormInput
+              label="Provinsi"
+              value={provinceCompany}
+              onChangeText={(text) =>
+                setProvinceCompany(validationFullString(text, 30))
+              }
+              placeholder="Masukkan Provinsi"
+              textClassName="w-80"
+              fontLexBold={{ fontFamily: 'LexBold' }}
+            />
           </View>
         )}
         {step === 4 && (
           <View className="gap-6 pb-4">
-            <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
-                Kabupaten / Kota
-              </Text>
-              <TextInput
-                value={districtCityCompany}
-                onChangeText={setDistrictCityCompany}
-                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
-                style={{ fontFamily: 'LexRegular' }}
-              />
-            </View>
-            <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
-                Email Perusahaan
-              </Text>
-              <TextInput
-                value={emailCompany}
-                onChangeText={setEmailCompany}
-                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
-                style={{ fontFamily: 'LexRegular' }}
-              />
-            </View>
-            <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
-                No HP / No Telp Perusahaan
-              </Text>
-              <TextInput
-                value={companyNumberPhone}
-                onChangeText={setCompanyNumberPhone}
-                keyboardType="phone-pad"
-                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
-                style={{ fontFamily: 'LexRegular' }}
-              />
-            </View>
+            {/* KABUPATEN / KOTA */}
+            <FormInput
+              label="Kabupaten / Kota"
+              value={districtCityCompany}
+              onChangeText={(text) =>
+                setDistrictCityCompany(validationFullString(text, 30))
+              }
+              placeholder="Masukkan Kabupaten / Kota"
+              textClassName="w-80"
+              fontLexBold={{ fontFamily: 'LexBold' }}
+            />
+
+            {/* EMAIL PERUSAHAAN */}
+            <FormInput
+              label="Email Perusahaan"
+              value={emailCompany}
+              onChangeText={(text) => setEmailCompany(validationEmail(text))}
+              placeholder="Masukkan email perusahaan"
+              keyboardType="email-address"
+              textClassName="w-80"
+              fontLexBold={{ fontFamily: 'LexBold' }}
+            />
+
+            {/* NO HP / NO TELP */}
+            <FormInput
+              label="No HP / No Telp Perusahaan"
+              value={companyNumberPhone}
+              onChangeText={(text) =>
+                setCompanyNumberPhone(validationNumber(text, 15))
+              }
+              placeholder="Masukkan nomor HP / Telp perusahaan"
+              keyboardType="phone-pad"
+              textClassName="w-80"
+              fontLexBold={{ fontFamily: 'LexBold' }}
+            />
 
             <TouchableOpacity
               onPress={() => setIsChecked(!isChecked)}
@@ -473,8 +437,8 @@ export default function CompanyRegisterScreen() {
         {step === 1 && (
           <Button
             style="bg-[#73BF40] mt-12 py-3 px-28 rounded-xl"
-            onPress={() => {
-              if (validateStep(1)) setStep(2);
+            onPress={async () => {
+              if (await validateStep(1)) setStep(2);
             }}
             activeOpacity={0.8}
           >
@@ -485,8 +449,8 @@ export default function CompanyRegisterScreen() {
       {(step === 2 || step === 3) && (
         <Button
           style="bg-[#73BF40] mt-6 py-3 px-28 rounded-xl"
-          onPress={() => {
-            if (validateStep(step)) setStep(step + 1);
+          onPress={async () => {
+            if (await validateStep(step)) setStep(step + 1);
           }}
           activeOpacity={0.8}
         >
@@ -497,7 +461,7 @@ export default function CompanyRegisterScreen() {
       {step === 4 && (
         <Button
           onPress={async () => {
-            if (validateStep(4)) {
+            if (await validateStep(4)) {
               await handleRegister();
             }
           }}

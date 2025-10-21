@@ -5,25 +5,21 @@ import {
   ScrollView,
   View,
   ActivityIndicator,
-  TextInput,
-  Text,
 } from 'react-native';
-import { showMessage } from 'react-native-flash-message';
 
 // OUR COMPONENTS
 import BackButton from '@/components/headerBackButton';
 import ButtonCustom from '@/components/buttonCustom';
-import InputField from '@/components/formInput';
+
 import AccountCloseAlert from '@/components/accountCloseAlert';
+import FormInput from '@/components/formInput';
 
 // OUR HOOKS
 import { useEditSecurityProfile } from '@/hooks/Backend/useEditSecurityProfile';
 
 // OUT UTILS
-import {
-  isValidPhoneNumber,
-  isValidEmail,
-} from '@/utils/validationStringNumber';
+import { validationNumber } from '@/utils/validationNumber';
+import { validationEmail } from '@/utils/validationEmail';
 
 export default function SecurityProfile({ onClose }: { onClose: () => void }) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -44,35 +40,9 @@ export default function SecurityProfile({ onClose }: { onClose: () => void }) {
     return numberPhone !== originalPhone || email !== originalEmail;
   }, [numberPhone, email, profile]);
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (!isDataChanged) return;
-
-    if (!numberPhone.trim() || !email.trim()) {
-      showMessage({
-        message: 'Semua kolom wajib diisi.',
-        type: 'danger',
-      });
-      return;
-    }
-
-    if (!isValidPhoneNumber(numberPhone)) {
-      showMessage({
-        message:
-          'Nomor telepon tidak valid. Pastikan format nomor Indonesia dengan 10-13 digit.',
-        type: 'danger',
-      });
-      return;
-    }
-
-    if (!isValidEmail(email)) {
-      showMessage({
-        message: 'Format email tidak valid.',
-        type: 'danger',
-      });
-      return;
-    }
-
-    handleSave();
+    await handleSave();
   };
 
   if (loading || !profile) {
@@ -108,32 +78,28 @@ export default function SecurityProfile({ onClose }: { onClose: () => void }) {
             {/* FORM FIELDS */}
             <View className="space-y-4">
               {/* INPUT NO TELEPON */}
-              <View className="mt-4 px-6 py-1">
-                <Text className="mb-2" style={{ fontFamily: 'LexBold' }}>
-                  No HP / Telepon
-                </Text>
-                <TextInput
-                  className="rounded-[10px] border p-4"
-                  maxLength={13}
-                  style={{
-                    fontFamily: 'LexRegular',
-                  }}
-                  value={numberPhone}
-                  onChangeText={(input) => setNumberPhone(input)}
-                  placeholder="Masukkan nomor telepon"
-                  keyboardType="phone-pad"
-                />
-              </View>
+              <FormInput
+                label="No HP / Telepon"
+                value={numberPhone}
+                onChangeText={(text) =>
+                  setNumberPhone(validationNumber(text, 15))
+                }
+                placeholder="Masukkan nomor telepon"
+                keyboardType="phone-pad"
+                maxLength={13}
+              />
 
               {/* INPUT EMAIL */}
-              <InputField
+              <FormInput
                 label="Email" //
                 textClassName="border-[#6BBC3F]"
                 value={email}
-                onChangeText={(text) => setEmail(text.trim())}
+                onChangeText={(text) => setEmail(validationEmail(text))}
                 placeholder="Masukkan email"
                 keyboardType="email-address"
               />
+
+              {/* BUTTON TUTUP AKUN */}
               <View className="w-[95%] self-center py-4">
                 <ButtonCustom
                   classNameContainer=" w-32 py-[6px] px-10 rounded-lg" //

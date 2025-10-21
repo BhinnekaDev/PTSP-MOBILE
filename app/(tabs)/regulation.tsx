@@ -16,7 +16,10 @@ import ImageZoom from 'react-native-image-pan-zoom';
 import Entypo from '@expo/vector-icons/Entypo';
 
 // OUR COMPONENTS
-import Navbar from '@/components/Navbar';
+import { WrapperSkeletonRegulation } from '@/components/skeletons/wrapperSkeletonRegulation';
+
+// OUR HOOKS
+import { useSkeletonForTab } from '@/hooks/Frontend/skeletons/useSkeletonForTab';
 
 const { width, height } = Dimensions.get('window');
 
@@ -26,6 +29,7 @@ export default function Regulation() {
   const ZoomAny = ImageZoom as unknown as React.ComponentType<any>;
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef<ScrollView>(null);
+  const showSkeleton = useSkeletonForTab();
 
   const handleNext = () => {
     const nextIndex = Math.min(activeIndex + 1, selectedImages.length - 1);
@@ -49,11 +53,12 @@ export default function Regulation() {
     setSelectedImages([]);
   };
 
+  if (showSkeleton) {
+    return <WrapperSkeletonRegulation />;
+  }
+
   return (
     <View className="flex-1 bg-[#A7CBE5]">
-      {/* NAVBAR */}
-      <Navbar />
-
       <ScrollView
         contentContainerStyle={{ paddingBottom: 140, paddingHorizontal: 15 }}
         showsVerticalScrollIndicator={false}

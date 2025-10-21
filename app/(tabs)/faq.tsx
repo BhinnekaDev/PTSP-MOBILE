@@ -11,10 +11,11 @@ import {
 import { AntDesign } from '@expo/vector-icons';
 
 // OUR COMPONENTS
-import Navbar from '@/components/Navbar';
+import { WrapperSkeletonFaq } from '@/components/skeletons/wrapperSkeletonFaq';
 
 // OUR HOOKS
 import useDropdownAnimation from '@/hooks/Frontend/faqScreen/useAnimationFaq';
+import { useSkeletonForTab } from '@/hooks/Frontend/skeletons/useSkeletonForTab';
 
 // OUR CONSTANTS
 import dataFaq from '@/constants/dataFaq';
@@ -22,7 +23,7 @@ import dataFaq from '@/constants/dataFaq';
 // OUR INTERFACES
 import { ButtonCustomProps } from '@/interfaces/buttonCustomProps';
 
-export default function FAQ({ count = 1 }: ButtonCustomProps) {
+export default function FAQTabs({ count = 1 }: ButtonCustomProps) {
   const {
     openIndex,
     animatedValues,
@@ -31,11 +32,11 @@ export default function FAQ({ count = 1 }: ButtonCustomProps) {
     measuredHeights,
   } = useDropdownAnimation(dataFaq.length);
 
+  const showSkeleton = useSkeletonForTab();
+  if (showSkeleton) return <WrapperSkeletonFaq />;
+
   return (
     <View className="flex-1 gap-4 bg-[#A7CBE5]">
-      {/* NAVBAR */}
-      <Navbar />
-
       {/* BODY */}
       <View className="flex-1 px-4">
         <View className="w-full flex-1 py-6">

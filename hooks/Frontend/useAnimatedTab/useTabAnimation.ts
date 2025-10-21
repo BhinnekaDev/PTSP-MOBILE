@@ -15,7 +15,7 @@ export function useTabAnimation<GenericType extends string>(
       toValue: index * tabWidth,
       useNativeDriver: true,
     }).start();
-  }, [activeTab, tabWidth]);
+  }, [activeTab, tabWidth, translateX, tabs]);
 
   const onTabPress = (tab: GenericType) => setActiveTab(tab);
   const onLayoutParent = (e: LayoutChangeEvent) =>

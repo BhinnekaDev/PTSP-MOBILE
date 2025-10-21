@@ -6,7 +6,7 @@ import {
 } from '@/lib/firebase';
 import { submissionOptions } from '@/constants/submissionOptions';
 import CartItemProps from '@/interfaces/cartItemProps';
-import { showAppMessage } from '@/utils/showAppMessage'; // 🔹 pakai utils
+import { showAppMessage } from '@/utils/showAlertMessage'; // 🔹 pakai utils
 
 interface SubmitSubmissionOptions {
   selectedJenis: string;

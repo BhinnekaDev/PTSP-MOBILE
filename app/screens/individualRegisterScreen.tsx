@@ -1,21 +1,25 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  Pressable,
-  Alert,
-} from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Entypo from '@expo/vector-icons/Entypo';
+
+// OUR COMPONENTS
 import Button from '@/components/button';
+import FormInput from '@/components/formInput';
+import FormDropdownSelect from '@/components/formDropdownSelect';
 
-import { showMessage } from 'react-native-flash-message';
+// OUR CONSTANT
+import { educationOptions } from '@/constants/educationOptions';
 
+// OUR HOOKS
 import { useIndividualRegister } from '@/hooks/Backend/useIndividualRegister';
+
+// OUR UTILS
+import { showAlertMessage } from '@/utils/showAlertMessage';
+import { validationFullString } from '@/utils/validationFullString';
+import { validationNumber } from '@/utils/validationNumber';
 
 export default function IndividualRegisterScreen() {
   const router = useRouter();
@@ -24,21 +28,22 @@ export default function IndividualRegisterScreen() {
 
   // State input
   const [fullName, setFullName] = useState('');
+  const [selectedGender, setSelectedGender] = useState('');
+  const [isDropdownGenderOpen, setIsDropdownGenderOpen] = useState(false);
   const [job, setJob] = useState('');
   const [lastEducation, setLastEducation] = useState('');
-  const [selectedGender, setSelectedGender] = useState('');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLastEducationDropdownOpen, setLastIsEducationDropdownOpen] =
+    useState(false);
   const [numberPhone, setNumberPhone] = useState('');
   const [isChecked, setIsChecked] = useState(false);
 
   const handleRegister = async () => {
     if (!lastEducation || !numberPhone) {
-      showMessage({
-        message: 'Harap isi seluruh form yang ada!',
-        type: 'danger',
-        backgroundColor: '#FF3B30',
-        color: '#fff',
-      });
+      await showAlertMessage(
+        'Harap isi seluruh form yang ada!',
+        undefined,
+        'error'
+      );
       return;
     }
 
@@ -51,36 +56,27 @@ export default function IndividualRegisterScreen() {
         No_Hp: numberPhone,
       });
 
-      showMessage({
-        message: 'Registrasi berhasil disimpan!',
-        type: 'success',
-        backgroundColor: '#72C02C',
-        color: '#fff',
-        icon: 'success',
-      });
+      await showAlertMessage(
+        'Registrasi berhasil disimpan!',
+        undefined,
+        'success'
+      );
 
       setTimeout(() => {
         router.push('/(tabs)/home');
       }, 1200);
-    } catch (error) {
-      showMessage({
-        message: 'Gagal menyimpan data.',
-        type: 'danger',
-        backgroundColor: '#FF3B30',
-        color: '#fff',
-        icon: 'danger',
-      });
+    } catch {
+      await showAlertMessage('Gagal menyimpan data.', undefined, 'error');
     }
   };
 
-  const validateStep1 = () => {
+  const validateStep1 = async () => {
     if (!fullName || !selectedGender || !job) {
-      showMessage({
-        message: 'Harap isi seluruh form yang ada!',
-        type: 'danger',
-        backgroundColor: '#FF0000',
-        color: '#fff',
-      });
+      await showAlertMessage(
+        'Harap isi seluruh form yang ada!',
+        undefined,
+        'error'
+      );
       return false;
     }
     return true;
@@ -88,9 +84,10 @@ export default function IndividualRegisterScreen() {
 
   return (
     <View className="flex-1 items-center justify-center overflow-hidden">
+      {/* Background Gradient */}
       <View className="absolute inset-0">
         <LinearGradient
-          colors={['#1475BA', '#36918A', '#6BBC3F']} //
+          colors={['#1475BA', '#36918A', '#6BBC3F']}
           locations={[0, 0.5, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -108,6 +105,7 @@ export default function IndividualRegisterScreen() {
       </View>
 
       <View className="relative items-center rounded-lg bg-white px-6 py-8">
+        {/* Back Button */}
         <TouchableOpacity
           onPress={() => {
             if (step === 1) {
@@ -120,113 +118,87 @@ export default function IndividualRegisterScreen() {
         >
           <Ionicons name="arrow-back-circle" size={32} color="black" />
         </TouchableOpacity>
+
         <Text
           className="mb-4 text-center text-3xl"
           style={{ fontFamily: 'LexBold' }}
         >
           Data Diri
         </Text>
+
+        {/* STEP 1 */}
         {step === 1 && (
           <View className="mt-3 gap-6">
-            <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
-                Nama Lengkap
-              </Text>
-              <TextInput
-                value={fullName}
-                onChangeText={setFullName}
-                maxLength={50}
-                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
-                style={{ fontFamily: 'LexRegular' }}
-              />
-            </View>
+            {/* Nama Lengkap */}
+            <FormInput
+              label="Nama Lengkap"
+              value={fullName}
+              onChangeText={(text) =>
+                setFullName(validationFullString(text, 50))
+              }
+              placeholder="Masukkan nama lengkap"
+              textClassName="w-80 "
+            />
+
             {/* Dropdown Gender */}
-            <View className="relative w-80 gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
-                Jenis Kelamin
-              </Text>
-              <TouchableOpacity
-                onPress={() => setIsDropdownOpen((prev) => !prev)}
-                className="flex-row items-center justify-between rounded-xl border border-[#6BBC3F] bg-white px-4 py-3"
-              >
-                <Text
-                  className="text-[#6BBC3F]"
-                  style={{ fontFamily: 'LexRegular' }}
-                >
-                  {selectedGender || 'Pilih jenis kelamin'}
-                </Text>
-                {isDropdownOpen ? (
-                  <Entypo name="chevron-small-up" size={24} color="#6BBC3F" />
-                ) : (
-                  <Entypo name="chevron-small-down" size={24} color="#6BBC3F" />
-                )}
-              </TouchableOpacity>
+            <FormDropdownSelect
+              label="Jenis Kelamin"
+              options={['Laki-laki', 'Perempuan']}
+              selected={selectedGender}
+              onSelect={(value) => {
+                setSelectedGender(value);
+                setIsDropdownGenderOpen(false); // tutup dropdown setelah pilih
+              }}
+              open={isDropdownGenderOpen} // ← pakai state parent
+              setOpen={setIsDropdownGenderOpen} // ← pakai setter parent
+              showLabel={true}
+              toggleDropdownClassName="rounded-xl border border-[#6BBC3F] bg-white px-4 py-3"
+              DropdownSelectClassName="rounded-xl border border-t-0 border-[#6BBC3F] bg-white shadow-md"
+              selectedTextStyle={{ color: '#6BBC3F', fontFamily: 'LexRegular' }}
+              iconColor="#6BBC3F"
+            />
 
-              {isDropdownOpen && (
-                <View className="absolute top-[75px] z-10 w-full rounded-xl border border-[#6BBC3F] bg-white shadow-md">
-                  {['Laki-laki', 'Perempuan'].map((item) => (
-                    <Pressable
-                      key={item}
-                      onPress={() => {
-                        setSelectedGender(item);
-                        setIsDropdownOpen(false);
-                      }}
-                      className="px-4 py-3"
-                    >
-                      <Text
-                        style={{ fontFamily: 'LexRegular' }}
-                        className="text-[#6BBC3F]"
-                      >
-                        {item}
-                      </Text>
-                    </Pressable>
-                  ))}
-                </View>
-              )}
-            </View>
-
-            {/* Input Pekerjaan */}
-            <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
-                Pekerjaan
-              </Text>
-              <TextInput
-                value={job}
-                onChangeText={setJob}
-                maxLength={50}
-                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
-                style={{ fontFamily: 'LexRegular' }}
-              />
-            </View>
+            {/* Pekerjaan */}
+            <FormInput
+              label="Pekerjaan"
+              value={job}
+              onChangeText={(text) => setJob(validationFullString(text, 50))}
+              placeholder="Masukkan nama lengkap"
+            />
           </View>
         )}
 
+        {/* STEP 2 */}
         {step === 2 && (
           <View className="mt-2 gap-6 pb-2">
-            <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
-                Pendidikan Terakhir
-              </Text>
-              <TextInput
-                value={lastEducation}
-                onChangeText={setLastEducation}
-                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
-                style={{ fontFamily: 'LexRegular' }}
-              />
-            </View>
-            <View className="gap-1">
-              <Text className="text-md ml-1" style={{ fontFamily: 'LexBold' }}>
-                No HP / No Telp
-              </Text>
-              <TextInput
-                value={numberPhone}
-                onChangeText={setNumberPhone}
-                maxLength={13}
-                keyboardType="phone-pad"
-                className="w-80 rounded-xl border border-[#6BBC3F] p-2"
-                style={{ fontFamily: 'LexRegular' }}
-              />
-            </View>
+            {/* Pendidikan Terakhir */}
+            <FormDropdownSelect
+              label="Pendidikan Terakhir"
+              options={educationOptions} // array pilihan pendidikan
+              selected={lastEducation} // state yang menyimpan pilihan saat ini
+              onSelect={setLastEducation} // setter untuk update pilihan
+              open={isLastEducationDropdownOpen} // kontrol open
+              setOpen={setLastIsEducationDropdownOpen} // setter open
+              maxVisibleOptions={3} // maksimal 3 item terlihat, sisanya scroll
+              toggleDropdownClassName="w-80" // lebar tombol dropdown
+              DropdownSelectClassName="w-80" // lebar container dropdown
+              labelStyle={{ fontFamily: 'LexBold' }}
+              selectedTextStyle={{ fontFamily: 'LexRegular', color: '#6BBC3F' }}
+              iconColor="#6BBC3F"
+            />
+
+            {/* Nomor HP */}
+            <FormInput
+              label="No HP / No Telp"
+              value={numberPhone}
+              onChangeText={(text) =>
+                setNumberPhone(validationNumber(text, 15))
+              }
+              placeholder="No HP / No Telp"
+              keyboardType="phone-pad"
+              textClassName="border-[#6BBC3F]"
+              fontLexBold={{ fontFamily: 'LexBold' }}
+            />
 
             {/* Checkbox */}
             <TouchableOpacity
@@ -276,12 +248,13 @@ export default function IndividualRegisterScreen() {
           </View>
         )}
 
+        {/* Tombol Selanjutnya */}
         {step === 1 && (
           <Button
             style="bg-[#1475BA] mt-12 py-3 px-28 rounded-xl"
             textStyle="text-white"
-            onPress={() => {
-              if (validateStep1()) {
+            onPress={async () => {
+              if (await validateStep1()) {
                 setStep(2);
               }
             }}
@@ -291,11 +264,13 @@ export default function IndividualRegisterScreen() {
           </Button>
         )}
       </View>
+
+      {/* Tombol Simpan Data */}
       {step === 2 && (
         <Button
           onPress={handleRegister}
           style={`mt-4 py-3 rounded-xl ${
-            isChecked ? 'bg-[#1475BA] px-20' : 'bg-gray-400 px-8' //
+            isChecked ? 'bg-[#1475BA] px-20' : 'bg-gray-400 px-8'
           }`}
           textStyle={`${isChecked ? 'text-white' : 'text-black'}`}
           disabled={!isChecked}
