@@ -1,7 +1,9 @@
 // hooks/useInternetStatus.ts
 import { useEffect, useState, useRef } from 'react';
 import * as Network from 'expo-network';
-import { showAppMessage } from '@/utils/showAlertMessage';
+
+// OUR UTILS
+import { showAlertMessage } from '@/utils/showAlertMessage';
 
 interface InternetStatus {
   isConnected: boolean;
@@ -29,13 +31,13 @@ export function useInternetStatus(checkInterval = 5000) {
       // tampilkan alert hanya saat status berubah
       if (prevStatus.current !== null && prevStatus.current !== connected) {
         if (!connected) {
-          showAppMessage(
+          showAlertMessage(
             'Tidak ada koneksi internet',
             'Periksa Wi-Fi atau Data seluler',
             'error'
           );
         } else {
-          showAppMessage('Koneksi internet kembali', undefined, 'success');
+          showAlertMessage('Koneksi internet kembali', undefined, 'success');
         }
       }
 

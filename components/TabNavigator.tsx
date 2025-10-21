@@ -1,5 +1,7 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
+
+// OUR ICONS
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 

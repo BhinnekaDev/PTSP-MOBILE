@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 import { firebaseAuth, db } from '@/lib/firebase';
+
+// OUR HOOKS
+import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
+
+// OUR UTILS
+import { showAlertMessage } from '@/utils/showAlertMessage';
 
 export const useEditIndividualProfile = (onClose: () => void) => {
   const { profile, loading } = useGetUserProfile();
@@ -40,11 +45,24 @@ export const useEditIndividualProfile = (onClose: () => void) => {
       if (!uid) throw new Error('UID tidak ditemukan.');
 
       await db.collection('perorangan').doc(uid).update(data);
-      alert('✅ Profil perorangan berhasil diperbarui');
+
+      //  pakai alert utils (sukses)
+      await showAlertMessage(
+        'Berhasil',
+        'Profil perorangan berhasil diperbarui ',
+        'success'
+      );
+
       onClose();
     } catch (err) {
       console.error('❌ Gagal memperbarui profil perorangan:', err);
-      alert('Terjadi kesalahan saat menyimpan profil.');
+
+      //  pakai alert utils (gagal)
+      await showAlertMessage(
+        'Gagal',
+        'Terjadi kesalahan saat menyimpan profil.',
+        'error'
+      );
     }
   };
 

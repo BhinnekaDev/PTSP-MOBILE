@@ -21,7 +21,7 @@ import { useCompanyRegister } from '@/hooks/Backend/useCompanyRegister';
 // OUR UTILS
 import { showAlertMessage } from '@/utils/showAlertMessage';
 import { validationFullString } from '@/utils/validationFullString';
-import { validationNumberOnly } from '@/utils/validationNumberOnly';
+import { validationNumber } from '@/utils/validationNumber';
 import { validationNPWP } from '@/utils/validationNPWP';
 import { validationEmail } from '@/utils/validationEmail';
 
@@ -254,7 +254,7 @@ export default function CompanyRegisterScreen() {
               label="No HP / No Telp (Pribadi)"
               value={numberPhone}
               onChangeText={(text) =>
-                setNumberPhone(validationNumberOnly(text, 15))
+                setNumberPhone(validationNumber(text, 15))
               }
               placeholder="Masukkan nomor HP / Telp"
               keyboardType="phone-pad"
@@ -330,6 +330,7 @@ export default function CompanyRegisterScreen() {
               fontLexBold={{ fontFamily: 'LexBold' }}
               multiline
               textAlignVertical="top"
+              maxLength={70}
             />
 
             {/* PROVINSI */}
@@ -375,7 +376,7 @@ export default function CompanyRegisterScreen() {
               label="No HP / No Telp Perusahaan"
               value={companyNumberPhone}
               onChangeText={(text) =>
-                setCompanyNumberPhone(validationNumberOnly(text, 15))
+                setCompanyNumberPhone(validationNumber(text, 15))
               }
               placeholder="Masukkan nomor HP / Telp perusahaan"
               keyboardType="phone-pad"

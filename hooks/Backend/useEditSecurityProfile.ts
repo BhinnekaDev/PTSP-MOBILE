@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
-import { showMessage } from 'react-native-flash-message';
 // LIB
 import {
   firebaseAuth,
@@ -12,13 +11,20 @@ import {
 // HOOKS
 import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 
-// UTILS
-import { isValidEmail } from '@/utils/validationEmail';
+// OUR INTERFACES
+import {
+  GetPeroranganProfile,
+  GetPerusahaanProfile,
+} from '@/interfaces/getUserProfileProps';
 
-type UpdateSecurityData = {
-  No_Hp: string;
-  Email: string;
-};
+// UTILS
+import { validationEmail } from '@/utils/validationEmail';
+import { validationNumber } from '@/utils/validationNumber';
+import { showAlertMessage } from '@/utils/showAlertMessage';
+
+type UpdateSecurityData =
+  | Pick<GetPeroranganProfile, 'No_Hp' | 'Email'>
+  | Pick<GetPerusahaanProfile, 'No_Hp' | 'Email'>;
 
 export const useEditSecurityProfile = (onClose: () => void) => {
   const router = useRouter();
@@ -35,43 +41,40 @@ export const useEditSecurityProfile = (onClose: () => void) => {
 
   const handleSave = async () => {
     try {
-      // VALIDASI INPUT
-        if (!numberPhone.trim() || !email.trim()) {
-      showMessage({
-        message: "Semua kolom wajib diisi.",
-        type: "danger",
-      });
-      return;
-    }
+      const cleanedPhone = validationNumber(numberPhone, 13);
+      const cleanedEmail = validationEmail(email);
 
-    if (numberPhone.length < 10 || numberPhone.length > 13) {
-      showMessage({
-        message: "Nomor HP harus terdiri dari 10–13 digit angka.",
-        type: "danger",
-      });
-      return;
-    }
+      if (!cleanedPhone.trim() || !cleanedEmail.trim()) {
+        await showAlertMessage('Semua kolom wajib diisi.', '', 'error');
+        return;
+      }
 
-    if (!isValidEmail(email)) {
-      showMessage({
-        message: "Format email tidak valid.",
-        type: "danger",
-      });
-      return;
-    }
+      if (cleanedPhone.length < 10 || cleanedPhone.length > 13) {
+        await showAlertMessage(
+          'Nomor HP harus terdiri dari 10–13 digit angka.',
+          '',
+          'error'
+        );
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(cleanedEmail)) {
+        await showAlertMessage('Format email tidak valid.', '', 'error');
+        return;
+      }
 
       const user = firebaseAuth.currentUser;
       if (!user) throw new Error('User tidak ditemukan.');
 
-      const isEmailChanged = email.trim() !== user.email;
+      const isEmailChanged = cleanedEmail.trim() !== user.email;
 
-      // Jika email berubah, lakukan re-auth dan kirim verifikasi
       if (isEmailChanged) {
         const { idToken } = await GoogleSignin.getTokens();
         const credential = GoogleAuthProvider.credential(idToken);
         await user.reauthenticateWithCredential(credential);
 
-        await user.verifyBeforeUpdateEmail(email.trim(), {
+        await user.verifyBeforeUpdateEmail(cleanedEmail.trim(), {
           url: 'https://ptspbmkgmobile.page.link',
           handleCodeInApp: true,
           android: {
@@ -81,61 +84,54 @@ export const useEditSecurityProfile = (onClose: () => void) => {
           },
         });
 
-        showMessage({
-      message:
-        '📧 Email verifikasi telah dikirim ke email baru kamu. Silakan cek dan klik link verifikasi untuk menyelesaikan perubahan email.',
-      type: 'info',
-      icon: 'info',
-    });
-        console.log('✅ verifyBeforeUpdateEmail dijalankan');
+        await showAlertMessage(
+          '📧 Email verifikasi telah dikirim ke email baru kamu. Silakan cek dan klik link verifikasi untuk menyelesaikan perubahan email.',
+          '',
+          'warning'
+        );
+        // console.log('verifyBeforeUpdateEmail dijalankan');
       }
 
-      // Update Firestore TANPA kondisi khusus
       const uid = user.uid;
       const collectionName =
         profile?.tipe === 'perorangan' ? 'perorangan' : 'perusahaan';
 
       const data: UpdateSecurityData = {
-        No_Hp: numberPhone,
-        Email: email.trim(),
+        No_Hp: cleanedPhone,
+        Email: cleanedEmail.trim(),
       };
 
-      console.log('📝 Mengupdate Firestore dengan data:', data);
+      // console.log('📝 Mengupdate Firestore dengan data:', data);
       await db.collection(collectionName).doc(uid).update(data);
-      console.log('✅ Firestore berhasil diupdate');
+      // console.log('✅ Firestore berhasil diupdate');
 
-      showMessage({
-    message: '✅ Data keamanan berhasil disimpan.',
-    type: 'success',
-    icon: 'success',
-  });
+      await showAlertMessage('Data keamanan berhasil disimpan.', '', 'success');
       onClose();
 
-      // Kembali hanya jika email berubah (untuk menghindari bug routing)
       if (isEmailChanged) router.back();
     } catch (err: any) {
-      console.log('❌ Masuk ke blok catch error');
-      console.error('Gagal menyimpan data keamanan:', err);
+      // console.log('❌ Masuk ke blok catch error');
+      // console.error('Gagal menyimpan data keamanan:', err);
 
       if (err.code === 'auth/requires-recent-login') {
-    showMessage({
-      message: '⚠️ Demi keamanan, silakan login ulang untuk ubah email.',
-      type: 'warning',
-      icon: 'warning',
-    });
-  } else if (err.code === 'auth/email-already-in-use') {
-    showMessage({
-      message: '⚠️ Email ini sudah digunakan oleh akun lain.',
-      type: 'warning',
-      icon: 'warning',
-    });
-  } else {
-    showMessage({
-      message: err.message || 'Terjadi kesalahan saat menyimpan data keamanan.',
-      type: 'danger',
-      icon: 'danger',
-    });
-  }
+        await showAlertMessage(
+          '⚠️ Demi keamanan, silakan login ulang untuk ubah email.',
+          '',
+          'warning'
+        );
+      } else if (err.code === 'auth/email-already-in-use') {
+        await showAlertMessage(
+          '⚠️ Email ini sudah digunakan oleh akun lain.',
+          '',
+          'warning'
+        );
+      } else {
+        await showAlertMessage(
+          err.message || 'Terjadi kesalahan saat menyimpan data keamanan.',
+          '',
+          'error'
+        );
+      }
     }
   };
 

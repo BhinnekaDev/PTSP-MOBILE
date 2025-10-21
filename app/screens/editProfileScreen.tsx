@@ -12,16 +12,21 @@ import {
 // COMPONENTS
 import BackButton from '@/components/headerBackButton';
 import FormDropdownSelect from '@/components/formDropdownSelect';
-import InputField from '@/components/formInput';
+import FormInput from '@/components/formInput';
 
-// UTILS
-import { validationFullString } from '@/utils/validationFullString';
-import { validationNumberOnly } from '@/utils/validationNumberOnly';
+//  OUR CONSTANTS
+import { educationOptions } from '@/constants/educationOptions';
 
 // HOOKS
 import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 import { useEditIndividualProfile } from '@/hooks/Backend/useEditIndividualProfile';
 import { useEditCompanyProfile } from '@/hooks/Backend/useEditCompanyProfile';
+import { validationEmail } from '@/utils/validationEmail';
+
+// UTILS
+import { validationFullString } from '@/utils/validationFullString';
+import { validationNumber } from '@/utils/validationNumber';
+import { validationNPWP } from '@/utils/validationNPWP';
 
 export default function EditProfile({ onClose }: { onClose: () => void }) {
   const { profile, loading } = useGetUserProfile();
@@ -36,6 +41,8 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
       : null;
 
   const [isGenderDropdownOpen, setIsGenderDropdownOpen] = useState(false);
+  const [isLastEducationDropdownOpen, setIsLastEducationDropdownOpen] =
+    useState(false);
 
   // Fungsi untuk cek perubahan data
   const isDataChanged = useMemo(() => {
@@ -132,7 +139,7 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
             style={{ flex: 1 }}
           >
             <View className="mt-4 space-y-4">
-              <InputField
+              <FormInput
                 label="Nama Lengkap"
                 textClassName="border-[#6BBC3F]"
                 value={selected.fullName}
@@ -146,7 +153,7 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
                 toggleDropdownClassName=" border-[#6BBC3F] rounded-[10px]"
                 label="Jenis Kelamin"
                 labelStyle={{ fontFamily: 'LexBold' }}
-                DropdownSelectClassName="w-[87%] border-[#6BBC3F] rounded-[10px]"
+                DropdownSelectClassName="border-[#6BBC3F] rounded-[10px]"
                 options={['Laki - Laki', 'Perempuan']}
                 selectedTextStyle={{ fontFamily: 'LexRegular' }}
                 iconColor="#6BBC3F"
@@ -156,7 +163,7 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
                 setOpen={setIsGenderDropdownOpen} // <- setter open
               />
 
-              <InputField
+              <FormInput
                 label="Pekerjaan"
                 textClassName="border-[#6BBC3F]"
                 value={selected.job}
@@ -166,67 +173,104 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
                 placeholder="Pekerjaan"
               />
 
-              <InputField
+              <FormDropdownSelect
                 label="Pendidikan Terakhir"
-                textClassName="border-[#6BBC3F]"
-                value={selected.lastEducation}
-                onChangeText={(input) =>
-                  selected.setLastEducation(validationNumberOnly(input, 30))
-                }
-                placeholder="Pendidikan Terakhir"
+                options={educationOptions}
+                selected={selected.lastEducation}
+                onSelect={selected.setLastEducation}
+                open={isLastEducationDropdownOpen}
+                setOpen={setIsLastEducationDropdownOpen}
+                maxVisibleOptions={5}
+                toggleDropdownClassName="border-[#6BBC3F] rounded-xl"
+                DropdownSelectClassName="border-[#6BBC3F] rounded-xl"
+                selectedTextStyle={{
+                  fontFamily: 'LexRegular',
+                  color: '#6BBC3F',
+                }}
+                iconColor="#6BBC3F"
               />
 
               {/* TAMBAHAN FORM PERUSAHAAN */}
               {selected.type === 'perusahaan' && (
                 <>
-                  <InputField
+                  <FormInput
                     label="Nama Perusahaan"
                     value={selected.companyName}
-                    onChangeText={selected.setCompanyName}
-                    placeholder="Nama Perusahaan"
-                    textClassName="border-[#6BBC3F]"
+                    onChangeText={(text) =>
+                      selected.setCompanyName(validationFullString(text))
+                    }
+                    placeholder="Masukkan Nama perusahaan"
+                    fontLexBold={{ fontFamily: 'LexBold' }}
                   />
-                  <InputField
-                    label="Nomor HP Perusahaan"
+
+                  {/* NO HP / NO TELP PERUSAHAAN */}
+                  <FormInput
+                    label="No HP / No Telp Perusahaan"
                     value={selected.companyPhone}
-                    onChangeText={selected.setCompanyPhone}
-                    placeholder="Nomor HP"
-                    textClassName="border-[#6BBC3F]"
+                    onChangeText={(text) =>
+                      selected.setCompanyPhone(validationNumber(text, 15))
+                    }
+                    placeholder="Masukkan nomor HP / Telp perusahaan"
                     keyboardType="phone-pad"
+                    fontLexBold={{ fontFamily: 'LexBold' }}
                   />
-                  <InputField
+
+                  {/* EMAIL PERUSAHAAN */}
+                  <FormInput
                     label="Email Perusahaan"
                     value={selected.companyEmail}
-                    onChangeText={selected.setCompanyEmail}
-                    placeholder="Email"
-                    textClassName="border-[#6BBC3F]"
+                    onChangeText={(text) =>
+                      selected.setCompanyEmail(validationEmail(text))
+                    }
+                    placeholder="Masukkan email perusahaan"
                     keyboardType="email-address"
+                    fontLexBold={{ fontFamily: 'LexBold' }}
                   />
-                  <InputField
+
+                  {/* NPWP PERUSAHAAN */}
+                  <FormInput
                     label="NPWP Perusahaan"
                     value={selected.npwpCompany}
-                    onChangeText={selected.setNpwpCompany}
-                    placeholder="NPWP"
+                    onChangeText={(text) =>
+                      selected.setNpwpCompany(validationNPWP(text))
+                    }
+                    placeholder="NPWP Perusahaan"
                     textClassName="border-[#6BBC3F]"
+                    keyboardType="number-pad"
                   />
-                  <InputField
+
+                  {/* ALAMAT PERUSAHAAN */}
+                  <FormInput
                     label="Alamat Perusahaan"
                     value={selected.companyAddress}
                     onChangeText={selected.setCompanyAddress}
                     placeholder="Alamat Perusahaan"
                     textClassName="border-[#6BBC3F]"
+                    maxLength={70}
                   />
-                  <InputField
+
+                  {/* KABUPATEN / KOTA PERUSAHAAN */}
+                  <FormInput
                     label="Kabupaten / Kota Perusahaan"
                     value={selected.districtCityCompany}
-                    onChangeText={selected.setDistrictCityCompany}
+                    onChangeText={(text) =>
+                      selected.setDistrictCityCompany(
+                        validationFullString(text, 50)
+                      )
+                    }
                     placeholder="Kabupaten / Kota Perusahaan"
                     textClassName="border-[#6BBC3F]"
                   />
-                  <InputField
+
+                  {/* PROVINSI PERUSAHAAN */}
+                  <FormInput
                     label="Provinsi Perusahaan"
                     value={selected.provinceCompany}
-                    onChangeText={selected.setProvinceCompany}
+                    onChangeText={(text) =>
+                      selected.setProvinceCompany(
+                        validationFullString(text, 50)
+                      )
+                    }
                     placeholder="Provinsi Perusahaan"
                     textClassName="border-[#6BBC3F]"
                   />

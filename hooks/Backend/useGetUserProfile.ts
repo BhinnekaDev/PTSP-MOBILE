@@ -3,7 +3,7 @@ import { firebaseAuth, db } from '@/lib/firebase';
 import type {
   GetPeroranganProfile,
   GetPerusahaanProfile,
-} from '@/interfaces/GetUserProfileProps';
+} from '@/interfaces/getUserProfileProps';
 
 export type UserProfile =
   | (GetPeroranganProfile & { tipe: 'perorangan' })

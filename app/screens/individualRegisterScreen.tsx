@@ -19,7 +19,7 @@ import { useIndividualRegister } from '@/hooks/Backend/useIndividualRegister';
 // OUR UTILS
 import { showAlertMessage } from '@/utils/showAlertMessage';
 import { validationFullString } from '@/utils/validationFullString';
-import { validationNumberOnly } from '@/utils/validationNumberOnly';
+import { validationNumber } from '@/utils/validationNumber';
 
 export default function IndividualRegisterScreen() {
   const router = useRouter();
@@ -192,7 +192,7 @@ export default function IndividualRegisterScreen() {
               label="No HP / No Telp"
               value={numberPhone}
               onChangeText={(text) =>
-                setNumberPhone(validationNumberOnly(text, 15))
+                setNumberPhone(validationNumber(text, 15))
               }
               placeholder="No HP / No Telp"
               keyboardType="phone-pad"

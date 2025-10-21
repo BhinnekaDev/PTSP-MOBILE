@@ -13,7 +13,7 @@ export default function LoginScreen() {
   const textTranslateX = useRef(new Animated.Value(400)).current;
   const buttonTranslateX = useRef(new Animated.Value(-400)).current;
 
-  const { signIn } = useGoogleLogin();
+  const { signIn, loading } = useGoogleLogin();
 
   useEffect(() => {
     Animated.parallel([
@@ -83,13 +83,16 @@ export default function LoginScreen() {
           style={{ transform: [{ translateX: buttonTranslateX }] }}
         >
           <Button
-            style="bg-[#73BF40] px-4 py-3 mt-9 rounded-md" //
+            style={`px-4 py-3 mt-9 rounded-md flex-row justify-center items-center ${
+              loading ? 'bg-gray-400' : 'bg-[#73BF40]'
+            }`}
             textStyle="text-white"
             iconPosition="left"
-            image={require('@/assets/images/LoginScreen/google.png')}
-            onPress={signIn}
+            image={require('@/assets/images/LoginScreen/google.png')} // tetap tampil
+            onPress={!loading ? signIn : undefined} // tidak bisa diklik saat loading
+            disabled={loading} // disable native interaksi
           >
-            Masuk Menggunakan Google aja
+            {loading ? 'Sedang Masuk...' : 'Masuk Menggunakan Google aja'}
           </Button>
         </Animated.View>
       </View>

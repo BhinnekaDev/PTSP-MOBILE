@@ -1,31 +1,28 @@
 import React from 'react';
 import { Text, TextInput, View, TextInputProps } from 'react-native';
 
-// Definisikan interface untuk props
-interface FormInputProps {
-  fontLexBold?: object;
+interface FormInputProps extends TextInputProps {
   label: string;
   value: string;
   onChangeText: (text: string) => void;
   placeholder?: string;
-  keyboardType?: TextInputProps['keyboardType'];
+  fontLexBold?: object;
   textClassName?: string;
-  multiline?: boolean;
-  textAlignVertical?: 'auto' | 'top' | 'center' | 'bottom';
   errorMessage?: string;
 }
 
 const FormInput = ({
-  fontLexBold = { fontFamily: 'LexBold' }, //
-  textClassName,
   label,
   value,
   onChangeText,
-  placeholder,
-  keyboardType,
-  multiline,
-  textAlignVertical,
+  placeholder = '',
+  keyboardType = 'default',
+  fontLexBold = { fontFamily: 'LexBold' },
+  textClassName = 'border-[#6BBC3F]',
+  multiline = false,
+  textAlignVertical = 'top',
   errorMessage,
+  ...rest // ini menangkap props tambahan seperti maxLength, autoCapitalize, dll
 }: FormInputProps) => {
   return (
     <View className="px-6 py-1">
@@ -45,6 +42,7 @@ const FormInput = ({
         keyboardType={keyboardType}
         multiline={multiline}
         textAlignVertical={textAlignVertical}
+        {...rest} // biar bisa kirim props opsional tanpa ubah komponen
       />
       {errorMessage && (
         <Text className="mt-1 text-sm text-red-600">{errorMessage}</Text>

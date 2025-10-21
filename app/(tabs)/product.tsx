@@ -4,6 +4,10 @@ import { useRouter } from 'expo-router';
 
 // OUR COMPONENTS
 import Button from '@/components/button';
+import { WrapperProductSkeleton } from '@/components/skeletons/wrapperSkeletonProduct';
+
+// OUR HOOKS
+import { useSkeletonForTab } from '@/hooks/Frontend/skeletons/useSkeletonForTab';
 
 // OUR PROPS
 import { ProductType } from '@/interfaces/productDataProps';
@@ -14,6 +18,8 @@ import { allProducts } from '@/lib/data/productList';
 export default function Product() {
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState('Semua');
+  const showSkeleton = useSkeletonForTab();
+  if (showSkeleton) return <WrapperProductSkeleton />;
 
   const filteredProducts =
     activeCategory === 'Semua'

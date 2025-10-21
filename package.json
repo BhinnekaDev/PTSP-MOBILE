@@ -57,6 +57,7 @@
     "expo-web-browser": "~14.2.0",
     "firebase-admin": "^13.4.0",
     "firebase-functions": "^6.3.2",
+    "lucide-react-native": "^0.546.0",
     "nativewind": "^4.1.23",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.13",
