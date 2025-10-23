@@ -10,7 +10,6 @@ import Entypo from '@expo/vector-icons/Entypo';
 
 // COMPONENTS
 import ButtonCustom from '@/components/buttonCustom';
-import NavCartOrder from '@/components/navCartOrder';
 import SubmissionStatusSection from '@/components/submissionStatusSection';
 import PaymentStatusSection from '@/components/paymentStatusSection';
 import CreationStatusSection from '@/components/creationStatusSection';
@@ -31,13 +30,6 @@ export default function OrderTrackingScreen() {
 
   return (
     <View className="flex-1 bg-gray-50">
-      <NavCartOrder
-        text="Pesanan"
-        textClassName="ml-4 text-left"
-        onPressLeftIcon={() => router.back()}
-        isTouchable={false}
-      />
-
       <ScrollView
         className="flex-1 px-4 py-3"
         showsVerticalScrollIndicator={false}

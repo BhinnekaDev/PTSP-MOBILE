@@ -4,7 +4,7 @@ import { View, Animated, ScrollView } from 'react-native';
 // HOOK ANIMASI
 import { useSkeletonAnimation } from '@/hooks/Frontend/skeletons/useSkeletonAnimation';
 
-export const WrapperSkeletonRegulation = () => {
+export const WrapperSkeletonRegulationTab = () => {
   const skeletonAnimation = useSkeletonAnimation();
   const skeletonItems = Array.from({ length: 3 });
   console.log('Skeleton animation value:', skeletonAnimation);

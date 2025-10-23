@@ -11,7 +11,7 @@ import {
 import { AntDesign } from '@expo/vector-icons';
 
 // OUR COMPONENTS
-import { WrapperSkeletonFaq } from '@/components/skeletons/wrapperSkeletonFaq';
+import { WrapperSkeletonFaqTab } from '@/components/skeletons/wrapperSkeletonFaqTab';
 
 // OUR HOOKS
 import useDropdownAnimation from '@/hooks/Frontend/faqScreen/useAnimationFaq';
@@ -33,7 +33,7 @@ export default function FAQTabs({ count = 1 }: ButtonCustomProps) {
   } = useDropdownAnimation(dataFaq.length);
 
   const showSkeleton = useSkeletonForTab();
-  if (showSkeleton) return <WrapperSkeletonFaq />;
+  if (showSkeleton) return <WrapperSkeletonFaqTab />;
 
   return (
     <View className="flex-1 gap-4 bg-[#A7CBE5]">

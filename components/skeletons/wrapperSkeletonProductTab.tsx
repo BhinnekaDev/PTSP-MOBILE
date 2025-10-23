@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Animated, ScrollView } from 'react-native';
 import { useSkeletonAnimation } from '@/hooks/Frontend/skeletons/useSkeletonAnimation';
 
-export const WrapperProductSkeleton = () => {
+export const WrapperProductSkeletonTab = () => {
   const skeletonAnimation = useSkeletonAnimation();
   const skeletonItems = Array.from({ length: 4 });
 

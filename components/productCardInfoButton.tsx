@@ -7,7 +7,6 @@ import {
   Animated,
   StyleSheet,
 } from 'react-native';
-import Foundation from '@expo/vector-icons/Foundation';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 interface ProductCardInfoButtonProps {

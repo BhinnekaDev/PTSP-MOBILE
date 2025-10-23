@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 
 // OUR COMPONENTS
-import NavCartOrder from '@/components/navCartOrder';
+import NavCartOrder from '@/components/navbarForScreens';
 import FilePreviewModal from '@/components/filePreviewModal';
 import SuggestionForm from '@/components/suggestionForm';
 import ComplaintForm from '@/components/complaintForm';

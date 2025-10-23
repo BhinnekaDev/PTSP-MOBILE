@@ -14,7 +14,6 @@ import { submissionOptions } from '@/constants/submissionOptions';
 
 // COMPONENTS
 import ButtonCustom from '@/components/buttonCustom';
-import NavCartOrder from '@/components/navCartOrder';
 import FormDropdownSelect from '@/components/formDropdownSelect';
 import FilePreviewModal from '@/components/filePreviewModal';
 
@@ -31,7 +30,10 @@ import getFileIcon from '@/utils/getFileIcon';
 
 export default function SubmissionScreen() {
   const router = useRouter();
-  const [selectedJenisKegiatan, setSelectedJenisKegiatan] = useState('');
+  const [selectedActivityType, setSelectedActivityType] = useState('');
+  const [isActivityTypeDropdownOpen, setAcitivityTypeDropdownOpen] =
+    useState(false);
+
   const [fileMap, setFileMap] = useState<Record<string, any>>({});
   const { pickDocument } = useSelectDocument();
   const {
@@ -46,7 +48,7 @@ export default function SubmissionScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const selectedData = submissionOptions.find(
-    (item) => `${item.label} (${item.jenisAjukan})` === selectedJenisKegiatan
+    (item) => `${item.label} (${item.jenisAjukan})` === selectedActivityType
   );
 
   const isAllUploadComplete = selectedData?.files.every(
@@ -111,13 +113,6 @@ export default function SubmissionScreen() {
 
   return (
     <View className="flex-1 bg-[#A7CBE5]">
-      <NavCartOrder
-        text="Keranjang Saya"
-        textClassName="ml-4 text-left"
-        onPressLeftIcon={() => router.back()}
-        isTouchable={false}
-      />
-
       <ScrollView
         contentContainerStyle={{ paddingVertical: 24, paddingHorizontal: 15 }}
         showsVerticalScrollIndicator={false}
@@ -132,22 +127,27 @@ export default function SubmissionScreen() {
               Form Pengajuan Kegiatan
             </Text>
           </View>
-          <View className="px-6 py-8">
-            <FormDropdownSelect
-              showLabel={false}
-              toggleDropdownClassName="w-full border-[#D9D9D9] rounded-[5px]"
-              label="Jenis Kegiatan"
-              DropdownSelectClassName="w-full border-[#D9D9D9] rounded-[5px]"
-              options={submissionOptions.map(
-                (item) => `${item.label} (${item.jenisAjukan})`
-              )}
-              selected={selectedJenisKegiatan}
-              onSelect={(value) => {
-                setSelectedJenisKegiatan(value);
-                setFileMap({}); // reset otomatis file tiap ganti kegiatan
-              }}
-            />
-          </View>
+          <FormDropdownSelect
+            containerClassName="py-2"
+            showLabel={false}
+            toggleDropdownClassName="w-full border-[#D9D9D9] rounded-[5px]"
+            label="Jenis Kegiatan"
+            DropdownSelectClassName="w-full border-[#D9D9D9] rounded-[5px]"
+            options={submissionOptions.map(
+              (item) => `${item.label} (${item.jenisAjukan})`
+            )}
+            selected={selectedActivityType}
+            selectedTextClassName="text-black"
+            optionTextClassName="text-black"
+            onSelect={(value) => {
+              setSelectedActivityType(value);
+              setFileMap({}); // reset otomatis file tiap ganti kegiatan
+            }}
+            iconColor="black"
+            open={isActivityTypeDropdownOpen}
+            setOpen={setAcitivityTypeDropdownOpen}
+            maxVisibleOptions={7}
+          />
         </View>
 
         {/* Upload Berkas */}
@@ -307,7 +307,7 @@ export default function SubmissionScreen() {
           textClassName="text-[14px] text-center text-white"
           onPress={async () => {
             if (isSubmitting) return; // ❗ Proteksi dobel klik
-            if (!selectedJenisKegiatan || !selectedData) return;
+            if (!selectedActivityType || !selectedData) return;
 
             const isAllFilesUploaded = selectedData.files.every(
               (fileName) => !!fileMap[fileName]
@@ -321,7 +321,7 @@ export default function SubmissionScreen() {
             setIsSubmitting(true); // ✅ Aktifkan loading
             try {
               await submit({
-                selectedJenis: selectedJenisKegiatan,
+                selectedJenis: selectedActivityType,
                 jenisAjukan: selectedData.jenisAjukan as 'Gratis' | 'Berbayar',
                 uploadedFiles: fileMap,
               });
@@ -334,7 +334,7 @@ export default function SubmissionScreen() {
             }
           }}
           isTouchable={
-            !isSubmitting && !!selectedJenisKegiatan && isAllUploadComplete
+            !isSubmitting && !!selectedActivityType && isAllUploadComplete
           }
           textStyle={{ fontFamily: 'LexSemiBold' }}
           containerStyle={{

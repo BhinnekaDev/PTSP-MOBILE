@@ -6,7 +6,7 @@ import {
 } from '@/lib/firebase';
 import { submissionOptions } from '@/constants/submissionOptions';
 import CartItemProps from '@/interfaces/cartItemProps';
-import { showAppMessage } from '@/utils/showAlertMessage'; // 🔹 pakai utils
+import { showAlertMessage } from '@/utils/showAlertMessage'; // 🔹 pakai utils
 
 interface SubmitSubmissionOptions {
   selectedJenis: string;
@@ -43,7 +43,7 @@ export const useSubmitSubmission = () => {
   }: SubmitSubmissionOptions) => {
     const user = firebaseAuth.currentUser;
     if (!user) {
-      showAppMessage(
+      showAlertMessage(
         'Login Diperlukan',
         'Silakan login untuk melakukan pengajuan.',
         'warning'
@@ -58,7 +58,7 @@ export const useSubmitSubmission = () => {
       );
 
       if (!selectedData) {
-        showAppMessage(
+        showAlertMessage(
           'Data Tidak Valid',
           'Jenis kegiatan yang dipilih tidak dikenali.',
           'warning'
@@ -164,14 +164,14 @@ export const useSubmitSubmission = () => {
         Jasa: [],
       });
 
-      showAppMessage(
+      showAlertMessage(
         'Pengajuan Berhasil',
         'Pengajuan Anda telah dikirim dan sedang ditinjau.',
         'success'
       );
     } catch (error: any) {
       console.error('❌ Error saat submit pengajuan:', error);
-      showAppMessage(
+      showAlertMessage(
         'Terjadi Kesalahan',
         error.message || 'Gagal submit pengajuan.',
         'error'

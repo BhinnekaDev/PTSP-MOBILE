@@ -23,7 +23,6 @@ import { dataEmojis } from '@/constants/dataEmojis';
 
 // OUR COMPONENTS
 import ChatMessage from '@/components/chatMessage';
-import NavCartOrder from '@/components/navCartOrder';
 
 // OUR HOOKS
 import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
@@ -42,7 +41,6 @@ import { formatDateLabel } from '@/utils/formatDateLabel';
 import { FilePreviewModalAll } from '@/components/filePreviewModalAll';
 
 export default function RoomChatScreen() {
-  const router = useRouter();
   const currentUserId = firebaseAuth.currentUser?.uid;
   const { roomId, stationName } = useLocalSearchParams();
   const { profile } = useGetUserProfile();
@@ -152,13 +150,7 @@ export default function RoomChatScreen() {
   }, [mappedMessages]);
   return (
     <View className="flex-1">
-      {/* HEADER */}
-      <NavCartOrder
-        text={stationName || 'Null'}
-        onPressLeftIcon={() => router.back()}
-        showChatIcon={false}
-        subText="Online"
-      />
+  
 
       <ScrollView
         ref={scrollViewRef}

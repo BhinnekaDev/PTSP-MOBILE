@@ -11,7 +11,7 @@ import Feather from '@expo/vector-icons/Feather';
 
 // OUR COMPONENTS
 import ButtonCustom from '@/components/buttonCustom';
-import { WrapperSkeletonHome } from '@/components/skeletons/wrapperSkeletonHome';
+import { WrapperSkeletonHomeTab } from '@/components/skeletons/wrapperSkeletonHomeTab';
 
 // OUR HOOKS
 import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
@@ -23,7 +23,7 @@ export default function HomeTabs() {
   const [modalVisible, setModalVisible] = useState(false);
   const showSkeleton = useSkeletonForTab();
 
-  if (showSkeleton) return <WrapperSkeletonHome />;
+  if (showSkeleton) return <WrapperSkeletonHomeTab />;
   return (
     <LinearGradient
       colors={['#1475BA', '#399385', '#6BBC3F']} //
@@ -76,7 +76,7 @@ export default function HomeTabs() {
           />
           <ButtonCustom
             vertical
-            onPress={() => router.push('/(tabs)/product')}
+            onPress={() => router.push('/screens/orderScreen')}
             classNameContainer="items-center justify-center gap-1 bg-transparent"
             textClassName="text-center text-white text-sm"
             text="Monitoring Pesanan"

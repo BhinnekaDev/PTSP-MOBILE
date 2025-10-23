@@ -6,7 +6,7 @@ import { router } from 'expo-router';
 import { ProductData, ProductType } from '@/interfaces/productDataProps';
 
 // OUR UTILS
-import { showAppMessage } from '@/utils/showAlertMessage';
+import { showAlertMessage } from '@/utils/showAlertMessage';
 
 type ProductDataForCart = ProductData;
 
@@ -21,7 +21,7 @@ export const useAddToCart = () => {
     const user = firebaseAuth.currentUser;
 
     if (!user) {
-      showAppMessage(
+      showAlertMessage(
         'Login Diperlukan',
         'Anda harus login untuk menambahkan produk ke keranjang.',
         'warning'
@@ -42,7 +42,7 @@ export const useAddToCart = () => {
       const productSnap = await productRef.get();
 
       if (!productSnap.exists()) {
-        showAppMessage(
+        showAlertMessage(
           'Produk Tidak Ditemukan',
           'Maaf, produk ini tidak lagi tersedia di database atau ID-nya salah.'
         );
@@ -51,7 +51,7 @@ export const useAddToCart = () => {
 
       const productRawData = productSnap.data();
       if (!productRawData) {
-        showAppMessage(
+        showAlertMessage(
           'Error',
           'Data produk tidak ditemukan, meskipun produk ada.'
         );
@@ -107,7 +107,7 @@ export const useAddToCart = () => {
             [typeField]: updatedTypeArray,
           });
 
-          showAppMessage(
+          showAlertMessage(
             'Berhasil',
             'Kuantitas produk di keranjang telah diperbarui!',
             'success'
@@ -116,7 +116,7 @@ export const useAddToCart = () => {
           await userCartDocRef.update({
             [typeField]: [...currentTypeArray, newItemPayload],
           });
-          showAppMessage(
+          showAlertMessage(
             'Berhasil',
             'Produk berhasil ditambahkan ke keranjang!',
             'success'
@@ -126,7 +126,7 @@ export const useAddToCart = () => {
         await userCartDocRef.set({
           [typeField]: [newItemPayload],
         });
-        showAppMessage(
+        showAlertMessage(
           'Berhasil',
           'Produk berhasil ditambahkan ke keranjang baru!',
           'success'
@@ -134,7 +134,7 @@ export const useAddToCart = () => {
       }
     } catch (error: any) {
       console.error('Gagal menambahkan ke keranjang:', error);
-      showAppMessage(
+      showAlertMessage(
         'Error',
         `Gagal menambahkan produk ke keranjang. Silakan coba lagi. ${
           error.message || ''

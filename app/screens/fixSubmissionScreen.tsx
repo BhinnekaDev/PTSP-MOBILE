@@ -9,7 +9,7 @@ import { AntDesign, Ionicons } from '@expo/vector-icons';
 // OUR COMPONENT
 import { submissionOptions } from '@/constants/submissionOptions';
 import ButtonCustom from '@/components/buttonCustom';
-import NavCartOrder from '@/components/navCartOrder';
+import NavCartOrder from '@/components/navbarForScreens';
 import FilePreviewModal from '@/components/filePreviewModal';
 
 // OUR HOOK

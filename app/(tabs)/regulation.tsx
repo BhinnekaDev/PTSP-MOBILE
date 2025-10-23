@@ -16,7 +16,7 @@ import ImageZoom from 'react-native-image-pan-zoom';
 import Entypo from '@expo/vector-icons/Entypo';
 
 // OUR COMPONENTS
-import { WrapperSkeletonRegulation } from '@/components/skeletons/wrapperSkeletonRegulation';
+import { WrapperSkeletonRegulationTab } from '@/components/skeletons/wrapperSkeletonRegulationTab';
 
 // OUR HOOKS
 import { useSkeletonForTab } from '@/hooks/Frontend/skeletons/useSkeletonForTab';
@@ -54,7 +54,7 @@ export default function Regulation() {
   };
 
   if (showSkeleton) {
-    return <WrapperSkeletonRegulation />;
+    return <WrapperSkeletonRegulationTab />;
   }
 
   return (

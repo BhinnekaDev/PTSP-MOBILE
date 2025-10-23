@@ -16,7 +16,7 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { dataStations } from '@/constants/dataStations';
 
 // OUR COMPONENTS
-import NavCartOrder from '@/components/navCartOrder';
+import NavCartOrder from '@/components/navbarForScreens';
 
 // OUR HOOKS
 import { useChatRooms } from '@/hooks/Backend/useChatRooms';

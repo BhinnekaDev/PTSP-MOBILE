@@ -21,9 +21,13 @@ type DropdownSelectProps = {
   labelClassName?: string;
   iconColor?: string;
   selectedTextStyle?: object;
+  selectedTextClassName?: string;
   FontLexSemiBold?: object;
   labelStyle?: object;
   maxVisibleOptions?: number;
+  containerClassName?: string;
+  optionTextClassName?: string;
+  optionTextStyle?: object;
 
   // Controlled props
   open: boolean;
@@ -32,6 +36,7 @@ type DropdownSelectProps = {
 
 export default function FormDropdownSelect({
   FontLexSemiBold = { fontFamily: 'LexSemiBold' },
+  containerClassName,
   toggleDropdownClassName,
   DropdownSelectClassName,
   labelClassName,
@@ -42,6 +47,9 @@ export default function FormDropdownSelect({
   showLabel = true,
   iconColor,
   selectedTextStyle,
+  selectedTextClassName,
+  optionTextClassName,
+  optionTextStyle,
   labelStyle,
   maxVisibleOptions = 3, // default maksimal visible
   open,
@@ -62,7 +70,7 @@ export default function FormDropdownSelect({
   );
 
   return (
-    <View className="px-6">
+    <View className={`px-6 ${containerClassName}`}>
       {showLabel && (
         <Text
           className={`text-md mb-2 ${labelClassName}`}
@@ -78,10 +86,12 @@ export default function FormDropdownSelect({
         activeOpacity={0.8}
       >
         <Text
-          style={[FontLexSemiBold, selectedTextStyle, { color: '#6BBC3F' }]}
+          className={`${selectedTextClassName || 'text-[#6BBC3F]'}`}
+          style={[FontLexSemiBold, selectedTextStyle]}
         >
           {selected || `Pilih ${label.toLowerCase()}`}
         </Text>
+
         <Entypo
           name={open ? 'chevron-small-up' : 'chevron-small-down'}
           size={24}
@@ -108,8 +118,8 @@ export default function FormDropdownSelect({
               className="px-4 py-3"
             >
               <Text
-                className="text-[#6BBC3F]"
-                style={{ fontFamily: 'LexRegular' }}
+                className={`${optionTextClassName || 'text-[#6BBC3F]'}`}
+                style={[{ fontFamily: 'LexRegular' }, optionTextStyle]}
               >
                 {option}
               </Text>

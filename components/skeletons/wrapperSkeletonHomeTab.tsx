@@ -3,7 +3,7 @@ import { View, Animated, ScrollView } from 'react-native';
 // OUR HOOKS
 import { useSkeletonAnimation } from '@/hooks/Frontend/skeletons/useSkeletonAnimation';
 
-export const WrapperSkeletonHome = () => {
+export const WrapperSkeletonHomeTab = () => {
   const skeletonAnimation = useSkeletonAnimation();
 
   return (

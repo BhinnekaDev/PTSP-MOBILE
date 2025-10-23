@@ -11,13 +11,12 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 
 // OUR ICONS
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 // COMPONENTS
-import NavCartOrder from '@/components/navCartOrder';
 import { FilePreviewModalAll } from '@/components/filePreviewModalAll';
 
 // OUR CONSTANTS
@@ -32,7 +31,6 @@ import { useGenerateInvoicePDF } from '@/hooks/Frontend/generatePDF/useGenerateI
 import { getCategoryIcon } from '@/components/getCategoryIcon';
 
 export default function InvoiceScreen() {
-  const router = useRouter();
   const { activeTab, translateX, tabWidth, onTabPress, onLayoutParent } =
     useTabAnimation(invoiceTabs, 'Pemesan');
   const [expandedItems, setExpandedItems] = useState<{
@@ -55,14 +53,6 @@ export default function InvoiceScreen() {
   }
   return (
     <View className="flex-1 bg-[#A7CBE5]">
-      {/* NAVBAR */}
-      <NavCartOrder
-        text="Dokumen Pesanan"
-        textClassName="ml-4 text-left"
-        onPressLeftIcon={() => router.back()}
-        isTouchable={false}
-      />
-
       {/* Header Info */}
       <View className="mx-4 my-4 items-center rounded-2xl bg-gray-100 p-4">
         {/* Nomor Pesanan dan Status */}

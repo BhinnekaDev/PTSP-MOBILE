@@ -1,7 +1,7 @@
-// hooks/Backend/useGetProductsByCategory.ts
-
 import { useEffect, useState } from 'react';
 import { db } from '@/lib/firebase';
+
+// OUR INTERFACES
 import { ProductData } from '@/interfaces/productDataProps';
 
 export const useGetProductsByCategory = (compositeCategory: string) => {

@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 
 // OUR COMPONENTS
 import Button from '@/components/button';
-import { WrapperProductSkeleton } from '@/components/skeletons/wrapperSkeletonProduct';
+import { WrapperProductSkeletonTab } from '@/components/skeletons/wrapperSkeletonProductTab';
 
 // OUR HOOKS
 import { useSkeletonForTab } from '@/hooks/Frontend/skeletons/useSkeletonForTab';
@@ -19,7 +19,7 @@ export default function Product() {
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState('Semua');
   const showSkeleton = useSkeletonForTab();
-  if (showSkeleton) return <WrapperProductSkeleton />;
+  if (showSkeleton) return <WrapperProductSkeletonTab />;
 
   const filteredProducts =
     activeCategory === 'Semua'

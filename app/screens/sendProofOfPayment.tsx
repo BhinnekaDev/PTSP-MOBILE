@@ -6,7 +6,7 @@ import { AntDesign, Ionicons } from '@expo/vector-icons';
 
 // COMPONENT
 import ButtonCustom from '@/components/buttonCustom';
-import NavCartOrder from '@/components/navCartOrder';
+import NavCartOrder from '@/components/navbarForScreens';
 import FilePreviewModal from '@/components/filePreviewModal';
 
 // HOOKS

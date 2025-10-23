@@ -1,4 +1,3 @@
-import React, { useState, useCallback } from 'react';
 import { View, Image, TextInput, TouchableOpacity } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -75,7 +74,7 @@ export default function NavbarForTabs() {
               </TouchableOpacity>
             </View>
           ) : (
-            // 🖼️ Logo untuk halaman lain
+            // Logo untuk halaman lain
             <Image
               source={require('@/assets/images/HomeScreen/logo.png')}
               style={{

@@ -12,7 +12,6 @@ import { useRouter } from 'expo-router';
 
 // OUR COMPONENTS
 import ButtonCustom from '@/components/buttonCustom';
-import NavCartOrder from '@/components/navCartOrder';
 import SwipeableRow from '@/components/swipeableRow';
 
 // OUR HOOKS
@@ -54,13 +53,6 @@ function CartOrderScreen() {
 
   return (
     <View className="flex-1 bg-[#A7CBE5]">
-      <NavCartOrder
-        text="Keranjang Saya"
-        textClassName="ml-4 text-left"
-        onPressLeftIcon={() => router.back()}
-        isTouchable={false}
-      />
-
       <View className="flex-1 bg-[#A7CBE5] px-4">
         <ScrollView
           contentContainerStyle={{

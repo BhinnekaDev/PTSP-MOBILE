@@ -13,7 +13,6 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import ButtonCustom from '@/components/buttonCustom';
-import NavCartOrder from '@/components/navCartOrder';
 import useAjukanTransition from '@/hooks/Frontend/orderScreen/useAnimationButtonPlus';
 import { useGetUserOrderInfo } from '@/hooks/Backend/useGetUserOrderInfo';
 
@@ -33,13 +32,6 @@ export default function OrderScreen() {
 
   return (
     <View className="flex-1 gap-4 bg-[#A7CBE5]">
-      <NavCartOrder
-        text="Pesanan"
-        textClassName="ml-4 text-left"
-        onPressLeftIcon={() => router.back()}
-        isTouchable={false}
-      />
-
       <ScrollView
         contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
         showsVerticalScrollIndicator={false}

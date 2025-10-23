@@ -1,29 +1,16 @@
 // app/screens/ProductDetailScreen.tsx
 
 import React from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-} from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+import { View, Text, ScrollView, Image } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
 
 // OUR ICONS
-import Ionicons from '@expo/vector-icons/Ionicons';
-import Octicons from '@expo/vector-icons/Octicons';
+
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 // OUR COMPONENTS
 import Button from '@/components/button';
-import ButtonShopAndChat from '@/components/buttonShopAndChat';
 import { ProductCardInfoButton } from '@/components/productCardInfoButton';
 
 // OUR HOOKS
@@ -64,65 +51,6 @@ export default function ProductDetailScreen() {
 
   return (
     <View className="flex-1 bg-[#A7CBE5]">
-      {/* NAVBAR */}
-      <View
-        className="z-20 w-full flex-row items-center justify-between rounded-b-[10px] bg-[#1475BA]"
-        style={{
-          paddingHorizontal: wp(4),
-          paddingTop: hp(6),
-          paddingBottom: hp(1.5),
-        }}
-      >
-        <TouchableOpacity
-          onPress={() => router.back()}
-          className="mr-3 rounded-full p-1"
-        >
-          <Ionicons name="arrow-back" size={wp(5.5)} color="white" />
-        </TouchableOpacity>
-        {/* Input Pencarian */}
-        <View
-          className="flex-1 flex-row items-center justify-between rounded-full bg-white"
-          style={{
-            paddingLeft: wp(3),
-            height: hp(5.2),
-          }}
-        >
-          <TextInput
-            className="flex-1"
-            placeholder="Cari"
-            placeholderTextColor={'gray'}
-            style={{
-              fontFamily: 'LexRegular',
-              fontSize: wp(3.6),
-              paddingVertical: 0,
-            }}
-          />
-
-          <TouchableOpacity
-            activeOpacity={0.6}
-            className="rounded-full bg-[#72C02C]"
-            style={{
-              paddingVertical: hp(0.8),
-              paddingHorizontal: wp(3),
-              marginRight: wp(1.5),
-            }}
-          >
-            <Octicons name="search" size={wp(4.8)} color="white" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Button Shop & Chat */}
-        <View
-          className="flex-row"
-          style={{
-            marginLeft: wp(6),
-            gap: wp(3),
-          }}
-        >
-          <ButtonShopAndChat />
-        </View>
-      </View>
-
       <View className="flex-row items-center justify-center gap-4 bg-[#A7CBE5] pb-2 pt-4">
         <ScrollView
           contentContainerStyle={{ paddingBottom: 100 }}
