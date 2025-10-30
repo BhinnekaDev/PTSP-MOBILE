@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 
-export const useSkeletonForTab = (duration: number = 2000) => {
+export const useSkeletonForTab = (duration: number = 500) => {
   const [showSkeleton, setShowSkeleton] = useState(true);
 
   useFocusEffect(

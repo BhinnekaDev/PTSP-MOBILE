@@ -1,11 +1,7 @@
-// app/screens/ProductDetailScreen.tsx
-
-import React from 'react';
 import { View, Text, ScrollView, Image } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 
 // OUR ICONS
-
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
@@ -17,8 +13,9 @@ import { ProductCardInfoButton } from '@/components/productCardInfoButton';
 import { useGetProductsByCategory } from '@/hooks/Backend/useGetProductsByCategory';
 import { usePopupDetailProductAnimation } from '@/hooks/Frontend/popUpInfoCard/usePopupDetailProductAnimation';
 import { useAddToCart } from '@/hooks/Backend/useAddToCart';
+import { useProductSearch } from '@/hooks/Backend/useProductSearch';
 
-// OUT INTERFACES
+// OUR INTERFACES
 import { ProductType } from '@/interfaces/productDataProps';
 
 export default function ProductDetailScreen() {
@@ -29,12 +26,35 @@ export default function ProductDetailScreen() {
     : ['', ''];
   const productType = informationOrService[0];
   const categoryForIcon = informationOrService.slice(1).join('_');
+
   const { products, ownerName, loading, error } =
     useGetProductsByCategory(compositeCategory);
   const { activePopupIndex, togglePopup, closePopup, fadeAnim } =
     usePopupDetailProductAnimation();
-
   const { loadingAddToCart, addToCart } = useAddToCart();
+
+  // ✅ GUNAKAN useProductSearch DENGAN PRODUCTS - PASTIKAN clearSearch ADA
+  const {
+    searchQuery,
+    filteredProducts,
+    hasSearchResults,
+    searchResultsCount,
+    isLoading: searchLoading,
+  } = useProductSearch(products, {
+    enabled: !loading,
+    autoClearOnUnmount: true,
+  });
+
+  // ✅ ERROR HANDLING UNTUK PARAMS
+  if (!compositeCategory) {
+    return (
+      <View className="flex-1 items-center justify-center bg-[#A7CBE5]">
+        <Text className="text-lg text-red-500">
+          Error: Kategori tidak ditemukan
+        </Text>
+      </View>
+    );
+  }
 
   const getCategoryIcon = (cat: string) => {
     switch (cat) {
@@ -49,6 +69,9 @@ export default function ProductDetailScreen() {
     }
   };
 
+  // ✅ LOADING STATE UNTUK SEARCH
+  const showSearchLoading = searchLoading && searchQuery.trim() !== '';
+
   return (
     <View className="flex-1 bg-[#A7CBE5]">
       <View className="flex-row items-center justify-center gap-4 bg-[#A7CBE5] pb-2 pt-4">
@@ -62,6 +85,22 @@ export default function ProductDetailScreen() {
           }}
           scrollEventThrottle={16}
         >
+          {/* ✅ Tampilkan info pencarian */}
+          {hasSearchResults && (
+            <View className="mx-4 mb-2 self-center rounded-lg bg-blue-100 px-4 py-2">
+              <Text
+                style={{ fontFamily: 'LexMedium' }}
+                className="text-lg text-blue-800"
+              >
+                {showSearchLoading
+                  ? `Mencari "${searchQuery}"...`
+                  : searchResultsCount > 0
+                    ? `Ditemukan ${searchResultsCount} produk untuk "${searchQuery}"`
+                    : `Tidak ada hasil untuk "${searchQuery}"`}
+              </Text>
+            </View>
+          )}
+
           <Text
             style={{ fontFamily: 'LexBold' }}
             className="mt-4 text-center text-2xl"
@@ -76,6 +115,7 @@ export default function ProductDetailScreen() {
           </Text>
 
           {loading ? (
+            // ✅ LOADING SKELETON
             <>
               {[...Array(3)].map((_, index) => (
                 <View
@@ -92,16 +132,20 @@ export default function ProductDetailScreen() {
               ))}
             </>
           ) : error ? (
-            <Text
-              style={{ fontFamily: 'LexRegular' }}
-              className="text-center text-red-500"
-            >
-              {error}
-            </Text>
-          ) : products.length > 0 ? (
-            products.map((item, index) => (
+            // ✅ ERROR STATE
+            <View className="self-center py-4">
+              <Text
+                style={{ fontFamily: 'LexRegular' }}
+                className="text-center text-lg text-red-500"
+              >
+                {error}
+              </Text>
+            </View>
+          ) : filteredProducts.length > 0 ? (
+            // ✅ TAMPILKAN FILTERED PRODUCTS
+            filteredProducts.map((item, index) => (
               <View
-                key={index}
+                key={`${item.id}-${index}`}
                 className="my-3 items-center justify-center gap-6"
               >
                 <View className="h-auto w-[74%] rounded-[15px] border-2 border-b-[4px] border-x-black/5 border-b-black/10 border-t-black/5 bg-white p-3.5">
@@ -156,12 +200,17 @@ export default function ProductDetailScreen() {
               </View>
             ))
           ) : (
-            <Text
-              style={{ fontFamily: 'LexRegular' }}
-              className="text-center text-black"
-            >
-              Tidak ada produk {categoryForIcon} ditemukan.
-            </Text>
+            // ✅ EMPTY STATE - PERBAIKI LOGIC AGAR TIDAK SALAM TAMPIL
+            <View className="self-center py-4">
+              <Text
+                style={{ fontFamily: 'LexRegular' }}
+                className="text-center text-lg text-black"
+              >
+                {searchQuery && searchQuery.trim() !== ''
+                  ? `Tidak ada produk "${searchQuery}" ditemukan dalam ${categoryForIcon}.`
+                  : `Tidak ada produk ${categoryForIcon} ditemukan.`}
+              </Text>
+            </View>
           )}
         </ScrollView>
       </View>

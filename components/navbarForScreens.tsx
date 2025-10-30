@@ -1,5 +1,6 @@
-import React from 'react';
-import { View, TextInput, TouchableOpacity,Text } from 'react-native';
+// components/navbarForScreens.tsx
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, TouchableOpacity, Text } from 'react-native';
 import { AntDesign, Octicons } from '@expo/vector-icons';
 import { useRouter, usePathname } from 'expo-router';
 import {
@@ -21,9 +22,21 @@ export default function NavbarForScreens({
   subText,
   textClassName,
   isTouchable = true,
+  searchQuery = '',
+  onSearchChange,
+  onSearchSubmit,
 }: ButtonCustomProps) {
   const router = useRouter();
   const pathname = usePathname();
+
+  // ✅ LOCAL STATE UNTUK TEXTINPUT
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
+
+  // ✅ CLEAR LOCAL STATE KETIKA SEARCH QUERY DI-CLEAR DARI PARENT
+  useEffect(() => {
+    console.log('🔄 [Navbar] Search query updated from parent:', searchQuery);
+    setLocalSearchQuery(searchQuery);
+  }, [searchQuery]);
 
   const getCurrentTitle = (pathname: string) =>
     Object.entries(navbarTitleScreenMap).find(([path]) =>
@@ -32,10 +45,23 @@ export default function NavbarForScreens({
 
   const currentTitle = getCurrentTitle(pathname);
 
-
   const isDetailProductPage = pathname?.includes(
     '/screens/productDetailScreen'
   );
+
+  const handleSearchSubmit = () => {
+    if (onSearchSubmit) {
+      onSearchSubmit();
+    }
+  };
+
+  // REAL-TIME SEARCH SAAT TYPING
+  const handleSearchChange = (query: string) => {
+    setLocalSearchQuery(query);
+    if (onSearchChange) {
+      onSearchChange(query);
+    }
+  };
 
   return (
     <View
@@ -99,6 +125,9 @@ export default function NavbarForScreens({
             className="flex-1"
             placeholder="Cari produk..."
             placeholderTextColor="gray"
+            value={localSearchQuery}
+            onChangeText={handleSearchChange}
+            onSubmitEditing={handleSearchSubmit}
             style={{
               fontFamily: 'LexRegular',
               fontSize: wp(3.6),
@@ -113,6 +142,7 @@ export default function NavbarForScreens({
               paddingHorizontal: wp(3),
               marginRight: wp(1.5),
             }}
+            onPress={handleSearchSubmit}
           >
             <Octicons name="search" size={wp(4.8)} color="white" />
           </TouchableOpacity>

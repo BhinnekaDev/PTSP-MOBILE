@@ -24,7 +24,7 @@ const ButtonCustom = ({
       onPress={onPress}
       activeOpacity={isTouchable ? 0.7 : 1}
       disabled={!isTouchable}
-      className={`w- px-4 py-3 ${classNameContainer}`}
+      className={`px-4 py-3 ${classNameContainer}`}
       style={containerStyle}
     >
       {vertical ? (

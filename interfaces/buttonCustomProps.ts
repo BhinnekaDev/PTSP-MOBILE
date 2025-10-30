@@ -22,4 +22,8 @@ export interface ButtonCustomProps {
   containerStyle?: ViewStyle;
   disabled?: boolean;
   vertical?: boolean;
+
+  searchQuery?: string;
+  onSearchChange?: (query: string) => void;
+  onSearchSubmit?: () => void;
 }

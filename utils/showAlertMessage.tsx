@@ -22,19 +22,18 @@ export const showAlertMessage = async (
   description?: string,
   type: 'success' | 'error' | 'warning' | 'delete' = 'success',
   options?: {
-    duration?: number; // default 4000 ms
-    actionText?: string; // tombol tambahan seperti "Try again" / "View Location"
-    onActionPress?: () => void; // event handler-nya
+    duration?: number;
+    actionText?: string;
+    onActionPress?: () => void;
   }
 ) => {
   await playNotificationSound();
 
-  // 🎨 Warna dengan transparansi (RGBA)
   const backgroundColors: Record<string, string> = {
-    success: 'rgba(75, 181, 67, 0.9)', // hijau transparan
-    error: 'rgba(217, 83, 79, 0.9)', // merah transparan
-    warning: 'rgba(240, 173, 78, 0.9)', // kuning transparan
-    delete: 'rgba(255, 165, 0, 0.9)', // oranye transparan
+    success: 'rgba(75, 181, 67, 0.9)',
+    error: 'rgba(217, 83, 79, 0.9)',
+    warning: 'rgba(240, 173, 78, 0.9)',
+    delete: 'rgba(255, 165, 0, 0.9)',
   };
 
   showMessage({
@@ -51,10 +50,9 @@ export const showAlertMessage = async (
       borderRadius: hp(1),
       marginHorizontal: wp(5),
       paddingHorizontal: wp(3),
-      paddingTop: hp(-20),
+      paddingVertical: hp(2), // ✅ GUNAKAN POSITIVE VALUE
       flexDirection: 'column',
       justifyContent: 'center',
-      // ✨ Tambahkan shadow halus agar tampak “mengambang”
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.25,
@@ -70,22 +68,19 @@ export const showAlertMessage = async (
       fontFamily: 'LexRegular',
     },
     renderCustomContent: () => (
-      <View className="bg-yellow-500 py-20" style={{ gap: 10 }}>
-        {/* 🟢 Bagian teks */}
+      <View style={{ gap: 10 }}>
         <View>
-          {/* JUDUL TEXT */}
           <Text
             style={{
               fontSize: wp(4),
               fontFamily: 'LexBold',
               color: 'white',
-              marginBottom: description ? hp(0) : 0,
+              marginBottom: description ? hp(0.5) : 0,
             }}
           >
             {message}
           </Text>
 
-          {/* SUBTEXT */}
           {description && (
             <Text
               style={{
@@ -99,7 +94,6 @@ export const showAlertMessage = async (
             </Text>
           )}
         </View>
-
         {/* TOMBOL OPSIONAL */}
         <View
           style={{
@@ -131,7 +125,6 @@ export const showAlertMessage = async (
             </TouchableOpacity>
           )}
 
-          {/* Tombol dismiss - DEFAULT */}
           <TouchableOpacity
             onPress={hideMessage}
             style={{
