@@ -8,11 +8,8 @@ import {
   StatusBar,
   Animated,
   View,
-  Dimensions,
 } from 'react-native';
 import FlashMessage from 'react-native-flash-message';
-
-const { width } = Dimensions.get('window');
 
 export default function RootLayout() {
   const fontLoaded = useLoadFont();

@@ -7,7 +7,6 @@ import { useSkeletonAnimation } from '@/hooks/Frontend/skeletons/useSkeletonAnim
 export const WrapperSkeletonRegulationTab = () => {
   const skeletonAnimation = useSkeletonAnimation();
   const skeletonItems = Array.from({ length: 3 });
-  console.log('Skeleton animation value:', skeletonAnimation);
 
   return (
     <ScrollView

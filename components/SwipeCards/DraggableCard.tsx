@@ -7,14 +7,17 @@ import Animated, {
   withSpring,
   useAnimatedGestureHandler,
 } from 'react-native-reanimated';
-import { Dimensions, View } from 'react-native';
+import { View } from 'react-native';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
-const { height: SCREEN_HEIGHT } = Dimensions.get('window');
-
+// Gunakan height responsive
 const SNAP = {
-  CLOSED: SCREEN_HEIGHT - 400,
-  HALF: SCREEN_HEIGHT / 2,
-  OPEN: 80,
+  CLOSED: hp('60%'), // posisi paling bawah
+  HALF: hp('30%'), // posisi tengah
+  OPEN: hp('10%'), // posisi terbuka atas
 };
 
 export default function DraggableCard({
@@ -27,7 +30,7 @@ export default function DraggableCard({
   const translateY = useSharedValue(offsetY);
   const isScrollEnabled = useSharedValue(false);
 
-  const bottomLimit = SNAP.CLOSED + index * 60;
+  const bottomLimit = SNAP.CLOSED + index * hp('10%');
 
   const gestureHandler = useAnimatedGestureHandler({
     onStart: (_, ctx: any) => {
@@ -44,7 +47,10 @@ export default function DraggableCard({
       const target = snapPoints.reduce((a, b) =>
         Math.abs(projected - a) < Math.abs(projected - b) ? a : b
       );
-      translateY.value = withSpring(target, { damping: 18, stiffness: 120 });
+      translateY.value = withSpring(target, {
+        damping: 18,
+        stiffness: 120,
+      });
     },
   });
 
@@ -68,36 +74,35 @@ export default function DraggableCard({
             right: 0,
             top: 0,
             bottom: 0,
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
+            borderTopLeftRadius: wp('5%'),
+            borderTopRightRadius: wp('5%'),
             overflow: 'hidden',
           },
           aStyle,
         ]}
       >
-        {/* INI YANG PERLU DIPERBAIKI - className harus di sini */}
         <View className={className} style={{ flex: 1 }}>
           {/* Handle */}
           <View
             style={{
               alignItems: 'center',
-              paddingVertical: 10,
+              paddingVertical: hp('1%'),
               backgroundColor: 'rgba(0,0,0,0.05)',
             }}
           >
             <View
               style={{
-                height: 6,
-                width: 40,
-                borderRadius: 3,
+                height: hp('0.8%'),
+                width: wp('12%'),
+                borderRadius: wp('2%'),
                 backgroundColor: 'rgba(0,0,0,0.2)',
               }}
             />
           </View>
 
-          {/* Scrollable content */}
+          {/* Scrollable Content */}
           <ScrollView
-            style={{ flex: 1, maxHeight: SCREEN_HEIGHT * 0.8 }}
+            style={{ flex: 1, maxHeight: hp('80%') }}
             showsVerticalScrollIndicator
             nestedScrollEnabled
           >
