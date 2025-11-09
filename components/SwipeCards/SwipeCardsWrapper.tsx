@@ -6,41 +6,43 @@ import DraggableCard from './DraggableCard';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-const BASE_Y = SCREEN_HEIGHT - hp(35); // sekitar 45% dari tinggi layar, bisa disesuaikan
-
+const BASE_Y = SCREEN_HEIGHT - hp(35);
 const SPACING = hp(6);
 
-export default function SwipeCardsWrapper({ children }: any) {
+export type SwipeCardsWrapperProps = {
+  children: React.ReactNode;
+};
+
+export default function SwipeCardsWrapper({
+  children,
+}: SwipeCardsWrapperProps) {
   const cards = React.Children.toArray(children);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <View style={{ flex: 1 }}>
-        {cards
-          .map((child, i) => ({ child, i }))
-          .reverse()
-          .map(({ child, i }, renderIndex) => {
-            const stackIndex = renderIndex;
-            const zIndex = stackIndex + 1;
-            const offsetY = BASE_Y + stackIndex * SPACING;
+    <GestureHandlerRootView className="flex-1">
+      <View className="flex-1">
+        {cards.map((child, index) => {
+          const reverseIndex = cards.length - 1 - index; // Reverse untuk z-index
+          const zIndex = reverseIndex + 10; // Tambah baseline z-index
+          const offsetY = BASE_Y + reverseIndex * SPACING;
 
-            const childProps = (child as any).props || {};
-            const className = childProps.className || '';
+          const childProps = (child as any).props || {};
+          const childClassName = childProps.className || '';
 
-            return (
-              <DraggableCard
-                key={i}
-                zIndex={zIndex}
-                index={stackIndex}
-                offsetY={offsetY}
-                className={className}
-              >
-                {React.cloneElement(child as any, {
-                  style: [{ flex: 1, padding: 20 }, childProps.style],
-                })}
-              </DraggableCard>
-            );
-          })}
+          return (
+            <DraggableCard
+              key={index}
+              zIndex={zIndex}
+              index={reverseIndex}
+              offsetY={offsetY}
+              className={childClassName}
+            >
+              {React.cloneElement(child as any, {
+                className: `flex-1 p-5 ${childClassName}`,
+              })}
+            </DraggableCard>
+          );
+        })}
       </View>
     </GestureHandlerRootView>
   );

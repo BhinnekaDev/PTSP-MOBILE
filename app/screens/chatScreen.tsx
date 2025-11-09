@@ -15,8 +15,11 @@ import Entypo from '@expo/vector-icons/Entypo';
 // OUR CONSTANT
 import { dataStations } from '@/constants/dataStations';
 
+// OUR CONTEXT
+import { useNavbarContext } from '@/context/NavbarContext'; // ⬅️ import
+
 // OUR COMPONENTS
-import NavCartOrder from '@/components/navbarForScreens';
+import { WrapperSkeletonChatScreen } from '@/components/skeletons/wrapperSkeletonChatScreen';
 
 // OUR HOOKS
 import { useChatRooms } from '@/hooks/Backend/useChatRooms';
@@ -29,6 +32,7 @@ function ChatScreen() {
   const router = useRouter();
   const [showMessages, setShowMessages] = useState(true);
   const rotateChevron = useSharedValue(0);
+const { setStationName } = useNavbarContext();
 
   //  Ambil UID user yang login
   const { chatRooms, markMessagesAsRead, loading, createRoomIfNotExist } =
@@ -52,32 +56,27 @@ function ChatScreen() {
     });
   };
 
-  const handlePressStation = async (station: (typeof dataStations)[0]) => {
+const handlePressStation = async (station: (typeof dataStations)[0]) => {
     if (!profile) return;
+    
+    // 🟢 Set nama stasiun ke navbar
+    setStationName(station.name);
+
     const roomId = await createRoomIfNotExist(station, profile.tipe);
     if (!roomId) return;
-
-    // Jalankan update pesan tapi jangan tunggu selesai
     markMessagesAsRead(roomId).catch(console.error);
 
-    // Langsung navigasi
     router.push({
       pathname: '/screens/roomChatScreen',
-      params: { roomId, stationName: station.name },
+      params: { roomId },
     });
   };
 
   if (loading || loadingProfile) {
-    return (
-      <View className="flex-1 items-center justify-center">
-        <Text>Loading chat...</Text>
-      </View>
-    );
+    return <WrapperSkeletonChatScreen />;
   }
   return (
     <View className="flex-1">
-      <NavCartOrder onPressLeftIcon={() => router.back()} text="Pesan" />
-
       <ScrollView
         contentContainerStyle={{ paddingBottom: 140, paddingHorizontal: 10 }}
         showsVerticalScrollIndicator={false}

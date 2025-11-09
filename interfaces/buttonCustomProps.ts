@@ -1,3 +1,4 @@
+// interfaces/buttonCustomProps.ts
 import { ReactNode } from 'react';
 import { ViewStyle, TextStyle } from 'react-native';
 
@@ -26,4 +27,7 @@ export interface ButtonCustomProps {
   searchQuery?: string;
   onSearchChange?: (query: string) => void;
   onSearchSubmit?: () => void;
+
+  // ✨ Tambahan untuk navbar dinamis
+  stationName?: string;
 }

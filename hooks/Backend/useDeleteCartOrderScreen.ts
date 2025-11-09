@@ -1,5 +1,5 @@
 import { db, firebaseAuth } from '@/lib/firebase';
-import { showAppMessage } from '@/utils/showAlertMessage';
+import { showAlertMessage } from '@/utils/showAlertMessage';
 
 export const useDeleteCartOrderScreen = () => {
   const removeFromCart = async (
@@ -28,7 +28,7 @@ export const useDeleteCartOrderScreen = () => {
       });
 
       // ✅ Reusable & Responsive Success Message
-      showAppMessage(
+      showAlertMessage(
         'Produk dihapus',
         'Produk berhasil dihapus dari keranjang.',
         'success'
@@ -37,7 +37,7 @@ export const useDeleteCartOrderScreen = () => {
       console.error('Gagal hapus item:', error);
 
       // ✅ Reusable & Responsive Error Message
-      showAppMessage(
+      showAlertMessage(
         'Error',
         'Tidak dapat menghapus produk. Silakan coba lagi.'
       );

@@ -12,10 +12,13 @@ import {
 import ButtonCustom from '@/components/buttonCustom';
 import ButtonShopAndChat from '@/components/buttonShopAndChat';
 
-// CONSTANTS
+// OUR CONSTANTS
 import { navbarTitleScreenMap } from '@/constants/navbarScreenTitles';
 
-// INTERFACE
+// OUR CONTEXT
+import { useNavbarContext } from '@/context/NavbarContext';
+
+// OUR INTERFACE
 import { ButtonCustomProps } from '@/interfaces/buttonCustomProps';
 
 export default function NavbarForScreens({
@@ -28,13 +31,13 @@ export default function NavbarForScreens({
 }: ButtonCustomProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const { stationName } = useNavbarContext();
 
   // ✅ LOCAL STATE UNTUK TEXTINPUT
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
 
   // ✅ CLEAR LOCAL STATE KETIKA SEARCH QUERY DI-CLEAR DARI PARENT
   useEffect(() => {
-    console.log('🔄 [Navbar] Search query updated from parent:', searchQuery);
     setLocalSearchQuery(searchQuery);
   }, [searchQuery]);
 
@@ -43,7 +46,7 @@ export default function NavbarForScreens({
       pathname.includes(path)
     )?.[1] || 'Layar Umum';
 
-  const currentTitle = getCurrentTitle(pathname);
+  const currentTitle = stationName || getCurrentTitle(pathname);
 
   const isDetailProductPage = pathname?.includes(
     '/screens/productDetailScreen'
@@ -71,7 +74,6 @@ export default function NavbarForScreens({
         borderBottomLeftRadius: hp(1.2),
         borderBottomRightRadius: hp(1.2),
         paddingBottom: hp(2),
-        paddingHorizontal: wp(4),
       }}
     >
       {/* 🔙 Baris pertama: tombol kembali + judul + tombol kanan */}
@@ -86,7 +88,7 @@ export default function NavbarForScreens({
             textClassName={`text-white pl-5 ${textClassName}`}
             textStyle={{
               fontFamily: 'LexBold',
-              fontSize: Math.min(Math.max(wp(10), 20), 28),
+              fontSize: wp(4) + hp(1),
             }}
             containerStyle={{
               width: wp(85),

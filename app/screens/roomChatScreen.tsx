@@ -9,7 +9,7 @@ import {
   ToastAndroid,
   Platform,
 } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
 import { firebaseAuth } from '@/lib/firebase';
 
@@ -20,6 +20,9 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 // OUR CONSTANT
 import { dataEmojis } from '@/constants/dataEmojis';
+
+// OUR CONTEXT
+import { useNavbarContext } from '@/context/NavbarContext';
 
 // OUR COMPONENTS
 import ChatMessage from '@/components/chatMessage';
@@ -42,10 +45,11 @@ import { FilePreviewModalAll } from '@/components/filePreviewModalAll';
 
 export default function RoomChatScreen() {
   const currentUserId = firebaseAuth.currentUser?.uid;
-  const { roomId, stationName } = useLocalSearchParams();
+  const { roomId } = useLocalSearchParams();
   const { profile } = useGetUserProfile();
   const scrollViewRef = useRef<ScrollView>(null);
   const [inputText, setInputText] = useState('');
+  const { setStationName } = useNavbarContext();
 
   // EXPAND MESSAGE KIRI (BACA SELENGKAPNYA UNTUK ADMIN / USER LAIN)
   const {
@@ -148,10 +152,13 @@ export default function RoomChatScreen() {
   useEffect(() => {
     scrollViewRef.current?.scrollToEnd({ animated: true });
   }, [mappedMessages]);
+
+  useEffect(() => {
+    return () => setStationName(null); // reset saat keluar
+  }, [setStationName]);
+
   return (
     <View className="flex-1">
-  
-
       <ScrollView
         ref={scrollViewRef}
         contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 10 }}

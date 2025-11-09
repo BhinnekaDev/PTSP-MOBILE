@@ -1,7 +1,7 @@
 // hooks/Backend/useUpdateCartQuantityScreen.ts
 
 import { db, firebaseAuth } from '@/lib/firebase';
-import { showAppMessage } from '@/utils/showAlertMessage';
+import { showAlertMessage } from '@/utils/showAlertMessage';
 
 export const useUpdateCartQuantityScreen = () => {
   const updateQuantity = async (
@@ -37,7 +37,7 @@ export const useUpdateCartQuantityScreen = () => {
           );
           await userCartRef.update({ [type]: updatedArray });
 
-          showAppMessage(
+          showAlertMessage(
             'Produk dihapus dari keranjang',
             'Item dihapus karena kuantitas sudah 1.',
             'success'
@@ -55,7 +55,7 @@ export const useUpdateCartQuantityScreen = () => {
 
       await userCartRef.update({ [type]: currentArray });
 
-      showAppMessage(
+      showAlertMessage(
         'Kuantitas diperbarui',
         'Jumlah produk di keranjang berhasil diperbarui.',
         'success'
@@ -63,7 +63,7 @@ export const useUpdateCartQuantityScreen = () => {
     } catch (error: any) {
       console.error('Update kuantitas gagal:', error);
 
-      showAppMessage(
+      showAlertMessage(
         'Error',
         'Tidak bisa update kuantitas. Silakan coba lagi.',
         'error'

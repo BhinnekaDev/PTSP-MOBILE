@@ -1,23 +1,23 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import {
   View,
   ScrollView,
   Text,
   ImageBackground,
   TouchableOpacity,
-  Animated,
-  Easing,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 
 // OUR COMPONENTS
 import ButtonCustom from '@/components/buttonCustom';
 import SwipeableRow from '@/components/swipeableRow';
+import { WrapperSkeletonCartOrderScreen } from '@/components/skeletons/wrapperSkeletonCartOrderScreen';
 
 // OUR HOOKS
 import { useGetCartOrderScreen } from '@/hooks/Backend/useGetCartOrderScreen';
 import { useDeleteCartOrderScreen } from '@/hooks/Backend/useDeleteCartOrderScreen';
 import { useUpdateCartQuantityScreen } from '@/hooks/Backend/useUpdateCartQuantityScreen';
+// import { useSkeletonForTab } from '@/hooks/Frontend/skeletons/useSkeletonForTab';
 
 // OUR ICONS
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -30,26 +30,8 @@ function CartOrderScreen() {
   const { removeFromCart } = useDeleteCartOrderScreen();
   const { updateQuantity } = useUpdateCartQuantityScreen();
   const [editableIndex, setEditableIndex] = React.useState<number | null>(null);
-  const pulseAnim = useRef(new Animated.Value(0.6)).current;
-
-  useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulseAnim, {
-          toValue: 1,
-          duration: 800,
-          useNativeDriver: true,
-          easing: Easing.inOut(Easing.ease),
-        }),
-        Animated.timing(pulseAnim, {
-          toValue: 0.6,
-          duration: 800,
-          useNativeDriver: true,
-          easing: Easing.inOut(Easing.ease),
-        }),
-      ])
-    ).start();
-  }, [pulseAnim]);
+  // const showSkeleton = useSkeletonForTab();
+  // if (showSkeleton) return <WrapperSkeletonCartOrderScreen />;
 
   return (
     <View className="flex-1 bg-[#A7CBE5]">
@@ -63,36 +45,9 @@ function CartOrderScreen() {
           showsVerticalScrollIndicator={false}
         >
           {loading ? (
-            <>
-              {[...Array(cartItems?.length > 0 ? cartItems.length : 3)].map(
-                (_, i) => (
-                  <Animated.View key={i} style={{ opacity: pulseAnim }}>
-                    <ImageBackground
-                      className="relative mb-4 gap-5 rounded-md p-6 shadow"
-                      style={{ overflow: 'hidden', borderRadius: 10 }}
-                      source={require('@/assets/images/ProductScreen/bg-icon.png')}
-                      resizeMode="cover"
-                    >
-                      <View className="absolute right-3 top-3 h-4 w-[50px] rounded bg-gray-300" />
-
-                      <View className="flex-row items-center pt-5">
-                        <View className="h-[68px] w-[68px] items-center justify-center rounded-full bg-gray-300" />
-                        <View className="ml-4 h-4 flex-1 rounded bg-gray-300" />
-                      </View>
-
-                      <View className="flex-row items-center justify-between">
-                        <View className="flex-row items-center gap-5">
-                          <View className="h-[24px] w-[24px] rounded-full bg-gray-300" />
-                          <View className="h-[16px] w-[40px] rounded bg-gray-300" />
-                          <View className="h-[24px] w-[24px] rounded-full bg-gray-300" />
-                        </View>
-                        <View className="h-[16px] w-[80px] rounded bg-gray-300" />
-                      </View>
-                    </ImageBackground>
-                  </Animated.View>
-                )
-              )}
-            </>
+            <WrapperSkeletonCartOrderScreen
+              count={cartItems?.length > 0 ? cartItems.length : 3}
+            />
           ) : cartItems.length === 0 ? (
             <View className="items-center justify-center py-10">
               <View className="rounded-full bg-[#1475BA] p-5">
