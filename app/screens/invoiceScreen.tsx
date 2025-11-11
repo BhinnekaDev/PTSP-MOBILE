@@ -61,7 +61,7 @@ export default function InvoiceScreen() {
             Nomor Pesanan
           </Text>
           <View className="mb-5">
-            <View className="self-center rounded-full border border-gray-300 bg-gray-200 px-4 py-1">
+            <View className="self-center rounded-full border border-gray-300 bg-gray-200 px-4 py-1 backdrop-blur-sm">
               <Text className="font-mono text-xl font-bold tracking-wide text-gray-800">
                 {invoiceDetail?.idPemesanan || 'Null'}
               </Text>

@@ -7,9 +7,9 @@ export const WrapperSkeletonCartOrderScreen = ({ count = 3 }) => {
   return (
     <ScrollView
       contentContainerStyle={{
-        paddingHorizontal: 15,
-        paddingBottom: 100,
         paddingTop: 20,
+        paddingBottom: 70,
+        paddingHorizontal: 10,
       }}
       showsVerticalScrollIndicator={false}
     >

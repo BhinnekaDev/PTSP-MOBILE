@@ -10,7 +10,7 @@ export default function ScreensLayout() {
   const pathname = usePathname();
   const { isConnected } = useInternetStatus();
 
-  // ✅ hanya untuk state search (tidak berhubungan dengan navbar title)
+  // hanya untuk state search (tidak berhubungan dengan navbar title)
   const { searchQuery, updateSearchQuery } = useGlobalSearch([], {
     searchFields: [],
     enabled: true,
@@ -42,7 +42,7 @@ export default function ScreensLayout() {
   return (
     // ✅ Bungkus seluruh layout dengan NavbarContext
     <NavbarContextProvider>
-      <View className="flex-1 bg-[#A7CBE5]">
+      <View className="flex-1">
         {!shouldHideNavbar && (
           <NavbarForScreens
             searchQuery={searchQuery}

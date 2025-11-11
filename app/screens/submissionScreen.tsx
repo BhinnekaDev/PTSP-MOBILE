@@ -12,12 +12,12 @@ import * as Animatable from 'react-native-animatable';
 // OUR CONSTANS
 import { submissionOptions } from '@/constants/submissionOptions';
 
-// COMPONENTS
+// OUR COMPONENTS
 import ButtonCustom from '@/components/buttonCustom';
 import FormDropdownSelect from '@/components/formDropdownSelect';
 import FilePreviewModal from '@/components/filePreviewModal';
 
-// HOOK
+// OUR HOOK
 import { useFilePreview } from '@/hooks/Frontend/filePreviewModalScreen/useFilePreview';
 import { useSelectDocument } from '@/hooks/Frontend/filePreviewModalScreen/useSelectDocument';
 import { useSubmitSubmission } from '@/hooks/Backend/useSubmitSubmission';

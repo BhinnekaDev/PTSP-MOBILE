@@ -76,7 +76,7 @@ export default function NavbarForScreens({
         paddingBottom: hp(2),
       }}
     >
-      {/* 🔙 Baris pertama: tombol kembali + judul + tombol kanan */}
+      {/* Baris pertama: tombol kembali + judul + tombol kanan */}
       <View className="flex-row items-center justify-between">
         <View style={{ flex: 1 }}>
           <ButtonCustom
@@ -110,11 +110,11 @@ export default function NavbarForScreens({
           )}
         </View>
 
-        {/* 💬 Tombol Shop & Chat */}
+        {/* Tombol Shop & Chat */}
         <ButtonShopAndChat />
       </View>
 
-      {/* 🔍 Baris kedua: Search bar khusus halaman Detail Produk */}
+      {/* Baris kedua: Search bar khusus halaman Detail Produk */}
       {isDetailProductPage && (
         <View
           className="mt-3 flex-row items-center rounded-full bg-white"

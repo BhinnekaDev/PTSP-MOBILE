@@ -31,7 +31,7 @@ export default function OrderScreen() {
   }
 
   return (
-    <View className="flex-1 gap-4 bg-[#A7CBE5]">
+    <View className="flex-1 gap-4">
       <ScrollView
         contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
         showsVerticalScrollIndicator={false}
