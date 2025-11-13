@@ -11,7 +11,7 @@ import { Entypo } from '@expo/vector-icons';
 import { useDropdownAnimation } from '@/hooks/Frontend/dropdownAnimation/useDropdownAnimation';
 
 type DropdownSelectProps = {
-  label: string;
+  label?: string;
   options: string[];
   selected: string;
   onSelect: (value: string) => void;
@@ -51,27 +51,25 @@ export default function FormDropdownSelect({
   optionTextClassName,
   optionTextStyle,
   labelStyle,
-  maxVisibleOptions = 3, // default maksimal visible
+  maxVisibleOptions = 3,
   open,
   setOpen,
 }: DropdownSelectProps) {
   const optionHeight = 42;
-
-  // Hitung maxHeight sesuai jumlah opsi tapi dibatasi maxVisibleOptions
   const maxHeight = Math.min(
     options.length * optionHeight,
     maxVisibleOptions * optionHeight
   );
 
-  // Hook animasi
   const { animatedHeight, animatedOpacity } = useDropdownAnimation(
     open,
     maxHeight
   );
 
   return (
-    <View className={`px-6 ${containerClassName}`}>
-      {showLabel && (
+    <View className={`${containerClassName}`}>
+      {/* PERBAIKAN: Cek apakah label tidak kosong */}
+      {showLabel && label && label.trim() !== '' && (
         <Text
           className={`text-md mb-2 ${labelClassName}`}
           style={[FontLexSemiBold, labelStyle]}
@@ -89,7 +87,7 @@ export default function FormDropdownSelect({
           className={`${selectedTextClassName || 'text-[#6BBC3F]'}`}
           style={[FontLexSemiBold, selectedTextStyle]}
         >
-          {selected || `Pilih ${label.toLowerCase()}`}
+          {selected || `Pilih ${label?.toLowerCase() || 'opsi'}`}
         </Text>
 
         <Entypo

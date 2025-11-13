@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, TextInput, View, TextInputProps } from 'react-native';
 
 interface FormInputProps extends TextInputProps {
-  label: string;
+  label?: string;
   value: string;
   onChangeText: (text: string) => void;
   placeholder?: string;
@@ -22,13 +22,16 @@ const FormInput = ({
   multiline = false,
   textAlignVertical = 'top',
   errorMessage,
-  ...rest // ini menangkap props tambahan seperti maxLength, autoCapitalize, dll
+  ...rest
 }: FormInputProps) => {
   return (
-    <View className="px-6 py-1">
-      <Text className="mb-2" style={[fontLexBold]}>
-        {label}
-      </Text>
+    <View className="py-1">
+      {/* PERBAIKAN: Cek apakah label tidak kosong */}
+      {label && label.trim() !== '' && (
+        <Text className="mb-2" style={[fontLexBold]}>
+          {label}
+        </Text>
+      )}
       <TextInput
         className={`rounded-[10px] border p-4 ${textClassName}`}
         style={{
@@ -42,7 +45,7 @@ const FormInput = ({
         keyboardType={keyboardType}
         multiline={multiline}
         textAlignVertical={textAlignVertical}
-        {...rest} // biar bisa kirim props opsional tanpa ubah komponen
+        {...rest}
       />
       {errorMessage && (
         <Text className="mt-1 text-sm text-red-600">{errorMessage}</Text>

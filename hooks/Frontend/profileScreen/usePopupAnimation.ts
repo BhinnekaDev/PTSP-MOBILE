@@ -1,8 +1,12 @@
-import { useState, useEffect } from "react";
-import { Animated, Easing } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useState, useEffect } from 'react';
+import { Animated, Easing } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-type PopupType = "editProfile" | "notificationProfile" | "securityProfile" | null;
+type PopupType =
+  | 'editProfile'
+  | 'notificationProfile'
+  | 'securityProfile'
+  | null;
 
 export function useProfilePopup() {
   const [activePopup, setActivePopup] = useState<PopupType>(null);
@@ -12,7 +16,7 @@ export function useProfilePopup() {
 
   useEffect(() => {
     navigation.getParent()?.setOptions({
-      tabBarStyle: { display: activePopup ? "none" : "flex" },
+      tabBarStyle: { display: activePopup ? 'none' : 'flex' },
     });
   }, [activePopup, navigation]);
 
@@ -50,7 +54,7 @@ export function useProfilePopup() {
 
   const animatedWidth = animProgress.interpolate({
     inputRange: [0, 1],
-    outputRange: ["80%", "90%"],
+    outputRange: ['80%', '100%'],
   });
 
   const animatedScaleY = animProgress.interpolate({

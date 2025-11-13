@@ -36,7 +36,7 @@ export default function HomeTabs() {
 
       <SwipeCardsWrapper>
         {/* CARD LAYANAN */}
-        <View key="1" className="bg-white" style={{ minHeight: hp(150) }}>
+        <View key="1" className="bg-white" style={{ minHeight: hp(100) }}>
           {/* LAYANAN INFORMASI Section */}
           <View className="gap-4 py-4">
             <Text

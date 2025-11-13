@@ -1,171 +1,131 @@
 import React from 'react';
-import { View, Text, Animated } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { View, Text, Animated, Image } from 'react-native';
 
-// OUR SCREENS
+// ICONS
+import { MaterialIcons } from '@expo/vector-icons';
+import Feather from '@expo/vector-icons/Feather';
+
+// OUR APPS
+import EditProfile from '@/app/screens/editProfileScreen';
 import NotificationProfile from '@/app/screens/notificationProfile';
 import SecurityProfile from '@/app/screens/securityProfile';
 
-// OUR ICONS
-import { MaterialIcons } from '@expo/vector-icons';
-import Octicons from '@expo/vector-icons/Octicons';
-import Feather from '@expo/vector-icons/Feather';
+// OUR COMPONENTS
+import ButtonCustom from '@/components/buttonCustom';
 
 // OUR HOOKS
 import { useProfilePopup } from '@/hooks/Frontend/profileScreen/usePopupAnimation';
 import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 
-// OUR COMPONENTS
-import ButtonCustom from '@/components/buttonCustom';
-import UserProfile from '@/components/userProfile';
-import EditProfile from '@/app/screens/editProfileScreen';
-
 export default function ProfileTabs() {
-  const router = useRouter();
   const {
-    activePopup, //
+    activePopup,
     animatedWidth,
     animatedScaleY,
     fadeAnim,
     handleShowPopup,
     handleClosePopup,
   } = useProfilePopup();
+
   const { profile, loading } = useGetUserProfile();
   if (loading) return <Text>Loading...</Text>;
+
   return (
-    <LinearGradient
-      colors={['#1475BA', '#399385', '#6BBC3F']} //
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: -80,
-      }}
-    >
+    <View className="flex-1 bg-[#1475BA]">
+      {/* MAIN CONTENT */}
       {!activePopup && (
         <Animated.View
           style={{
             opacity: fadeAnim,
             width: '100%',
-            height: '80%',
-            justifyContent: 'center',
+            height: '100%',
             alignItems: 'center',
+            paddingTop: 100,
           }}
         >
-          <Text
-            className="mb-10 text-2xl text-white"
-            style={{ fontFamily: 'LexBold' }}
-          >
-            Pengaturan Profil
-          </Text>
-          {/* USER PROFILE */}
-          <UserProfile
-            containerImageClassName="w-44 h-44 rounded-full border-4 border-[#6BBC3F]"
-            imageClassName="w-full h-full object-cover rounded-full"
-            nameClassName="text-white text-xl mt-4"
-            name={profile?.Nama_Lengkap ?? 'Nama tidak tersedia'}
-            emailClassName="text-white text-lg underline"
-            email={profile?.Email ?? 'Email tidak tersedia'}
-          />
-
-          <View className="items-center">
-            {/* TOMBOL PESANAN SAYA */}
-            <ButtonCustom
-              classNameContainer="px-4 py-8 rounded-lg flex-row items-center justify-center w-48"
-              text="Pesanan Saya"
-              iconLeft={<Octicons name="checklist" size={20} color="white" />}
-              textClassName="ml-2 text-white"
-              onPress={() => router.push('/screens/orderScreen')}
+          {/* HEADER PROFILE */}
+          <View className="mb-6 items-center">
+            <Image
+              source={{
+                uri:
+                  // profile?.Foto_Profil ||
+                  'https://cdn-icons-png.flaticon.com/512/847/847969.png',
+              }}
+              className="mb-4 h-28 w-28 rounded-full"
             />
+            <Text
+              className="text-xl text-black"
+              style={{ fontFamily: 'LexBold' }}
+            >
+              {profile?.Nama_Lengkap ?? 'Nama tidak tersedia'}
+            </Text>
+            <Text
+              className="mt-1 text-base text-black"
+              style={{ fontFamily: 'LexRegular' }}
+            >
+              {profile?.Email ?? 'Email tidak tersedia'}
+            </Text>
           </View>
 
-          <View className="mt-0 w-[90%]">
-            <View className="rounded-lg bg-white px-4 py-6">
-              {/* TOMBOL SUNTING PROFIL */}
+          {/* CARD MENU */}
+          <View className="h-full gap-4 rounded-2xl bg-white p-6">
+            <View className="gap-10 rounded-2xl bg-[#EEEEEE] p-4">
               <ButtonCustom
-                classNameContainer="px-4 py-2 rounded-lg"
-                textClassName="text-black text-lg pl-4"
-                iconLeft={
-                  <Octicons
-                    name="checklist"
-                    size={24}
-                    color="white"
-                    className="rounded-full bg-[#399385] p-3"
-                  />
-                }
-                text="Sunting Profil"
+                classNameContainer="flex-row items-center justify-between py-3 "
+                text="Edit Profil"
+                iconLeft={<Feather name="user" size={22} color="#333" />}
                 iconRight={
                   <MaterialIcons
                     name="keyboard-arrow-right"
                     size={24}
-                    color="black"
+                    color="#999"
                   />
                 }
+                textClassName="text-black text-[16px] pl-2"
+                textStyle={{ fontFamily: 'LexRegular' }}
                 onPress={() => handleShowPopup('editProfile')}
-                textStyle={{ fontFamily: 'LexRegular' }}
               />
-              {/* TOMBOL NOTIFIKASI */}
               <ButtonCustom
-                classNameContainer="px-4 py-2 rounded-lg"
-                textClassName="text-black text-lg pl-4"
-                iconLeft={
-                  <Feather
-                    name="bell"
-                    size={24}
-                    color="white"
-                    className="rounded-full bg-[#399385] p-3"
-                  />
-                }
-                text="Notifikasi"
-                iconRight={
-                  <MaterialIcons
-                    name="keyboard-arrow-right"
-                    size={24}
-                    color="black"
-                  />
-                }
-                onPress={() => handleShowPopup('notificationProfile')}
-                textStyle={{ fontFamily: 'LexRegular' }}
-              />
-              {/* TOMBOL KEAMANAN */}
-              <ButtonCustom
-                classNameContainer="px-4 py-2 rounded-lg"
-                textClassName="text-black text-lg pl-4"
-                iconLeft={
-                  <Feather
-                    name="lock"
-                    size={24}
-                    color="white"
-                    className="rounded-full bg-[#399385] p-3"
-                  />
-                }
+                classNameContainer="flex-row items-center justify-between py-3"
                 text="Keamanan"
+                iconLeft={<Feather name="lock" size={22} color="#333" />}
                 iconRight={
                   <MaterialIcons
                     name="keyboard-arrow-right"
                     size={24}
-                    color="black"
+                    color="#999"
                   />
                 }
+                textClassName="text-black text-[16px] pl-2"
                 onPress={() => handleShowPopup('securityProfile')}
-                textStyle={{ fontFamily: 'LexRegular' }}
+              />
+              <ButtonCustom
+                classNameContainer="flex-row items-center justify-between py-3 "
+                text="Notifikasi"
+                iconLeft={<Feather name="bell" size={22} color="#333" />}
+                iconRight={
+                  <MaterialIcons
+                    name="keyboard-arrow-right"
+                    size={24}
+                    color="#999"
+                  />
+                }
+                textClassName="text-black text-[16px] pl-2"
+                onPress={() => handleShowPopup('notificationProfile')}
               />
             </View>
-          </View>
-
-          <View className="mt-10 w-[65%]">
-            {/* TOMBOL KELUAR */}
             <ButtonCustom
-              classNameContainer="bg-[#73BF40] py-[6px] rounded-lg" //
-              text="Keluar"
-              textClassName="text-[20px] text-center text-white"
+              classNameContainer="bg-[#DC0202] py-[10px] rounded-2xl"
+              text="Logout"
+              textClassName="text-white text-center text-[18px]"
+              textStyle={{ fontFamily: 'LexBold' }}
               onPress={() => alert('Keluar')}
             />
           </View>
         </Animated.View>
       )}
 
+      {/* POPUP SCREENS */}
       {activePopup && (
         <Animated.View
           style={{
@@ -189,6 +149,6 @@ export default function ProfileTabs() {
           )}
         </Animated.View>
       )}
-    </LinearGradient>
+    </View>
   );
 }
