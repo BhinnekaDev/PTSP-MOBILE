@@ -4,7 +4,6 @@ import {
   Platform,
   ScrollView,
   View,
-  ActivityIndicator,
   TouchableOpacity,
   Text,
 } from 'react-native';
@@ -12,8 +11,10 @@ import {
 // COMPONENTS
 import FormDropdownSelect from '@/components/formDropdownSelect';
 import FormInput from '@/components/formInput';
+import ButtonCustom from '@/components/buttonCustom';
+import { WrapperSkeletonEditProfile } from '@/components/skeletons/wrapperSkeletonEditProfile';
 
-// OUR CONSTANTS
+// CONSTANTS
 import { educationOptions } from '@/constants/educationOptions';
 
 // HOOKS
@@ -21,11 +22,10 @@ import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 import { useEditIndividualProfile } from '@/hooks/Backend/useEditIndividualProfile';
 import { useEditCompanyProfile } from '@/hooks/Backend/useEditCompanyProfile';
 import { validationEmail } from '@/utils/validationEmail';
-
-// UTILS
 import { validationFullString } from '@/utils/validationFullString';
 import { validationNumber } from '@/utils/validationNumber';
 import { validationNPWP } from '@/utils/validationNPWP';
+import { useSkeletonForTab } from '@/hooks/Frontend/skeletons/useSkeletonForTab';
 
 // ICONS
 import { Ionicons } from '@expo/vector-icons';
@@ -34,6 +34,8 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
   const { profile, loading } = useGetUserProfile();
   const individualHook = useEditIndividualProfile(onClose);
   const companyHook = useEditCompanyProfile(onClose);
+  const showSkeleton = useSkeletonForTab();
+
   const isIndividual = profile?.tipe === 'perorangan';
   const isCompany = profile?.tipe === 'perusahaan';
   const selected = isIndividual
@@ -46,7 +48,6 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
   const [isLastEducationDropdownOpen, setIsLastEducationDropdownOpen] =
     useState(false);
 
-  // Fungsi untuk cek perubahan data
   const isDataChanged = useMemo(() => {
     if (!profile || !selected) return false;
 
@@ -59,7 +60,7 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
       );
     }
 
-    if (isCompany && selected.type === 'perusahaan' && profile) {
+    if (isCompany && selected.type === 'perusahaan') {
       return (
         selected.fullName !== profile.Nama_Lengkap ||
         selected.selectGender !== profile.Jenis_Kelamin ||
@@ -111,37 +112,31 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
 
   const canSave = isDataChanged && isAllFieldsFilled;
 
-  if (loading || !profile || !selected) {
-    return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator size="large" color="#6BBC3F" />
-        <Text className="font-lexend mt-4 text-lg text-gray-600">
-          Memuat profil...
-        </Text>
-      </View>
-    );
+  if (showSkeleton || loading || !profile || !selected) {
+    return <WrapperSkeletonEditProfile />;
   }
 
   return (
     <View className="flex-1 bg-gray-50">
       {/* HEADER */}
       <View className="bg-white px-6 pb-4 pt-12 shadow-sm">
-        <View className="flex-row items-center justify-between">
-          <TouchableOpacity onPress={onClose} className="flex-row items-center">
-            <Ionicons name="arrow-back" size={24} color="#1F2937" />
-            <Text className="font-lexend ml-2 text-gray-600">Kembali</Text>
-          </TouchableOpacity>
-
-          <View className="flex-1 items-center">
-            <Text className="font-lexend-bold text-2xl text-gray-900">
-              Sunting Profil
-            </Text>
-            <Text className="font-lexend mt-1 text-sm text-gray-500">
-              {isIndividual ? 'Akun Perorangan' : 'Akun Perusahaan'}
-            </Text>
-          </View>
-
-          <View style={{ width: 80 }} />
+        <ButtonCustom
+          onPressLeftIcon={onClose}
+          classNameContainer="absolute left-6 top-12 flex-row items-center px-2 py-2"
+          textClassName="font-lexend ml-2 text-gray-600 text-base"
+          iconLeft={
+            <View className="h-10 w-10 items-center justify-center rounded-full bg-gray-200">
+              <Ionicons name="arrow-back" size={24} color="#1F2937" />
+            </View>
+          }
+        />
+        <View className="items-center justify-center">
+          <Text className="font-lexend-bold text-2xl text-gray-900">
+            Sunting Profil
+          </Text>
+          <Text className="font-lexend mt-1 text-sm text-gray-500">
+            {isIndividual ? 'Akun Perorangan' : 'Akun Perusahaan'}
+          </Text>
         </View>
       </View>
 
@@ -392,36 +387,38 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
       </KeyboardAvoidingView>
 
       {/* FOOTER BUTTON */}
-      <View className="border-t border-gray-200 bg-white px-6 py-4">
-        <TouchableOpacity
-          onPress={selected.handleSave}
-          activeOpacity={0.8}
-          disabled={!canSave}
-          className={`rounded-xl py-4 ${canSave ? 'bg-green-500' : 'bg-gray-300'}`}
-        >
-          <View className="flex-row items-center justify-center">
-            <Ionicons
-              name="checkmark-circle"
-              size={24}
-              color={canSave ? 'white' : '#9CA3AF'}
-            />
-            <Text
-              style={{ fontFamily: 'LexBold' }}
-              className={`ml-2 text-lg ${canSave ? 'text-white' : 'text-gray-500'}`}
-            >
-              Simpan Perubahan
-            </Text>
-          </View>
-        </TouchableOpacity>
+      {selected && (
+        <View className="border-t border-gray-200 bg-white px-6 py-4">
+          <TouchableOpacity
+            onPress={selected.handleSave}
+            activeOpacity={0.8}
+            disabled={!canSave}
+            className={`rounded-xl py-4 ${canSave ? 'bg-green-500' : 'bg-gray-300'}`}
+          >
+            <View className="flex-row items-center justify-center">
+              <Ionicons
+                name="checkmark-circle"
+                size={24}
+                color={canSave ? 'white' : '#9CA3AF'}
+              />
+              <Text
+                style={{ fontFamily: 'LexBold' }}
+                className={`ml-2 text-lg ${canSave ? 'text-white' : 'text-gray-500'}`}
+              >
+                Simpan Perubahan
+              </Text>
+            </View>
+          </TouchableOpacity>
 
-        {!canSave && (
-          <Text className="font-lexend mt-2 text-center text-sm text-gray-500">
-            {!isDataChanged
-              ? 'Belum ada perubahan data'
-              : 'Harap lengkapi semua field'}
-          </Text>
-        )}
-      </View>
+          {!canSave && (
+            <Text className="font-lexend mt-2 text-center text-sm text-gray-500">
+              {!isDataChanged
+                ? 'Belum ada perubahan data'
+                : 'Harap lengkapi semua field'}
+            </Text>
+          )}
+        </View>
+      )}
     </View>
   );
 }

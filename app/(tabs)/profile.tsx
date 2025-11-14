@@ -12,23 +12,28 @@ import SecurityProfile from '@/app/screens/securityProfile';
 
 // OUR COMPONENTS
 import ButtonCustom from '@/components/buttonCustom';
+import { WrapperSkeletonProfileTabs } from '@/components/skeletons/wrapperSkeletonProfileTabs';
 
 // OUR HOOKS
-import { useProfilePopup } from '@/hooks/Frontend/profileScreen/usePopupAnimation';
+import { useProfilePopup } from '@/hooks/Frontend/profileScreen/useProfilePopup';
 import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
+import { useSkeletonForTab } from '@/hooks/Frontend/skeletons/useSkeletonForTab';
 
 export default function ProfileTabs() {
-  const {
-    activePopup,
-    animatedWidth,
-    animatedScaleY,
-    fadeAnim,
-    handleShowPopup,
-    handleClosePopup,
-  } = useProfilePopup();
+  const { activePopup, handleShowPopup, handleClosePopup, translateY } =
+    useProfilePopup();
 
   const { profile, loading } = useGetUserProfile();
-  if (loading) return <Text>Loading...</Text>;
+  const showSkeleton = useSkeletonForTab();
+
+  // jika loading atau skeleton aktif, tampilkan skeleton
+  if (loading || showSkeleton) {
+    return (
+      <View className="flex-1 items-center justify-center bg-[#1475BA]">
+        <WrapperSkeletonProfileTabs />
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1 bg-[#1475BA]">
@@ -36,7 +41,6 @@ export default function ProfileTabs() {
       {!activePopup && (
         <Animated.View
           style={{
-            opacity: fadeAnim,
             width: '100%',
             height: '100%',
             alignItems: 'center',
@@ -75,43 +79,51 @@ export default function ProfileTabs() {
                 text="Edit Profil"
                 iconLeft={<Feather name="user" size={22} color="#333" />}
                 iconRight={
-                  <MaterialIcons
-                    name="keyboard-arrow-right"
-                    size={24}
-                    color="#999"
-                  />
+                  <View className="h-10 w-10 items-center justify-center rounded-full bg-gray-200">
+                    <MaterialIcons
+                      name="keyboard-arrow-right"
+                      size={24}
+                      color="#999"
+                    />
+                  </View>
                 }
                 textClassName="text-black text-[16px] pl-2"
                 textStyle={{ fontFamily: 'LexRegular' }}
-                onPress={() => handleShowPopup('editProfile')}
+                onPressRightIcon={() => handleShowPopup('editProfile')}
               />
               <ButtonCustom
                 classNameContainer="flex-row items-center justify-between py-3"
                 text="Keamanan"
                 iconLeft={<Feather name="lock" size={22} color="#333" />}
                 iconRight={
-                  <MaterialIcons
-                    name="keyboard-arrow-right"
-                    size={24}
-                    color="#999"
-                  />
+                  <View className="h-10 w-10 items-center justify-center rounded-full bg-gray-200">
+                    <MaterialIcons
+                      name="keyboard-arrow-right"
+                      size={24}
+                      color="#999"
+                    />
+                  </View>
                 }
                 textClassName="text-black text-[16px] pl-2"
-                onPress={() => handleShowPopup('securityProfile')}
+                textStyle={{ fontFamily: 'LexRegular' }}
+                onPressRightIcon={() => handleShowPopup('securityProfile')}
               />
               <ButtonCustom
                 classNameContainer="flex-row items-center justify-between py-3 "
                 text="Notifikasi"
                 iconLeft={<Feather name="bell" size={22} color="#333" />}
                 iconRight={
-                  <MaterialIcons
-                    name="keyboard-arrow-right"
-                    size={24}
-                    color="#999"
-                  />
+                  <View className="h-10 w-10 items-center justify-center rounded-full bg-gray-200">
+                    <MaterialIcons
+                      name="keyboard-arrow-right"
+                      size={24}
+                      color="#999"
+                    />
+                  </View>
                 }
                 textClassName="text-black text-[16px] pl-2"
-                onPress={() => handleShowPopup('notificationProfile')}
+                textStyle={{ fontFamily: 'LexRegular' }}
+                onPressRightIcon={() => handleShowPopup('notificationProfile')}
               />
             </View>
             <ButtonCustom
@@ -130,12 +142,14 @@ export default function ProfileTabs() {
         <Animated.View
           style={{
             position: 'absolute',
-            bottom: 100,
-            width: animatedWidth,
+            bottom: 120,
+            left: 0,
+            right: 0,
             height: '80%',
-            borderRadius: 20,
-            transform: [{ scaleY: animatedScaleY }],
+            backgroundColor: 'white',
             overflow: 'hidden',
+            borderRadius: 20,
+            transform: [{ translateY: translateY }],
           }}
         >
           {activePopup === 'editProfile' && (
