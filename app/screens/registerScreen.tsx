@@ -1,6 +1,6 @@
-import { Image, View, Text, TouchableOpacity } from "react-native";
-import { useRouter } from "expo-router";
-import { LinearGradient } from "expo-linear-gradient";
+import { Image, View, Text, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function RegisterScreen() {
   const router = useRouter();
@@ -9,7 +9,7 @@ export default function RegisterScreen() {
     <View className="flex-1 items-center justify-center overflow-hidden">
       <View className="absolute inset-0">
         <LinearGradient
-          colors={["#1475BA", "#36918A", "#6BBC3F"]}
+          colors={['#1475BA', '#36918A', '#6BBC3F']}
           locations={[0, 0.5, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -17,54 +17,54 @@ export default function RegisterScreen() {
         />
       </View>
 
-      <View className="justify-center items-center">
+      <View className="items-center justify-center">
         <Text
-          className="text-4xl text-white text-center"
-          style={{ fontFamily: "LexBold" }}
+          className="text-center text-4xl text-white"
+          style={{ fontFamily: 'LexBold' }}
         >
           Pendaftaran
         </Text>
         <Text
-          className="text-lg text-white text-center"
-          style={{ fontFamily: "LexRegular" }}
+          className="text-center text-lg text-white"
+          style={{ fontFamily: 'LexRegular' }}
         >
           Pilih mode pendaftaran
         </Text>
       </View>
 
-      <View className="items-center justify-center py-12 gap-3">
+      <View className="items-center justify-center gap-3 py-12">
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={() => router.push("/screens/individualRegisterScreen")}
+          onPress={() => router.push('/screens/individualRegisterScreen')}
         >
           <Image
-            source={require("@/assets/images/RegisterScreen/perorangan.png")}
-            className="w-52 h-52"
+            source={require('@/assets/images/RegisterScreen/perorangan.png')}
+            className="h-52 w-52"
           />
         </TouchableOpacity>
         <Text
-          className="text-lg text-white text-center"
-          style={{ fontFamily: "LexRegular" }}
+          className="text-center text-lg text-white"
+          style={{ fontFamily: 'LexRegular' }}
         >
-          Pendaftaran untuk Pengguna {"\n"} perorangan
+          Pendaftaran untuk Pengguna {'\n'} perorangan
         </Text>
       </View>
 
       <View className="items-center justify-center gap-3">
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={() => router.push("/screens/companyRegisterScreen")}
+          onPress={() => router.push('/screens/companyRegisterScreen')}
         >
           <Image
-            source={require("@/assets/images/RegisterScreen/perusahaan.png")}
-            className="w-52 h-52"
+            source={require('@/assets/images/RegisterScreen/perusahaan.png')}
+            className="h-52 w-52"
           />
         </TouchableOpacity>
         <Text
-          className="text-lg text-white text-center"
-          style={{ fontFamily: "LexRegular" }}
+          className="text-center text-lg text-white"
+          style={{ fontFamily: 'LexRegular' }}
         >
-          Pendaftaran untuk Perusahaan {"\n"} atau instansi
+          Pendaftaran untuk Perusahaan {'\n'} atau instansi
         </Text>
       </View>
     </View>

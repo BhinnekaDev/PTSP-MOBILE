@@ -84,26 +84,26 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
 
     if (isIndividual) {
       return (
-        selected.fullName?.trim() !== '' &&
-        selected.selectGender?.trim() !== '' &&
-        selected.job?.trim() !== '' &&
-        selected.lastEducation?.trim() !== ''
+        selected.fullName?.trim() &&
+        selected.selectGender?.trim() &&
+        selected.job?.trim() &&
+        selected.lastEducation?.trim()
       );
     }
 
-    if (selected && selected.type === 'perusahaan') {
+    if (selected.type === 'perusahaan') {
       return (
-        selected.fullName?.trim() !== '' &&
-        selected.selectGender?.trim() !== '' &&
-        selected.job?.trim() !== '' &&
-        selected.lastEducation?.trim() !== '' &&
-        selected.companyName?.trim() !== '' &&
-        selected.companyPhone?.trim() !== '' &&
-        selected.companyEmail?.trim() !== '' &&
-        selected.npwpCompany?.trim() !== '' &&
-        selected.companyAddress?.trim() !== '' &&
-        selected.districtCityCompany?.trim() !== '' &&
-        selected.provinceCompany?.trim() !== ''
+        selected.fullName?.trim() &&
+        selected.selectGender?.trim() &&
+        selected.job?.trim() &&
+        selected.lastEducation?.trim() &&
+        selected.companyName?.trim() &&
+        selected.companyPhone?.trim() &&
+        selected.companyEmail?.trim() &&
+        selected.npwpCompany?.trim() &&
+        selected.companyAddress?.trim() &&
+        selected.districtCityCompany?.trim() &&
+        selected.provinceCompany?.trim()
       );
     }
 
@@ -150,9 +150,8 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
           contentContainerStyle={{ paddingBottom: 30 }}
           showsVerticalScrollIndicator={false}
         >
-          {/* PROFILE SECTION */}
           <View className="mx-6 mt-6">
-            {/* PROFILE CARD */}
+            {/* === PERSONAL INFO CARD === */}
             <View className="mb-6 rounded-2xl bg-white p-6 shadow-sm">
               <View className="mb-6 flex-row items-center">
                 <View className="h-16 w-16 items-center justify-center rounded-full bg-green-100">
@@ -167,87 +166,85 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
                   </Text>
                 </View>
                 <View
-                  className={`h-3 w-3 rounded-full ${canSave ? 'bg-green-500' : 'bg-gray-300'}`}
+                  className={`h-3 w-3 rounded-full ${
+                    canSave ? 'bg-green-500' : 'bg-gray-300'
+                  }`}
                 />
               </View>
 
               <View className="space-y-5">
                 {/* NAMA LENGKAP */}
-                <View>
-                  <Text className="font-lexend-bold mb-2 text-sm text-gray-700">
-                    Nama Lengkap
-                  </Text>
-                  <FormInput
-                    textClassName="border-gray-300 rounded-xl bg-gray-50 py-4"
-                    value={selected.fullName}
-                    onChangeText={(input) =>
-                      selected.setFullName(validationFullString(input, 50))
-                    }
-                    placeholder="Masukkan nama lengkap"
-                  />
-                </View>
+                <FormInput
+                  label="Nama Lengkap"
+                  textClassName=" rounded-xl bg-gray-50 py-4"
+                  value={selected.fullName}
+                  onChangeText={(input) =>
+                    selected.setFullName(validationFullString(input, 50))
+                  }
+                  placeholder="Masukkan nama lengkap"
+                  customFontLabel={{ fontFamily: 'LexLight' }}
+                />
 
                 {/* JENIS KELAMIN */}
-                <View className="">
-                  <Text className="font-lexend-bold mb-2 text-sm text-gray-700">
-                    Jenis Kelamin
-                  </Text>
-                  <FormDropdownSelect
-                    toggleDropdownClassName="border-gray-300 rounded-xl bg-gray-50"
-                    DropdownSelectClassName="border-gray-300 rounded-xl"
-                    options={['Laki - Laki', 'Perempuan']}
-                    selectedTextStyle={{
-                      fontFamily: 'LexRegular',
-                      color: '#374151',
-                    }}
-                    iconColor="#6BBC3F"
-                    selected={selected.selectGender}
-                    onSelect={selected.setSelectGender}
-                    open={isGenderDropdownOpen}
-                    setOpen={setIsGenderDropdownOpen}
-                  />
-                </View>
+                <FormDropdownSelect
+                  label="Jenis Kelamin"
+                  customFontLabel={{ fontFamily: 'LexLight' }}
+                  toggleDropdownClassName="rounded-xl bg-gray-50"
+                  DropdownSelectClassName="rounded-xl"
+                  options={['Laki - Laki', 'Perempuan']}
+                  selected={selected.selectGender}
+                  onSelect={selected.setSelectGender}
+                  open={isGenderDropdownOpen}
+                  setOpen={setIsGenderDropdownOpen}
+                  iconColor="#6BBC3F"
+                  customFontSelected={{
+                    fontFamily: 'LexRegular',
+                    color: '#374151',
+                  }}
+                  customFontOption={{
+                    fontFamily: 'LexRegular',
+                    color: '#374151',
+                  }}
+                />
 
                 {/* PEKERJAAN */}
-                <View className="mb-4">
-                  <Text className="font-lexend-bold mb-2 text-sm text-gray-700">
-                    Pekerjaan
-                  </Text>
-                  <FormInput
-                    textClassName="border-gray-300 rounded-xl bg-gray-50 py-4"
-                    value={selected.job}
-                    onChangeText={(input) =>
-                      selected.setJob(validationFullString(input, 30))
-                    }
-                    placeholder="Pekerjaan"
-                  />
-                </View>
+                <FormInput
+                  label="Pekerjaan"
+                  textClassName=" rounded-xl bg-gray-50 "
+                  value={selected.job}
+                  onChangeText={(input) =>
+                    selected.setJob(validationFullString(input, 30))
+                  }
+                  placeholder="Pekerjaan"
+                  customFontLabel={{ fontFamily: 'LexLight' }}
+                />
 
                 {/* PENDIDIKAN TERAKHIR */}
-                <View>
-                  <Text className="font-lexend-bold mb-2 text-sm text-gray-700">
-                    Pendidikan Terakhir
-                  </Text>
-                  <FormDropdownSelect
-                    options={educationOptions}
-                    selected={selected.lastEducation}
-                    onSelect={selected.setLastEducation}
-                    open={isLastEducationDropdownOpen}
-                    setOpen={setIsLastEducationDropdownOpen}
-                    maxVisibleOptions={5}
-                    toggleDropdownClassName="border-gray-300 rounded-xl bg-gray-50"
-                    DropdownSelectClassName="border-gray-300 rounded-xl"
-                    selectedTextStyle={{
-                      fontFamily: 'LexRegular',
-                      color: '#374151',
-                    }}
-                    iconColor="#6BBC3F"
-                  />
-                </View>
+                <FormDropdownSelect
+                  label="Pendidikan Terakhir"
+                  customFontLabel={{ fontFamily: 'LexLight' }}
+                  options={educationOptions}
+                  selected={selected.lastEducation}
+                  onSelect={selected.setLastEducation}
+                  open={isLastEducationDropdownOpen}
+                  setOpen={setIsLastEducationDropdownOpen}
+                  maxVisibleOptions={5}
+                  toggleDropdownClassName=" rounded-xl bg-gray-50"
+                  DropdownSelectClassName=" rounded-xl"
+                  customFontSelected={{
+                    fontFamily: 'LexRegular',
+                    color: '#374151',
+                  }}
+                  customFontOption={{
+                    fontFamily: 'LexRegular',
+                    color: '#374151',
+                  }}
+                  iconColor="#6BBC3F"
+                />
               </View>
             </View>
 
-            {/* COMPANY SECTION */}
+            {/* === COMPANY SECTION === */}
             {selected.type === 'perusahaan' && (
               <View className="rounded-2xl bg-white p-6 shadow-sm">
                 <View className="mb-6 flex-row items-center">
@@ -263,121 +260,97 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
                     </Text>
                   </View>
                   <View
-                    className={`h-3 w-3 rounded-full ${canSave ? 'bg-green-500' : 'bg-gray-300'}`}
+                    className={`h-3 w-3 rounded-full ${
+                      canSave ? 'bg-green-500' : 'bg-gray-300'
+                    }`}
                   />
                 </View>
 
                 <View className="space-y-5">
-                  {/* NAMA PERUSAHAAN */}
-                  <View>
-                    <Text className="font-lexend-bold mb-2 text-sm text-gray-700">
-                      Nama Perusahaan
-                    </Text>
+                  <FormInput
+                    label="Nama Perusahaan"
+                    textClassName=" rounded-xl bg-gray-50 py-4"
+                    value={selected.companyName}
+                    onChangeText={(text) =>
+                      selected.setCompanyName(validationFullString(text))
+                    }
+                    placeholder="Masukkan nama perusahaan"
+                    customFontLabel={{ fontFamily: 'LexLight' }}
+                  />
+
+                  <FormInput
+                    label="Telepon Perusahaan"
+                    textClassName=" rounded-xl bg-gray-50 py-4 flex-1"
+                    value={selected.companyPhone}
+                    onChangeText={(text) =>
+                      selected.setCompanyPhone(validationNumber(text, 15))
+                    }
+                    placeholder="Nomor telepon"
+                    keyboardType="phone-pad"
+                    customFontLabel={{ fontFamily: 'LexLight' }}
+                  />
+
+                  <FormInput
+                    label="Email Perusahaan"
+                    textClassName=" rounded-xl bg-gray-50 py-4 flex-1"
+                    value={selected.companyEmail}
+                    onChangeText={(text) =>
+                      selected.setCompanyEmail(validationEmail(text))
+                    }
+                    placeholder="Email perusahaan"
+                    keyboardType="email-address"
+                    customFontLabel={{ fontFamily: 'LexLight' }}
+                  />
+
+                  <FormInput
+                    label="NPWP Perusahaan"
+                    textClassName=" rounded-xl bg-gray-50 py-4"
+                    value={selected.npwpCompany}
+                    onChangeText={(text) =>
+                      selected.setNpwpCompany(validationNPWP(text))
+                    }
+                    placeholder="NPWP perusahaan"
+                    keyboardType="number-pad"
+                    customFontLabel={{ fontFamily: 'LexLight' }}
+                  />
+
+                  <FormInput
+                    label="Alamat Perusahaan"
+                    textClassName=" rounded-xl bg-gray-50 py-4"
+                    value={selected.companyAddress}
+                    onChangeText={selected.setCompanyAddress}
+                    placeholder="Alamat lengkap perusahaan"
+                    multiline
+                    numberOfLines={3}
+                    customFontLabel={{ fontFamily: 'LexLight' }}
+                  />
+
+                  <View className="flex-row gap-4">
                     <FormInput
-                      textClassName="border-gray-300 rounded-xl bg-gray-50 py-4"
-                      value={selected.companyName}
+                      label="Kabupaten/Kota"
+                      textClassName=" rounded-xl bg-gray-50 py-4 flex-1"
+                      value={selected.districtCityCompany}
                       onChangeText={(text) =>
-                        selected.setCompanyName(validationFullString(text))
+                        selected.setDistrictCityCompany(
+                          validationFullString(text, 50)
+                        )
                       }
-                      placeholder="Masukkan nama perusahaan"
+                      placeholder="Kabupaten/Kota"
+                      customFontLabel={{ fontFamily: 'LexLight' }}
                     />
-                  </View>
 
-                  {/* CONTACT ROW */}
-                  <View className="flex-row gap-2 space-x-4">
-                    <View className="flex-1">
-                      <Text className="font-lexend-bold mb-2 text-sm text-gray-700">
-                        Telepon Perusahaan
-                      </Text>
-                      <FormInput
-                        textClassName="border-gray-300 rounded-xl bg-gray-50 py-4"
-                        value={selected.companyPhone}
-                        onChangeText={(text) =>
-                          selected.setCompanyPhone(validationNumber(text, 15))
-                        }
-                        placeholder="Nomor telepon"
-                        keyboardType="phone-pad"
-                      />
-                    </View>
-                    <View className="flex-1">
-                      <Text className="font-lexend-bold mb-2 text-sm text-gray-700">
-                        Email Perusahaan
-                      </Text>
-                      <FormInput
-                        textClassName="border-gray-300 rounded-xl bg-gray-50 py-4"
-                        value={selected.companyEmail}
-                        onChangeText={(text) =>
-                          selected.setCompanyEmail(validationEmail(text))
-                        }
-                        placeholder="Email perusahaan"
-                        keyboardType="email-address"
-                      />
-                    </View>
-                  </View>
-
-                  {/* NPWP */}
-                  <View>
-                    <Text className="font-lexend-bold mb-2 text-sm text-gray-700">
-                      NPWP Perusahaan
-                    </Text>
                     <FormInput
-                      textClassName="border-gray-300 rounded-xl bg-gray-50 py-4"
-                      value={selected.npwpCompany}
+                      label="Provinsi"
+                      textClassName=" rounded-xl bg-gray-50 py-4 flex-1"
+                      value={selected.provinceCompany}
                       onChangeText={(text) =>
-                        selected.setNpwpCompany(validationNPWP(text))
+                        selected.setProvinceCompany(
+                          validationFullString(text, 50)
+                        )
                       }
-                      placeholder="NPWP perusahaan"
-                      keyboardType="number-pad"
+                      placeholder="Provinsi"
+                      customFontLabel={{ fontFamily: 'LexLight' }}
                     />
-                  </View>
-
-                  {/* ALAMAT */}
-                  <View>
-                    <Text className="font-lexend-bold mb-2 text-sm text-gray-700">
-                      Alamat Perusahaan
-                    </Text>
-                    <FormInput
-                      textClassName="border-gray-300 rounded-xl bg-gray-50 py-4"
-                      value={selected.companyAddress}
-                      onChangeText={selected.setCompanyAddress}
-                      placeholder="Alamat lengkap perusahaan"
-                      multiline
-                      numberOfLines={3}
-                    />
-                  </View>
-
-                  {/* LOKASI ROW */}
-                  <View className="flex-row gap-2 space-x-4">
-                    <View className="flex-1">
-                      <Text className="font-lexend-bold mb-2 text-sm text-gray-700">
-                        Kabupaten/Kota
-                      </Text>
-                      <FormInput
-                        textClassName="border-gray-300 rounded-xl bg-gray-50 py-4"
-                        value={selected.districtCityCompany}
-                        onChangeText={(text) =>
-                          selected.setDistrictCityCompany(
-                            validationFullString(text, 50)
-                          )
-                        }
-                        placeholder="Kabupaten/Kota"
-                      />
-                    </View>
-                    <View className="flex-1">
-                      <Text className="font-lexend-bold mb-2 text-sm text-gray-700">
-                        Provinsi
-                      </Text>
-                      <FormInput
-                        textClassName="border-gray-300 rounded-xl bg-gray-50 py-4"
-                        value={selected.provinceCompany}
-                        onChangeText={(text) =>
-                          selected.setProvinceCompany(
-                            validationFullString(text, 50)
-                          )
-                        }
-                        placeholder="Provinsi"
-                      />
-                    </View>
                   </View>
                 </View>
               </View>
@@ -386,14 +359,16 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
         </ScrollView>
       </KeyboardAvoidingView>
 
-      {/* FOOTER BUTTON */}
+      {/* FOOTER SAVE BUTTON */}
       {selected && (
         <View className="border-t border-gray-200 bg-white px-6 py-4">
           <TouchableOpacity
             onPress={selected.handleSave}
             activeOpacity={0.8}
             disabled={!canSave}
-            className={`rounded-xl py-4 ${canSave ? 'bg-green-500' : 'bg-gray-300'}`}
+            className={`rounded-xl py-4 ${
+              canSave ? 'bg-green-500' : 'bg-gray-300'
+            }`}
           >
             <View className="flex-row items-center justify-center">
               <Ionicons
@@ -403,7 +378,9 @@ export default function EditProfile({ onClose }: { onClose: () => void }) {
               />
               <Text
                 style={{ fontFamily: 'LexBold' }}
-                className={`ml-2 text-lg ${canSave ? 'text-white' : 'text-gray-500'}`}
+                className={`ml-2 text-lg ${
+                  canSave ? 'text-white' : 'text-gray-500'
+                }`}
               >
                 Simpan Perubahan
               </Text>

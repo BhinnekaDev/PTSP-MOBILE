@@ -143,19 +143,27 @@ export default function IndividualRegisterScreen() {
             {/* Dropdown Gender */}
             <FormDropdownSelect
               label="Jenis Kelamin"
+              customFontLabel={{ fontFamily: 'LexLight' }}
               options={['Laki-laki', 'Perempuan']}
               selected={selectedGender}
               onSelect={(value) => {
                 setSelectedGender(value);
-                setIsDropdownGenderOpen(false); // tutup dropdown setelah pilih
+                setIsDropdownGenderOpen(false);
               }}
-              open={isDropdownGenderOpen} // ← pakai state parent
-              setOpen={setIsDropdownGenderOpen} // ← pakai setter parent
+              open={isDropdownGenderOpen}
+              setOpen={setIsDropdownGenderOpen}
               showLabel={true}
               toggleDropdownClassName="rounded-xl border border-[#6BBC3F] bg-white px-4 py-3"
               DropdownSelectClassName="rounded-xl border border-t-0 border-[#6BBC3F] bg-white shadow-md"
-              selectedTextStyle={{ color: '#6BBC3F', fontFamily: 'LexRegular' }}
               iconColor="#6BBC3F"
+              customFontSelected={{
+                fontFamily: 'LexRegular',
+                color: '#374151',
+              }}
+              customFontOption={{
+                fontFamily: 'LexRegular',
+                color: '#374151',
+              }}
             />
 
             {/* Pekerjaan */}
@@ -174,6 +182,7 @@ export default function IndividualRegisterScreen() {
             {/* Pendidikan Terakhir */}
             <FormDropdownSelect
               label="Pendidikan Terakhir"
+              customFontLabel={{ fontFamily: 'LexLight' }}
               options={educationOptions} // array pilihan pendidikan
               selected={lastEducation} // state yang menyimpan pilihan saat ini
               onSelect={setLastEducation} // setter untuk update pilihan
@@ -182,9 +191,15 @@ export default function IndividualRegisterScreen() {
               maxVisibleOptions={3} // maksimal 3 item terlihat, sisanya scroll
               toggleDropdownClassName="w-80" // lebar tombol dropdown
               DropdownSelectClassName="w-80" // lebar container dropdown
-              labelStyle={{ fontFamily: 'LexBold' }}
-              selectedTextStyle={{ fontFamily: 'LexRegular', color: '#6BBC3F' }}
               iconColor="#6BBC3F"
+              customFontSelected={{
+                fontFamily: 'LexRegular',
+                color: '#374151',
+              }}
+              customFontOption={{
+                fontFamily: 'LexRegular',
+                color: '#374151',
+              }}
             />
 
             {/* Nomor HP */}
@@ -197,7 +212,7 @@ export default function IndividualRegisterScreen() {
               placeholder="No HP / No Telp"
               keyboardType="phone-pad"
               textClassName="border-[#6BBC3F]"
-              fontLexBold={{ fontFamily: 'LexBold' }}
+              customFontLabel={{ fontFamily: 'LexLight' }}
             />
 
             {/* Checkbox */}

@@ -15,19 +15,22 @@ type DropdownSelectProps = {
   options: string[];
   selected: string;
   onSelect: (value: string) => void;
+
   showLabel?: boolean;
+  containerClassName?: string;
   toggleDropdownClassName?: string;
   DropdownSelectClassName?: string;
+
   labelClassName?: string;
-  iconColor?: string;
-  selectedTextStyle?: object;
   selectedTextClassName?: string;
-  FontLexSemiBold?: object;
-  labelStyle?: object;
-  maxVisibleOptions?: number;
-  containerClassName?: string;
   optionTextClassName?: string;
-  optionTextStyle?: object;
+
+  iconColor?: string;
+  maxVisibleOptions?: number;
+
+  customFontLabel?: object;
+  customFontSelected?: object;
+  customFontOption?: object;
 
   // Controlled props
   open: boolean;
@@ -35,23 +38,25 @@ type DropdownSelectProps = {
 };
 
 export default function FormDropdownSelect({
-  FontLexSemiBold = { fontFamily: 'LexSemiBold' },
-  containerClassName,
-  toggleDropdownClassName,
-  DropdownSelectClassName,
-  labelClassName,
   label,
   options,
   selected,
   onSelect,
+
   showLabel = true,
-  iconColor,
-  selectedTextStyle,
+  containerClassName,
+  toggleDropdownClassName,
+  DropdownSelectClassName,
+  labelClassName,
   selectedTextClassName,
   optionTextClassName,
-  optionTextStyle,
-  labelStyle,
+  iconColor,
   maxVisibleOptions = 3,
+
+  customFontLabel = { fontFamily: 'LexBold' },
+  customFontSelected = { fontFamily: 'LexSemiBold' },
+  customFontOption = { fontFamily: 'LexRegular' },
+
   open,
   setOpen,
 }: DropdownSelectProps) {
@@ -68,16 +73,17 @@ export default function FormDropdownSelect({
 
   return (
     <View className={`${containerClassName}`}>
-      {/* PERBAIKAN: Cek apakah label tidak kosong */}
+      {/* LABEL */}
       {showLabel && label && label.trim() !== '' && (
         <Text
           className={`text-md mb-2 ${labelClassName}`}
-          style={[FontLexSemiBold, labelStyle]}
+          style={customFontLabel}
         >
           {label}
         </Text>
       )}
 
+      {/* TOGGLE */}
       <TouchableOpacity
         onPress={() => setOpen(!open)}
         className={`flex-row items-center justify-between rounded-xl border border-[#6BBC3F] bg-white px-4 py-3 ${toggleDropdownClassName}`}
@@ -85,7 +91,7 @@ export default function FormDropdownSelect({
       >
         <Text
           className={`${selectedTextClassName || 'text-[#6BBC3F]'}`}
-          style={[FontLexSemiBold, selectedTextStyle]}
+          style={customFontSelected}
         >
           {selected || `Pilih ${label?.toLowerCase() || 'opsi'}`}
         </Text>
@@ -97,15 +103,12 @@ export default function FormDropdownSelect({
         />
       </TouchableOpacity>
 
+      {/* DROPDOWN MENU */}
       <Animated.View
         style={{ height: animatedHeight, opacity: animatedOpacity }}
         className={`mt-2 overflow-hidden rounded-xl border border-[#6BBC3F] bg-white shadow-md ${DropdownSelectClassName}`}
       >
-        <ScrollView
-          nestedScrollEnabled
-          showsVerticalScrollIndicator
-          style={{ maxHeight }}
-        >
+        <ScrollView nestedScrollEnabled style={{ maxHeight }}>
           {options.map((option) => (
             <Pressable
               key={option}
@@ -117,7 +120,7 @@ export default function FormDropdownSelect({
             >
               <Text
                 className={`${optionTextClassName || 'text-[#6BBC3F]'}`}
-                style={[{ fontFamily: 'LexRegular' }, optionTextStyle]}
+                style={customFontOption}
               >
                 {option}
               </Text>

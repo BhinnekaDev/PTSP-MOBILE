@@ -203,12 +203,13 @@ export default function CompanyRegisterScreen() {
               }
               placeholder="Masukkan nama lengkap"
               textClassName="w-80"
-              fontLexBold={{ fontFamily: 'LexBold' }}
+              customFontLabel={{ fontFamily: 'LexBold' }}
             />
 
             {/* JENIS KELAMIN */}
             <FormDropdownSelect
               label="Jenis Kelamin"
+              customFontLabel={{ fontFamily: 'LexLight' }}
               options={['Laki-laki', 'Perempuan']}
               selected={selectedGender}
               onSelect={setSelectedGender}
@@ -216,8 +217,15 @@ export default function CompanyRegisterScreen() {
               setOpen={setIsDropdownGenderOpen}
               toggleDropdownClassName="w-80 border-[#6BBC3F] rounded-xl"
               DropdownSelectClassName="w-80 border-[#6BBC3F] rounded-xl"
-              selectedTextStyle={{ fontFamily: 'LexRegular', color: '#6BBC3F' }}
               iconColor="#6BBC3F"
+              customFontSelected={{
+                fontFamily: 'LexRegular',
+                color: '#374151',
+              }}
+              customFontOption={{
+                fontFamily: 'LexRegular',
+                color: '#374151',
+              }}
             />
 
             {/* PEKERJAAN */}
@@ -227,7 +235,7 @@ export default function CompanyRegisterScreen() {
               onChangeText={(text) => setJob(validationFullString(text, 50))}
               placeholder="Masukkan pekerjaan"
               textClassName="w-80"
-              fontLexBold={{ fontFamily: 'LexBold' }}
+              customFontLabel={{ fontFamily: 'LexBold' }}
             />
           </View>
         )}
@@ -237,6 +245,7 @@ export default function CompanyRegisterScreen() {
             {/* PENDIDIKAN TERAKHIR */}
             <FormDropdownSelect
               label="Pendidikan Terakhir"
+              customFontLabel={{ fontFamily: 'LexLight' }}
               options={educationOptions}
               selected={lastEducation}
               onSelect={setLastEducation}
@@ -245,8 +254,15 @@ export default function CompanyRegisterScreen() {
               maxVisibleOptions={5}
               toggleDropdownClassName="w-80 border-[#6BBC3F] rounded-xl"
               DropdownSelectClassName="w-80 border-[#6BBC3F] rounded-xl"
-              selectedTextStyle={{ fontFamily: 'LexRegular', color: '#6BBC3F' }}
               iconColor="#6BBC3F"
+              customFontSelected={{
+                fontFamily: 'LexRegular',
+                color: '#374151',
+              }}
+              customFontOption={{
+                fontFamily: 'LexRegular',
+                color: '#374151',
+              }}
             />
 
             {/* NO HP / NO TELP */}
@@ -259,7 +275,7 @@ export default function CompanyRegisterScreen() {
               placeholder="Masukkan nomor HP / Telp"
               keyboardType="phone-pad"
               textClassName="w-80"
-              fontLexBold={{ fontFamily: 'LexBold' }}
+              customFontLabel={{ fontFamily: 'LexBold' }}
             />
 
             <View>
@@ -305,7 +321,7 @@ export default function CompanyRegisterScreen() {
               placeholder="Masukkan NPWP Perusahaan"
               keyboardType="phone-pad"
               textClassName="w-80"
-              fontLexBold={{ fontFamily: 'LexBold' }}
+              customFontLabel={{ fontFamily: 'LexBold' }}
             />
 
             {/* NAMA PERUSAHAAN */}
@@ -317,7 +333,7 @@ export default function CompanyRegisterScreen() {
               }
               placeholder="Masukkan Nama Perusahaan"
               textClassName="w-80"
-              fontLexBold={{ fontFamily: 'LexBold' }}
+              customFontLabel={{ fontFamily: 'LexBold' }}
             />
 
             {/* ALAMAT PERUSAHAAN */}
@@ -327,7 +343,7 @@ export default function CompanyRegisterScreen() {
               onChangeText={setCompanyAddress}
               placeholder="Masukkan Alamat Perusahaan"
               textClassName="w-80"
-              fontLexBold={{ fontFamily: 'LexBold' }}
+              customFontLabel={{ fontFamily: 'LexBold' }}
               multiline
               textAlignVertical="top"
               maxLength={70}
@@ -342,7 +358,7 @@ export default function CompanyRegisterScreen() {
               }
               placeholder="Masukkan Provinsi"
               textClassName="w-80"
-              fontLexBold={{ fontFamily: 'LexBold' }}
+              customFontLabel={{ fontFamily: 'LexBold' }}
             />
           </View>
         )}
@@ -357,7 +373,7 @@ export default function CompanyRegisterScreen() {
               }
               placeholder="Masukkan Kabupaten / Kota"
               textClassName="w-80"
-              fontLexBold={{ fontFamily: 'LexBold' }}
+              customFontLabel={{ fontFamily: 'LexBold' }}
             />
 
             {/* EMAIL PERUSAHAAN */}
@@ -368,7 +384,7 @@ export default function CompanyRegisterScreen() {
               placeholder="Masukkan email perusahaan"
               keyboardType="email-address"
               textClassName="w-80"
-              fontLexBold={{ fontFamily: 'LexBold' }}
+              customFontLabel={{ fontFamily: 'LexBold' }}
             />
 
             {/* NO HP / NO TELP */}
@@ -381,7 +397,7 @@ export default function CompanyRegisterScreen() {
               placeholder="Masukkan nomor HP / Telp perusahaan"
               keyboardType="phone-pad"
               textClassName="w-80"
-              fontLexBold={{ fontFamily: 'LexBold' }}
+              customFontLabel={{ fontFamily: 'LexBold' }}
             />
 
             <TouchableOpacity

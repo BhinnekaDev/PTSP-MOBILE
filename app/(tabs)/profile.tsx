@@ -155,11 +155,11 @@ export default function ProfileTabs() {
           {activePopup === 'editProfile' && (
             <EditProfile onClose={handleClosePopup} />
           )}
-          {activePopup === 'notificationProfile' && (
-            <NotificationProfile onClose={handleClosePopup} />
-          )}
           {activePopup === 'securityProfile' && (
             <SecurityProfile onClose={handleClosePopup} />
+          )}
+          {activePopup === 'notificationProfile' && (
+            <NotificationProfile onClose={handleClosePopup} />
           )}
         </Animated.View>
       )}

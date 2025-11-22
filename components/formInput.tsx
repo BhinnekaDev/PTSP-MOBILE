@@ -6,7 +6,11 @@ interface FormInputProps extends TextInputProps {
   value: string;
   onChangeText: (text: string) => void;
   placeholder?: string;
-  fontLexBold?: object;
+
+  customFontLabel?: object;
+  customFontInput?: object;
+  customFontError?: object;
+
   textClassName?: string;
   errorMessage?: string;
 }
@@ -17,7 +21,12 @@ const FormInput = ({
   onChangeText,
   placeholder = '',
   keyboardType = 'default',
-  fontLexBold = { fontFamily: 'LexBold' },
+
+  // Custom font default
+  customFontLabel = { fontFamily: 'LexBold' },
+  customFontInput = { fontFamily: 'LexRegular' },
+  customFontError = { fontFamily: 'LexRegular' },
+
   textClassName = 'border-[#6BBC3F]',
   multiline = false,
   textAlignVertical = 'top',
@@ -26,19 +35,23 @@ const FormInput = ({
 }: FormInputProps) => {
   return (
     <View className="py-1">
-      {/* PERBAIKAN: Cek apakah label tidak kosong */}
+      {/* LABEL */}
       {label && label.trim() !== '' && (
-        <Text className="mb-2" style={[fontLexBold]}>
+        <Text className="mb-2" style={customFontLabel}>
           {label}
         </Text>
       )}
+
+      {/* INPUT */}
       <TextInput
         className={`rounded-[10px] border p-4 ${textClassName}`}
-        style={{
-          fontFamily: 'LexRegular',
-          borderColor: errorMessage ? 'red' : '#6BBC3F',
-          borderWidth: errorMessage ? 2 : 1,
-        }}
+        style={[
+          customFontInput,
+          {
+            borderColor: errorMessage ? 'red' : '#6BBC3F',
+            borderWidth: errorMessage ? 2 : 1,
+          },
+        ]}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
@@ -47,8 +60,12 @@ const FormInput = ({
         textAlignVertical={textAlignVertical}
         {...rest}
       />
+
+      {/* ERROR */}
       {errorMessage && (
-        <Text className="mt-1 text-sm text-red-600">{errorMessage}</Text>
+        <Text className="mt-1 text-sm text-red-600" style={customFontError}>
+          {errorMessage}
+        </Text>
       )}
     </View>
   );

@@ -27,11 +27,14 @@ export default function ScreensLayout() {
     console.log('🔍 [Layout] Search submitted:', searchQuery);
   }, [searchQuery]);
 
-  // 🚫 Daftar halaman yang tidak menampilkan navbar
+  // Daftar halaman yang tidak menampilkan navbar
   const hideNavbarScreens = [
-    '/screens/loginScreen',
     '/screens/splashScreen',
     '/screens/welcomeScreen',
+    '/screens/loginScreen',
+    '/screens/registerScreen',
+    '/screens/companyRegisterScreen',
+    '/screens/individualRegisterScreen',
     '/screens/successOrderScreen',
   ];
 

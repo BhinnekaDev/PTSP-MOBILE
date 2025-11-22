@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
+
 // LIB
 import {
   firebaseAuth,
@@ -11,7 +12,7 @@ import {
 // HOOKS
 import { useGetUserProfile } from '@/hooks/Backend/useGetUserProfile';
 
-// OUR INTERFACES
+// INTERFACES
 import {
   GetPeroranganProfile,
   GetPerusahaanProfile,
@@ -29,9 +30,15 @@ type UpdateSecurityData =
 export const useEditSecurityProfile = (onClose: () => void) => {
   const router = useRouter();
   const { profile, loading } = useGetUserProfile();
+
   const [numberPhone, setNumberPhone] = useState('');
   const [email, setEmail] = useState('');
 
+  // error states untuk UI validation
+  const [phoneError, setPhoneError] = useState<string | undefined>();
+  const [emailError, setEmailError] = useState<string | undefined>();
+
+  // isi data awal
   useEffect(() => {
     if (profile) {
       setNumberPhone(profile.No_Hp || '');
@@ -39,42 +46,56 @@ export const useEditSecurityProfile = (onClose: () => void) => {
     }
   }, [profile]);
 
-  const handleSave = async () => {
+  // VALIDASI PHONE
+  useEffect(() => {
+    if (!numberPhone.trim()) {
+      setPhoneError('Nomor telepon wajib diisi');
+    } else if (numberPhone.length < 10) {
+      setPhoneError('Nomor telepon terlalu pendek');
+    } else if (numberPhone.length > 13) {
+      setPhoneError('Nomor telepon terlalu panjang');
+    } else {
+      setPhoneError(undefined);
+    }
+  }, [numberPhone]);
+
+  // VALIDASI EMAIL
+  useEffect(() => {
+    const emailVal = email.trim();
+
+    if (!emailVal) {
+      setEmailError('Email wajib diisi');
+      return;
+    }
+
+    const simpleRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!simpleRegex.test(emailVal)) {
+      setEmailError('Format email tidak valid');
+    } else {
+      setEmailError(undefined);
+    }
+  }, [email]);
+
+  // HANDLE SAVE
+  const handleSave = async (canSubmit: boolean) => {
+    if (!canSubmit) return;
+
     try {
       const cleanedPhone = validationNumber(numberPhone, 13);
-      const cleanedEmail = validationEmail(email);
-
-      if (!cleanedPhone.trim() || !cleanedEmail.trim()) {
-        await showAlertMessage('Semua kolom wajib diisi.', '', 'error');
-        return;
-      }
-
-      if (cleanedPhone.length < 10 || cleanedPhone.length > 13) {
-        await showAlertMessage(
-          'Nomor HP harus terdiri dari 10–13 digit angka.',
-          '',
-          'error'
-        );
-        return;
-      }
-
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(cleanedEmail)) {
-        await showAlertMessage('Format email tidak valid.', '', 'error');
-        return;
-      }
+      const cleanedEmail = validationEmail(email).trim();
 
       const user = firebaseAuth.currentUser;
       if (!user) throw new Error('User tidak ditemukan.');
 
-      const isEmailChanged = cleanedEmail.trim() !== user.email;
+      const isEmailChanged = cleanedEmail !== user.email;
 
+      // re-auth jika email berubah
       if (isEmailChanged) {
         const { idToken } = await GoogleSignin.getTokens();
         const credential = GoogleAuthProvider.credential(idToken);
         await user.reauthenticateWithCredential(credential);
 
-        await user.verifyBeforeUpdateEmail(cleanedEmail.trim(), {
+        await user.verifyBeforeUpdateEmail(cleanedEmail, {
           url: 'https://ptspbmkgmobile.page.link',
           handleCodeInApp: true,
           android: {
@@ -85,34 +106,29 @@ export const useEditSecurityProfile = (onClose: () => void) => {
         });
 
         await showAlertMessage(
-          '📧 Email verifikasi telah dikirim ke email baru kamu. Silakan cek dan klik link verifikasi untuk menyelesaikan perubahan email.',
+          '📧 Email verifikasi telah dikirim ke email baru kamu.',
           '',
           'warning'
         );
-        // console.log('verifyBeforeUpdateEmail dijalankan');
       }
 
+      // update Firestore
       const uid = user.uid;
       const collectionName =
         profile?.tipe === 'perorangan' ? 'perorangan' : 'perusahaan';
 
       const data: UpdateSecurityData = {
         No_Hp: cleanedPhone,
-        Email: cleanedEmail.trim(),
+        Email: cleanedEmail,
       };
 
-      // console.log('📝 Mengupdate Firestore dengan data:', data);
       await db.collection(collectionName).doc(uid).update(data);
-      // console.log('✅ Firestore berhasil diupdate');
 
       await showAlertMessage('Data keamanan berhasil disimpan.', '', 'success');
       onClose();
 
       if (isEmailChanged) router.back();
     } catch (err: any) {
-      // console.log('❌ Masuk ke blok catch error');
-      // console.error('Gagal menyimpan data keamanan:', err);
-
       if (err.code === 'auth/requires-recent-login') {
         await showAlertMessage(
           '⚠️ Demi keamanan, silakan login ulang untuk ubah email.',
@@ -135,6 +151,9 @@ export const useEditSecurityProfile = (onClose: () => void) => {
     }
   };
 
+  // nilai submit dari luar UI
+  const canSubmit = !phoneError && !emailError;
+
   return {
     type: profile?.tipe || null,
     profile,
@@ -143,6 +162,9 @@ export const useEditSecurityProfile = (onClose: () => void) => {
     setNumberPhone,
     email,
     setEmail,
+    phoneError,
+    emailError,
+    canSubmit,
     handleSave,
   };
 };

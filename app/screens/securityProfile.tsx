@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -7,26 +7,26 @@ import {
   Text,
 } from 'react-native';
 
-// COMPONENTS
 import ButtonCustom from '@/components/buttonCustom';
 import FormInput from '@/components/formInput';
 import AccountCloseAlert from '@/components/accountCloseAlert';
 import { WrapperSkeletonSecurityProfile } from '@/components/skeletons/wrapperSkeletonSecurityProfile';
 
-// HOOKS
 import { useEditSecurityProfile } from '@/hooks/Backend/useEditSecurityProfile';
 import { useSkeletonForTab } from '@/hooks/Frontend/skeletons/useSkeletonForTab';
 
-// UTILS
-import { validationNumber } from '@/utils/validationNumber';
-import { validationEmail } from '@/utils/validationEmail';
+import {
+  validationNumber,
+  validateNumberError,
+} from '@/utils/validationNumber';
+import { validationEmail, validateEmailError } from '@/utils/validationEmail';
 
-// ICONS
 import { Ionicons } from '@expo/vector-icons';
 
 export default function SecurityProfile({ onClose }: { onClose: () => void }) {
   const showSkeleton = useSkeletonForTab();
   const [modalVisible, setModalVisible] = useState(false);
+
   const {
     profile,
     loading,
@@ -36,17 +36,24 @@ export default function SecurityProfile({ onClose }: { onClose: () => void }) {
     setEmail,
     handleSave,
   } = useEditSecurityProfile(onClose);
+
+  const [phoneError, setPhoneError] = useState<string | undefined>(undefined);
+  const [emailError, setEmailError] = useState<string | undefined>(undefined);
+
+  // cek perubahan
   const isDataChanged = useMemo(() => {
     if (!profile) return false;
-    const originalPhone = profile.No_Hp || '';
-    const originalEmail = profile.Email || '';
-    return numberPhone !== originalPhone || email !== originalEmail;
+    return (
+      numberPhone !== (profile.No_Hp || '') || email !== (profile.Email || '')
+    );
   }, [numberPhone, email, profile]);
 
-  const onSubmit = async () => {
-    if (!isDataChanged) return;
-    await handleSave();
-  };
+  const canSubmit = isDataChanged && !phoneError && !emailError;
+
+  useEffect(() => {
+    setPhoneError(validateNumberError(numberPhone));
+    setEmailError(validateEmailError(email));
+  }, [numberPhone, email]);
 
   if (showSkeleton || loading || !profile) {
     return <WrapperSkeletonSecurityProfile />;
@@ -87,7 +94,7 @@ export default function SecurityProfile({ onClose }: { onClose: () => void }) {
           showsVerticalScrollIndicator={false}
         >
           <View className="space-y-5 rounded-2xl bg-white p-6 shadow-sm">
-            {/* NO TELEPON */}
+            {/* PHONE */}
             <FormInput
               label="No HP / Telepon"
               value={numberPhone}
@@ -96,7 +103,8 @@ export default function SecurityProfile({ onClose }: { onClose: () => void }) {
               }
               placeholder="Masukkan nomor telepon"
               keyboardType="phone-pad"
-              maxLength={13}
+              maxLength={15}
+              errorMessage={phoneError}
             />
 
             {/* EMAIL */}
@@ -106,9 +114,10 @@ export default function SecurityProfile({ onClose }: { onClose: () => void }) {
               onChangeText={(text) => setEmail(validationEmail(text))}
               placeholder="Masukkan email"
               keyboardType="email-address"
+              errorMessage={emailError}
             />
 
-            {/* TOMBOL TUTUP AKUN */}
+            {/* DELETE ACCOUNT */}
             <View className="w-full self-center">
               <ButtonCustom
                 classNameContainer="w-32 py-[6px] px-10 rounded-lg"
@@ -121,29 +130,32 @@ export default function SecurityProfile({ onClose }: { onClose: () => void }) {
         </ScrollView>
       </KeyboardAvoidingView>
 
-      {/* MODAL TUTUP AKUN */}
+      {/* MODAL */}
       <AccountCloseAlert
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-        onConfirm={() => {
-          setModalVisible(false);
-        }}
+        onConfirm={() => setModalVisible(false)}
       />
 
-      {/* FOOTER BUTTON */}
+      {/* FOOTER */}
       <View className="border-t border-gray-200 bg-white px-6 py-4">
         <ButtonCustom
           classNameContainer={`rounded-xl py-4 ${
-            isDataChanged ? 'bg-green-500' : 'bg-gray-300'
+            canSubmit ? 'bg-green-500' : 'bg-gray-300'
           }`}
-          isTouchable={isDataChanged}
+          isTouchable={canSubmit}
           text="Simpan Data"
-          textClassName={`text-[20px] text-center text-white`}
-          onPress={onSubmit}
+          textClassName="text-[20px] text-center text-white"
+          onPress={() => handleSave(canSubmit)} // ⬅ HANYA INI
         />
-        {!isDataChanged && (
+
+        {!canSubmit && (
           <Text className="font-lexend mt-2 text-center text-sm text-gray-500">
-            Belum ada perubahan data
+            {!isDataChanged
+              ? 'Belum ada perubahan data'
+              : phoneError || emailError
+                ? 'Periksa kembali input yang salah'
+                : 'Harap lengkapi semua field'}
           </Text>
         )}
       </View>

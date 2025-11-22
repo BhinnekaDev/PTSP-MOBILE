@@ -88,9 +88,9 @@ export default function LoginScreen() {
             }`}
             textStyle="text-white"
             iconPosition="left"
-            image={require('@/assets/images/LoginScreen/google.png')} // tetap tampil
-            onPress={!loading ? signIn : undefined} // tidak bisa diklik saat loading
-            disabled={loading} // disable native interaksi
+            image={require('@/assets/images/LoginScreen/google.png')}
+            onPress={!loading ? signIn : undefined}
+            disabled={loading} 
           >
             {loading ? 'Sedang Masuk...' : 'Masuk Menggunakan Google aja'}
           </Button>

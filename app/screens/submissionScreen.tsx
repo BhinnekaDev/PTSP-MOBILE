@@ -118,36 +118,79 @@ export default function SubmissionScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Dropdown Jenis Kegiatan */}
-        <View className="mb-6 rounded-[10px] bg-white">
-          <View className="items-center rounded-t-[10px] bg-[#1475BA] p-6">
-            <Text
-              className="text-[16px] text-white"
-              style={{ fontFamily: 'LexMedium' }}
-            >
-              Form Pengajuan Kegiatan
-            </Text>
+        <View className="mb-6 overflow-hidden rounded-[16px] bg-white shadow-sm">
+          {/* HEADER YANG LEBIH MODERN */}
+          <View className="px-6 py-4">
+            {/* Kurangi py dari py-5 jadi py-4 */}
+            <View className="flex-row items-center justify-between">
+              <View className="flex-1">
+                <Text
+                  className="mb-1 text-[18px]"
+                  style={{ fontFamily: 'LexSemiBold' }}
+                >
+                  Form Pengajuan Kegiatan
+                </Text>
+                <Text
+                  className="text-[12px] opacity-90"
+                  style={{ fontFamily: 'LexRegular' }}
+                >
+                  Pilih jenis kegiatan yang ingin diajukan
+                </Text>
+              </View>
+            </View>
           </View>
-          <FormDropdownSelect
-            containerClassName="py-2"
-            showLabel={false}
-            toggleDropdownClassName="w-full border-[#D9D9D9] rounded-[5px]"
-            label="Jenis Kegiatan"
-            DropdownSelectClassName="w-full border-[#D9D9D9] rounded-[5px]"
-            options={submissionOptions.map(
-              (item) => `${item.label} (${item.jenisAjukan})`
+
+          {/* DROPDOWN SECTION */}
+          <View className="px-5 pb-4">
+            <FormDropdownSelect
+              labelClassName="text-[14px] text-gray-700 mb-2"
+              toggleDropdownClassName="w-full border-2 border-gray-200 rounded-[12px] bg-gray-50 px-4 py-3"
+              DropdownSelectClassName="w-full border-2 border-gray-200 rounded-[12px] bg-white mt-1"
+              options={submissionOptions.map(
+                (item) => `${item.label} (${item.jenisAjukan})`
+              )}
+              selected={selectedActivityType}
+              onSelect={(value) => {
+                setSelectedActivityType(value);
+                setFileMap({});
+              }}
+              customFontLabel={{
+                fontFamily: 'LexSemiBold',
+                color: '#374151',
+              }}
+              customFontSelected={{
+                fontFamily: 'LexRegular',
+                color: '#1F2937',
+                fontSize: 14,
+              }}
+              customFontOption={{
+                fontFamily: 'LexRegular',
+                color: '#1F2937',
+                fontSize: 14,
+              }}
+              iconColor="#6B7280"
+              open={isActivityTypeDropdownOpen}
+              setOpen={setAcitivityTypeDropdownOpen}
+              maxVisibleOptions={5}
+            />
+
+            {/* INFORMASI TAMBAHAN - KURANGI JARAK */}
+            {selectedActivityType && (
+              <View className="mt-2 flex-row items-start">
+                {/* Kurangi mt dari mt-3 jadi mt-2 */}
+                <Ionicons name="information-circle" size={16} color="#1475BA" />
+                <Text
+                  className="ml-2 flex-1 text-[12px] text-gray-600"
+                  style={{ fontFamily: 'LexRegular' }}
+                >
+                  Pilihan:{' '}
+                  <Text style={{ fontFamily: 'LexSemiBold' }}>
+                    {selectedActivityType}
+                  </Text>
+                </Text>
+              </View>
             )}
-            selected={selectedActivityType}
-            selectedTextClassName="text-black"
-            optionTextClassName="text-black"
-            onSelect={(value) => {
-              setSelectedActivityType(value);
-              setFileMap({}); // reset otomatis file tiap ganti kegiatan
-            }}
-            iconColor="black"
-            open={isActivityTypeDropdownOpen}
-            setOpen={setAcitivityTypeDropdownOpen}
-            maxVisibleOptions={7}
-          />
+          </View>
         </View>
 
         {/* Upload Berkas */}
@@ -330,7 +373,7 @@ export default function SubmissionScreen() {
             } catch (err) {
               console.error('❌ Gagal mengajukan:', err);
             } finally {
-              setIsSubmitting(false); // ✅ Matikan loading
+              setIsSubmitting(false);
             }
           }}
           isTouchable={
@@ -359,8 +402,6 @@ export default function SubmissionScreen() {
         pdfViewerHtml={pdfViewerHtml}
         onOpenExternal={openFileExternal}
       />
-
-      <View className="h-[4%] w-full bg-[#1475BA]" />
     </View>
   );
 }
